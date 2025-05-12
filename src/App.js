@@ -1,10 +1,14 @@
-import './App.css';
+import { BrowserRouter } from "react-router-dom";
+import AppRoutes from "./routes/AppRoutes";
+import { AuthProvider } from "./auth/AuthProvider";
 
 function App() {
   return (
-    <div className="App">
-      <h1>Hello, world!</h1>
-    </div>
+    <BrowserRouter>
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 
