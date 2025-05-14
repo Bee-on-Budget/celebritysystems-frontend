@@ -5,11 +5,13 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const validateToken = () => {
     const token = getToken();
     if (!token) {
       setUser(null);
+      setLoading(false);
       return false;
     }
 
@@ -23,6 +25,7 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
     }
 
+    setLoading(false);
     return isValid;
   };
 
@@ -41,8 +44,8 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  return (
-    <AuthContext.Provider value={{ user, login, logout, validateToken }}>
+  return (  
+    <AuthContext.Provider value={{ user, login, logout, validateToken, loading }}>
       {children}
     </AuthContext.Provider>
   );
