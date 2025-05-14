@@ -55,54 +55,51 @@ const Login = () => {
           )}
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-4">
-              <div className="relative">
-                <input
-                  className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  type="email"
-                  placeholder="example@email.xyz"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
+              <Input label="Email"
+                type="email"
+                id="login-email"
+                placeholder="example@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                trainling=
                 {email && (
                   <button
                     type="button"
-                    className="absolute right-3 top-2 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-9 text-gray-400 hover:text-gray-600"
                     onClick={() => setEmail("")}
                   >
                     &#10005;
                   </button>
                 )}
-              </div>
-              <div className="relative">
-                <input
-                  className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-                <button
-                  type="button"
-                  className="absolute right-3 top-2 text-gray-400 hover:text-gray-600"
-                  onClick={() => setShowPassword((v) => !v)}
-                  tabIndex={-1}
-                >
-                  {showPassword ? "🙈" : "👁️"}
-                </button>
-              </div>
+                required />
+              <Input label="Password"
+                type={showPassword ? "text" : "password"}
+                id="login-password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                trainling=
+                {
+                  <button
+                    type="button"
+                    className="absolute right-3 top-9 text-gray-400 hover:text-gray-600"
+                    onClick={() => setShowPassword((v) => !v)}
+                    tabIndex={-1}
+                  >
+                    {showPassword ? "🙈" : "👁️"}
+                  </button>}
+                required />
             </div>
             <div className="flex items-center justify-between">
               <label className="flex items-center">
                 <input type="checkbox" className="form-checkbox" />
                 <span className="ml-2 text-sm text-gray-600">Remember me</span>
               </label>
-              <a href="#" className="text-sm text-blue-600 hover:underline font-semibold">
+              <a href="#" className="text-sm text-primary hover:underline font-semibold">
                 Forgot password?
               </a>
             </div>
-            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded">
+            <Button type="submit" className="w-full bg-primary hover:bg-primary-hover text-white font-bold py-2 rounded">
               Log in
             </Button>
           </form>
