@@ -1,45 +1,19 @@
-import { useAuth } from "../../auth/useAuth";
-import Button from "../../components/Button";
+import React from "react";
+import StatsCard from './widgets/StatsCard';
 
 const Dashboard = () => {
-  const { user, logout } = useAuth();
-
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="bg-white shadow rounded-lg p-6">
-          <div className="flex justify-between items-center mb-8">
-            <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-            <Button onClick={logout} variant="danger">
-              Logout
-            </Button>
-          </div>
+    <div className="p-6 space-y-6">
+      <h2 className="text-2xl font-semibold text-gray-800">Dashboard</h2>
+      <p className="text-gray-500">Welcome back! Here's a quick overview.</p>
 
-          {user && (
-            <div className="space-y-4">
-              <h2 className="text-xl font-semibold">User Information</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm font-medium text-gray-500">User ID</p>
-                  <p>{user.sub}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Email</p>
-                  <p>{user.email}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Username</p>
-                  <p>{user.username}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Roles</p>
-                  <p>{user.roles.join(", ")}</p>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <StatsCard title="Total Systems" value="12" color="text-blue-600" />
+        <StatsCard title="Active Users" value="37" color="text-green-600" />
+        <StatsCard title="Pending Tasks" value="5" color="text-red-600" />
       </div>
+
+      {/* You can keep the recent activity section here as before */}
     </div>
   );
 };
