@@ -20,8 +20,11 @@ module.exports = {
         //   900: '#1a0503',
         // },
         dark: "#2B3237",
+        "bg-color": "#f5f5f7",
         "dark-light": "#3B434A",
-        "primary-hover": "#cc2f1e",
+        "primary-focus": "#b32413",
+        "primary-hover": "#801a0e",
+        "sidebar-bg": "#2c3d49",
       },
       animation: {
         gradientAnimation: 'gradientMove 10s ease infinite',
