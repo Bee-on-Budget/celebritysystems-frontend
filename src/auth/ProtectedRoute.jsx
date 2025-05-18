@@ -1,18 +1,13 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "./useAuth";
+import Loading from "../components/Loading";
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
 
-  if (loading) {
-    return <div>Loading...</div>; // Or a spinner
-  }
+  if (loading) return <Loading />;
 
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return children;
+  return user ? children : <Navigate to="/login" replace />;
 };
 
 export default ProtectedRoute;
