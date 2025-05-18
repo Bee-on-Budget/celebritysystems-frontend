@@ -2,7 +2,7 @@ import React from 'react';
 import { FaHome, FaUser, FaBars, FaUsers, FaPlus } from "react-icons/fa";
 import Logo from '../../../assets/logo.png';
 import NavButton from '../../NavButton';
-import SidebarDropdown from './SidebarDropdown ';
+import SidebarDropdown from './SidebarDropdown';
 
 const Sidebar = ({ open, setOpen }) => (
     <div className={`fixed inset-y-0 left-0 z-30 w-64 bg-sidebar-bg shadow-lg transform ${open ? "translate-x-0" : "-translate-x-full"} transition-transform duration-200 ease-in-out md:translate-x-0 md:static md:inset-0`}>
@@ -29,16 +29,18 @@ const Sidebar = ({ open, setOpen }) => (
                 icon={<FaUser />}
                 label="Profile"
             />
-            <SidebarDropdown
-                icon={FaUsers}
-                label="Accounts"
-                items={[
-                    { label: "Create Supervisor", href: "/create-supervisor" },
-                    { label: "Create Worker", href: "/create-worker" },
-                    { label: "Manage Supervisors", href: "/manage-supervisors" },
-                    { label: "View Workers", href: "/view-workers" },
-                ]}
-            />
+      <SidebarDropdown
+  icon={FaUsers}
+  label="Accounts"
+  items={[
+    { label: "Create User", href: "/create-user" },
+    { label: "Create Supervisor", href: "/create-supervisor" },
+    { label: "Create Worker", href: "/create-worker" },
+    { label: "Manage Users", href: "/manage-users" },
+    { label: "Manage Supervisors", href: "/manage-supervisors" },
+    { label: "View Workers", href: "/view-workers" },
+  ]}
+/>
             <NavButton
                 to="/add-system"
                 icon={<FaPlus />}

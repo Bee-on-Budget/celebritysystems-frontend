@@ -9,7 +9,7 @@ import AddSystem from "../features/systems/AddSystem";
 import ProtectedRoute from "../auth/ProtectedRoute";
 import PublicRoute from "../auth/PublicRoute";
 import Layout from "../components/Layout/Layout";
-
+import CreateUser from "../features/accounts/CreateUser";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -32,6 +32,14 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       >
+        <Route 
+  path="/create-user" 
+  element={
+    <ProtectedRoute allowedRoles={['ADMIN', 'SUPERVISOR']}>
+      <CreateUser />
+    </ProtectedRoute>
+  } 
+/>
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="profile" element={<Profile />} />
