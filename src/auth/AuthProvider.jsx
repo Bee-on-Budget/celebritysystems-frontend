@@ -11,7 +11,6 @@ export const AuthProvider = ({ children }) => {
     const token = getToken();
     if (!token) {
       setUser(null);
-      setLoading(false);
       return false;
     }
 
@@ -25,13 +24,12 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
     }
 
-    setLoading(false);
     return isValid;
   };
 
-  // Validate on mount
   useEffect(() => {
     validateToken();
+    setLoading(false);
   }, []);
 
   const login = (token) => {
@@ -44,7 +42,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  return (  
+  return (
     <AuthContext.Provider value={{ user, login, logout, validateToken, loading }}>
       {children}
     </AuthContext.Provider>
