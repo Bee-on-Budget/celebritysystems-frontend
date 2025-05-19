@@ -1,5 +1,4 @@
 import api from "./axios";
-import axios from 'axios';
 
 export const login = async (credentials) => {
   return api.post("/auth/login", credentials);
@@ -8,7 +7,3 @@ export const login = async (credentials) => {
 export const logout = async () => {
   return api.post("/auth/logout");
 };
-
-
-
-
