@@ -2,15 +2,18 @@ import axios from 'axios';
 // import { getToken } from '../utils/token';
 
 const api = axios.create({
-  baseURL: "http://localhost:8080/api", // Your Spring Boot backend URL
-  withCredentials: true, // Important for cookies
+  baseURL: "http://localhost:8080/api",
+  withCredentials: true,
 });
 
 // Request interceptor to add auth token to headers if it exists
 // api.interceptors.request.use((config) => {
 //   const token = getToken();
 //   if (token) {
+//     console.log(token);
 //     config.headers.Authorization = `Bearer ${token}`;
+//   } else {
+//     console.log("No Token!!!!");
 //   }
 //   return config;
 // });
