@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Toaster, toast } from 'react-hot-toast';
 import UserForm from '../../components/UserForm';
 import { useAuth } from '../../auth/useAuth';
 import { createUser } from '../../api/axios';
@@ -23,7 +22,6 @@ const CreateUser = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-      <Toaster />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
