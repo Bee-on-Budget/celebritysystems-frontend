@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaHome, FaUser, FaBars, FaUsers, FaPlus, FaBuilding } from "react-icons/fa";
+import { FaHome, FaUser, FaBars, FaUsers, FaBuilding } from "react-icons/fa";
 import Logo from '../../../assets/logo.png';
 import NavButton from '../../NavButton';
 import SidebarDropdown from './SidebarDropdown';
