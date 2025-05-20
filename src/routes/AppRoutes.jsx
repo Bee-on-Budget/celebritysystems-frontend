@@ -62,18 +62,18 @@ const AppRoutes = () => {
 
         {/* Company management */}
         <Route
-          path="companies/create"
+          path="companies"
           element={
             <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
-              <CreateCompany />
+              <CompanyList />
             </ProtectedRoute>
           }
         />
         <Route
-          path="companies/list"
+          path="companies/create"
           element={
             <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
-              <CompanyList />
+              <CreateCompany />
             </ProtectedRoute>
           }
         />
