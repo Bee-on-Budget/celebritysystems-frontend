@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
 import { createCompany } from "./CompanyService";
+import { showToast } from "../../components/ToastNotifier";
 
 const CreateCompany = () => {
     const [form, setForm] = useState({ name: "", email: "", phone: "", location: "" });
@@ -15,10 +16,10 @@ const CreateCompany = () => {
         console.log(form);
         try {
             await createCompany(form);
-            alert("Company created successfully");
+            showToast("Company created successfully");
             setForm({ name: "", email: "", phone: "", location: "" });
         } catch (err) {
-            alert("Error creating company");
+            showToast("Error creating company", "error");
         }
         setLoading(false);
     };
