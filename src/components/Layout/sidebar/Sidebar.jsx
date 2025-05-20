@@ -34,8 +34,6 @@ const Sidebar = ({ open, setOpen }) => (
                 label="Accounts"
                 items={[
                     { label: "Create User", href: "/create-user" },
-                    { label: "Create Supervisor", href: "/create-supervisor" },
-                    { label: "Create Worker", href: "/create-worker" },
                     { label: "Manage Users", href: "/manage-users" },
                     { label: "Manage Supervisors", href: "/manage-supervisors" },
                     { label: "View Workers", href: "/view-workers" },
@@ -51,11 +49,6 @@ const Sidebar = ({ open, setOpen }) => (
                 ]}
             />
 
-            <NavButton
-                to="/add-system"
-                icon={<FaPlus />}
-                label="Add System"
-            />
         </nav>
     </div>
 );
