@@ -5,6 +5,7 @@ import { Toaster, toast } from 'react-hot-toast';
 import UserForm from '../../components/UserForm';
 import { useAuth } from '../../auth/useAuth';
 import { createUser } from '../../api/axios';
+import { showToast } from '../../components/ToastNotifier';
 
 const CreateUser = () => {
   const { user } = useAuth();
@@ -13,30 +14,10 @@ const CreateUser = () => {
   const handleSubmit = async (userData) => {
     try {
       await createUser(userData);
-      toast.success('🎉 User created successfully!', {
-        position: 'top-center',
-        duration: 2000,
-        style: {
-          background: '#4BB543',
-          color: '#fff',
-          padding: '16px',
-          borderRadius: '12px',
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
-        }
-      });
+      showToast("User created successfully!");
       setTimeout(() => navigate('/manage-users'), 1500);
     } catch (error) {
-      toast.error('❌ Failed to create user', {
-        position: 'top-center',
-        duration: 3000,
-        style: {
-          background: '#FF3333',
-          color: '#fff',
-          padding: '16px',
-          borderRadius: '12px',
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
-        }
-      });
+      showToast("Failed to create user", "error");
     }
   };
 
