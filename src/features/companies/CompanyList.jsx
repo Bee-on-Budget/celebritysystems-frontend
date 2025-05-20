@@ -26,8 +26,8 @@ const CompanyList = () => {
   const filtered = companies.filter((c) => c.name.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className="max-w-4xl mx-auto mt-8">
-      <div className="flex items-center justify-between mb-4">
+    <div className="my-2">
+      <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Companies</h1>
         <Input
           id="search"
@@ -38,7 +38,7 @@ const CompanyList = () => {
         />
       </div>
 
-      <div className="bg-white shadow rounded overflow-hidden">
+      <div className="bg-white shadow rounded overflow-hidden mt-5">
         {filtered.length === 0 ? (
           <p className="p-4 text-gray-500">No companies found.</p>
         ) : (
