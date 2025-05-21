@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FaBars, FaSignOutAlt, FaBell, FaSearch } from "react-icons/fa";
 import { useAuth } from "../../auth/useAuth";
 import { motion, AnimatePresence } from "framer-motion";
+import Button from '../Button';
 
 const Header = ({ setSidebarOpen }) => {
     const { logout } = useAuth();
@@ -24,7 +25,7 @@ const Header = ({ setSidebarOpen }) => {
                     {/* Left section */}
                     <div className="flex items-center space-x-4">
                         <button 
-                            className="md:hidden text-gray-600 text-xl p-2 rounded-full hover:bg-gray-100 transition-colors duration-200"
+                            className="md:hidden text-dark text-xl p-2 rounded-full hover:bg-gray-100 transition-colors duration-200"
                             onClick={() => setSidebarOpen(true)}
                             aria-label="Open menu"
                         >
@@ -46,9 +47,9 @@ const Header = ({ setSidebarOpen }) => {
                     
                     {/* Right section */}
                     <div className="flex items-center space-x-4">
-                        <button className="p-2 relative text-gray-600 rounded-full hover:bg-gray-100 transition-colors duration-200">
+                        <button className="p-2 relative text-dark rounded-full hover:bg-gray-100 transition-colors duration-200">
                             <FaBell className="text-xl" />
-                            <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
+                            <span className="absolute top-0 right-0 h-2 w-2 bg-primary rounded-full"></span>
                         </button>
                         
                         <div className="relative">
@@ -72,20 +73,21 @@ const Header = ({ setSidebarOpen }) => {
                                         className="absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-50 border border-gray-200"
                                     >
                                         <div className="p-4">
-                                            <p className="mb-3 font-medium text-gray-700">Confirm logout?</p>
+                                            <p className="mb-3 font-medium text-dark">Confirm logout?</p>
                                             <div className="flex justify-end space-x-2">
-                                                <button
+                                                <Button
                                                     onClick={() => setShowLogoutConfirm(false)}
-                                                    className="px-3 py-1 text-sm text-gray-600 rounded hover:bg-gray-100"
+                                                    size='sm'
+                                                    variant='ghost'
                                                 >
                                                     Cancel
-                                                </button>
-                                                <button
+                                                </Button>
+                                                <Button
                                                     onClick={confirmLogout}
-                                                    className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
+                                                    size='sm'
                                                 >
                                                     Logout
-                                                </button>
+                                                </Button>
                                             </div>
                                         </div>
                                     </motion.div>
