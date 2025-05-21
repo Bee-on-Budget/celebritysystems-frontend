@@ -20,6 +20,9 @@ import CreateCompany from "../features/companies/CreateCompany";
 import CompanyList from "../features/companies/CompanyList";
 import AddUserToCompany from "../features/companies/AddUserToCompany";
 
+// Screen management
+import AddScreen from "../features/screen/AddScreen"
+
 const AppRoutes = () => {
   return (
     <Routes>
@@ -82,6 +85,24 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
               <AddUserToCompany />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Screen management */}
+        {/* <Route
+          path="screens"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR", "TECHNICIAN"]}>
+              <ScreenList />
+            </ProtectedRoute>
+          }
+        /> */}
+        <Route
+          path="screens/AddScreen"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR", "TECHNICIAN"]}>
+              <AddScreen />
             </ProtectedRoute>
           }
         />

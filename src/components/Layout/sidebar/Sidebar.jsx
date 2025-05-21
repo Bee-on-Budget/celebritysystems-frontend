@@ -48,6 +48,15 @@ const Sidebar = ({ open, setOpen }) => (
                     { label: "Add User", href: "/companies/add-user" }
                 ]}
             />
+            <SidebarDropdown
+                icon={FaBuilding}
+                label="Screens"
+                items={[
+                    { label: "All Screens", href: "/screen" },
+                    { label: "Create Screen", href: "/screens/AddScreen" }
+                   
+                ]}
+            />
 
         </nav>
     </div>
