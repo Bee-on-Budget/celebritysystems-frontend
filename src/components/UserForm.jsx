@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { FaUser, FaEnvelope, FaLock, FaBuilding, FaUserShield, FaUserTie } from 'react-icons/fa';
+import { FaUser, FaEnvelope, FaLock, FaUserShield, FaUserTie } from 'react-icons/fa';
 import Input from '../components/Input';
 import Button from '../components/Button';
+import DropdownInput from './DropdownInput';
 
 const UserForm = ({ onSubmit, currentUserRole }) => {
   const [formData, setFormData] = useState({
@@ -22,7 +23,7 @@ const UserForm = ({ onSubmit, currentUserRole }) => {
       ...prev,
       [name]: value
     }));
-    
+
     // Clear error when user types
     if (errors[name]) {
       setErrors(prev => ({
@@ -34,14 +35,14 @@ const UserForm = ({ onSubmit, currentUserRole }) => {
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!formData.username.trim()) newErrors.username = 'Username is required';
     if (!formData.email.trim()) newErrors.email = 'Email is required';
     else if (!/^\S+@\S+\.\S+$/.test(formData.email)) newErrors.email = 'Email is invalid';
     if (!formData.password) newErrors.password = 'Password is required';
     else if (formData.password.length < 8) newErrors.password = 'Password must be at least 8 characters';
     if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -50,9 +51,9 @@ const UserForm = ({ onSubmit, currentUserRole }) => {
     console.log("Form submitted!");
     e.preventDefault();
     if (!validateForm()) return;
-  
+
     console.log('✅ Submitting form with:', formData); // <- ADD THIS
-  
+
     setIsSubmitting(true);
     try {
       await onSubmit({
@@ -66,7 +67,7 @@ const UserForm = ({ onSubmit, currentUserRole }) => {
       setIsSubmitting(false);
     }
   };
-  
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -81,7 +82,7 @@ const UserForm = ({ onSubmit, currentUserRole }) => {
           placeholder="Enter username"
           required
         />
-        
+
         <Input
           label="Email"
           name="email"
@@ -93,7 +94,7 @@ const UserForm = ({ onSubmit, currentUserRole }) => {
           placeholder="Enter email"
           required
         />
-        
+
         <Input
           label="Password"
           name="password"
@@ -105,7 +106,7 @@ const UserForm = ({ onSubmit, currentUserRole }) => {
           placeholder="Enter password"
           required
         />
-        
+
         <Input
           label="Confirm Password"
           name="confirmPassword"
@@ -119,44 +120,29 @@ const UserForm = ({ onSubmit, currentUserRole }) => {
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
-          <div className="relative">
-            <select
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
-            >
-              <option value="WORKER">Worker</option>
-              <option value="SUPERVISOR">Supervisor</option>
-              {currentUserRole === 'ADMIN' && (
-                <option value="ADMIN">Admin</option>
-              )}
-            </select>
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              {formData.role === 'ADMIN' ? (
-                <FaUserShield className="h-5 w-5 text-gray-400" />
-              ) : formData.role === 'SUPERVISOR' ? (
-                <FaUserTie className="h-5 w-5 text-gray-400" />
-              ) : (
-                <FaUser className="h-5 w-5 text-gray-400" />
-              )}
-            </div>
-          </div>
-        </div>
-{/* 
-        <Input
-          label="Company ID (optional)"
-          name="companyId"
-          type="text"
-          icon={<FaBuilding className="text-gray-400" />}
-          value={formData.companyId}
-          onChange={handleChange}
-          placeholder="Enter company ID"
-        /> */}
-      </div>
+      <DropdownInput
+        label="Role"
+        name="role"
+        value={formData.role}
+        onChange={handleChange}
+        icon={
+          formData.role === 'ADMIN' ? (
+            <FaUserShield className="h-5 w-5 text-gray-400" />
+          ) : formData.role === 'SUPERVISOR' ? (
+            <FaUserTie className="h-5 w-5 text-gray-400" />
+          ) : (
+            <FaUser className="h-5 w-5 text-gray-400" />
+          )
+        }
+        options={[
+          { value: "WORKER", label: "Worker" },
+          { value: "SUPERVISOR", label: "Supervisor" },
+          ...(currentUserRole === "ADMIN"
+            ? [{ value: "ADMIN", label: "Admin" }]
+            : []),
+        ]}
+        error={errors.role}
+      />
 
       <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
         <Button
