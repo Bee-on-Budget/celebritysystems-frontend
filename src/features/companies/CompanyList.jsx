@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { getAllCompanies, deleteCompany } from "./CompanyService";
-import Input from "../../components/Input";
 import Button from "../../components/Button";
+import MultiSearchBar from "../../components/MultiSearchBar";
 
 const CompanyList = () => {
   const [companies, setCompanies] = useState([]);
-  const [search, setSearch] = useState("");
+  const [filtered, setFiltered] = useState([]);
 
   const fetchCompanies = async () => {
     const res = await getAllCompanies();
     setCompanies(res.data);
+    setFiltered(res.data);
   };
 
   useEffect(() => {
@@ -23,19 +24,39 @@ const CompanyList = () => {
     }
   };
 
-  const filtered = companies.filter((c) => c.name.toLowerCase().includes(search.toLowerCase()));
+  const handleSearch = useCallback(
+    async (query) => {
+      return companies
+        .filter((company) =>
+          company.name.toLowerCase().includes(query.toLowerCase())
+        )
+        .map((c) => c.name);
+    },
+    [companies]
+  );
+
+  const handleResultClick = (query) => {
+    const result = companies.filter((company) =>
+      company.name.toLowerCase().startsWith(query.toLowerCase())
+    );
+    setFiltered(result);
+  };
+
+  const handleClearSearch = () => {
+    setFiltered(companies);
+  };
 
   return (
     <div className="my-2">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4 flex-wrap">
         <h1 className="text-2xl font-semibold">Companies</h1>
-        <Input
-          id="search"
-          placeholder="Search by name..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-64"
-        />
+        <div className="w-full sm:w-64">
+          <MultiSearchBar
+            onSearch={handleSearch}
+            onSelectResult={handleResultClick}
+            onClear={handleClearSearch}
+          />
+        </div>
       </div>
 
       <div className="bg-white shadow rounded overflow-hidden mt-5">
@@ -60,7 +81,11 @@ const CompanyList = () => {
                   <td className="px-4 py-2">{company.phone}</td>
                   <td className="px-4 py-2">{company.location}</td>
                   <td className="px-4 py-2">
-                    <Button variant="danger" onClick={() => handleDelete(company.id)} className="text-sm px-2 py-1">
+                    <Button
+                      variant="danger"
+                      onClick={() => handleDelete(company.id)}
+                      className="text-sm px-2 py-1"
+                    >
                       Delete
                     </Button>
                   </td>
