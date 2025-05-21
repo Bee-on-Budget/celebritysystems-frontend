@@ -5,7 +5,7 @@ import NavButton from '../../NavButton';
 import SidebarDropdown from './SidebarDropdown';
 
 const Sidebar = ({ open, setOpen }) => (
-    <div className={`fixed inset-y-0 left-0 z-30 w-64 bg-sidebar-bg shadow-lg transform ${open ? "translate-x-0" : "-translate-x-full"} transition-transform duration-200 ease-in-out md:translate-x-0 md:static md:inset-0`}>
+    <div className={`fixed inset-y-0 left-0 z-30 w-64 bg-gradient-to-b from-slate-900 to-blue-950 backdrop-blur-lg shadow-2xl transform ${open ? "translate-x-0" : "-translate-x-full"} transition-transform duration-200 ease-in-out md:translate-x-0 md:static md:inset-0`}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-300">
             <a href="/dashboard">
                 <img
