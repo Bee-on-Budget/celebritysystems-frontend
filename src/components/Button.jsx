@@ -25,9 +25,10 @@ const Button = ({
 
   const variantClasses = {
     primary: "bg-primary text-white hover:bg-primary-hover focus:ring-primary-focus",
-    danger: "bg-transparent text-red-700 hover:bg-gray-200",
-    outline: "bg-transparent border border-gray-300 text-gray-700 hover:bg-gray-200",
-    ghost: "bg-transparent text-dark hover:bg-gray-200 font-normal",
+    danger: "bg-transparent text-red-700 hover:bg-gray-200 focus:ring-red-600",
+    outline: "bg-transparent border border-gray-300 text-gray-700 hover:bg-gray-200 focus:ring-gray",
+    ghost: "bg-transparent text-dark hover:bg-gray-200 font-normal border-none focus:ring-dark-light",
+    icon: "bg-transparent text-dark hover:bg-gray-200 font-normal border-none focus:ring-dark-light rounded-full w-10 h-10"
   };
 
   const roundedClasses = {
