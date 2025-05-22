@@ -8,7 +8,7 @@ const Input = ({ label, id, className = "", trainling=null,...props }) => {
       )}
       <input
         id={id}
-        className={`w-full px-4 py-2 mt-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary-500 ${className}`}
+        className={`w-full px-4 py-2 mt-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary ${className}`}
         {...props}
       />
       {trainling}
