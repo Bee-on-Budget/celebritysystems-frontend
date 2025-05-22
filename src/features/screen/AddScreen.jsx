@@ -7,10 +7,10 @@ import { createScreen, createModule, createCabin } from "./ScreenService";
 const StepIndicator = ({ stepNumber, title, currentStep }) => (
   <div className="flex-1 text-center">
     <div className={`w-10 h-10 rounded-full mx-auto mb-2 text-white flex items-center justify-center text-sm font-semibold 
-      ${currentStep === stepNumber ? "bg-blue-600" : "bg-gray-300"}`}>
+      ${currentStep === stepNumber ? "bg-primary" : "bg-gray-300"}`}>
       {stepNumber}
     </div>
-    <p className={`text-sm ${currentStep === stepNumber ? "text-blue-600 font-semibold" : "text-gray-500"}`}>
+    <p className={`text-sm ${currentStep === stepNumber ? "text-primary font-semibold" : "text-gray-500"}`}>
       {title}
     </p>
   </div>
@@ -114,7 +114,7 @@ const AddScreen = () => {
       await createCabin(form.cabin);
 
       showToast("Screen, module, and cabin created successfully");
-      window.location.reload(); 
+      window.location.reload();
     } catch (err) {
       showToast("Error creating screen: " + (err.message || "Unknown error"), "error");
     }
@@ -175,7 +175,7 @@ const AddScreen = () => {
       <Input label="Width" name="module_width" type="number" value={form.module.width} onChange={handleChange} />
     </div>
     <div className="flex justify-between pt-6">
-      <Button type="button" variant="secondary" onClick={prevStep}>Back</Button>
+      <Button type="button" variant="ghost" onClick={prevStep}>Back</Button>
       <Button type="button" onClick={nextStep}>Next: Cabin</Button>
     </div>
   </>);
@@ -188,7 +188,7 @@ const AddScreen = () => {
     </div>
     <Input label="Type" name="cabin_type" value={form.cabin.type} onChange={handleChange} />
     <div className="flex justify-between pt-6">
-      <Button type="button" variant="secondary" onClick={prevStep}>Back</Button>
+      <Button type="button" variant="ghost" onClick={prevStep}>Back</Button>
       <Button type="button" onClick={nextStep}>Next: Cables</Button>
     </div>
   </>);
@@ -219,7 +219,7 @@ const AddScreen = () => {
     </>)}
 
     <div className="flex justify-between pt-6">
-      <Button type="button" variant="secondary" onClick={prevStep}>Back</Button>
+      <Button type="button" variant="ghost" onClick={prevStep}>Back</Button>
       <Button type="submit" isLoading={loading}>Create Screen</Button>
     </div>
   </>);
