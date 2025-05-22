@@ -21,7 +21,7 @@ import CompanyList from "../features/companies/CompanyList";
 import AddUserToCompany from "../features/companies/AddUserToCompany";
 
 // Screen management
-import AddScreen from "../features/screens/AddScreen"
+import AddScreen from "../features/screen/AddScreen"
 
 const AppRoutes = () => {
   return (
@@ -99,7 +99,7 @@ const AppRoutes = () => {
           }
         /> */}
         <Route
-          path="screens/AddScreen"
+          path="screen/AddScreen"
           element={
             <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR", "TECHNICIAN"]}>
               <AddScreen />
