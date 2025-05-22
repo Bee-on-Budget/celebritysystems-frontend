@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getToken } from '../utils/token';
 
 const api = axios.create({
-  baseURL: process.env.VITE_API_URL + "/api",
+  baseURL: process.env.REACT_APP_API_URL + "/api",
   withCredentials: true,
 });
 
