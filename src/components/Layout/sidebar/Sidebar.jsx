@@ -55,7 +55,7 @@ const Sidebar = ({ open, setOpen }) => (
                 label="Screens"
                 items={[
                     { label: "All Screens", href: "/screen" },
-                    { label: "Create Screen", href: "/screens/AddScreen" }
+                    { label: "Create Screen", href: "/screen/AddScreen" }
                    
                 ]}
             />
