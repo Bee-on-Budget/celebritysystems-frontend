@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaHome, FaUser, FaBars, FaUsers, FaBuilding } from "react-icons/fa";
+import { FaHome, FaUser, FaBars, FaUsers, FaBuilding ,FaDesktop} from "react-icons/fa";
 // import Logo from '../../../assets/logo.png';
 import CompanyLogo from '../../CompanyLogo';
 import NavButton from '../../NavButton';
@@ -51,7 +51,7 @@ const Sidebar = ({ open, setOpen }) => (
                 ]}
             />
             <SidebarDropdown
-                icon={FaBuilding}
+                icon={FaDesktop}
                 label="Screens"
                 items={[
                     { label: "All Screens", href: "/screen" },
