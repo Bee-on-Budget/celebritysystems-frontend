@@ -21,7 +21,10 @@ import CompanyList from "../features/companies/CompanyList";
 import AddUserToCompany from "../features/companies/AddUserToCompany";
 
 // Screen management
-import AddScreen from "../features/screen/AddScreen"
+import AddScreen from "../features/screen/AddScreen";
+
+// Test
+import TestPage from "../features/test/TestPage";
 
 const AppRoutes = () => {
   return (
@@ -52,6 +55,7 @@ const AppRoutes = () => {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="profile" element={<Profile />} />
         <Route path="add-system" element={<AddSystem />} />
+        <Route path="test" element={<TestPage />} />
 
         {/* User management */}
         <Route

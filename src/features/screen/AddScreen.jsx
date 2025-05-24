@@ -1,51 +1,51 @@
 import React, { useState, useRef } from "react";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
+import DropdownInput from "../../components/DropdownInput";
 import { showToast } from "../../components/ToastNotifier";
 import { createScreen, createModule, createCabin } from "./ScreenService";
 const StepIndicator = ({ stepNumber, title, currentStep }) => (
-    <div className="flex-1 text-center">
-      <div className={`w-10 h-10 rounded-full mx-auto mb-2 text-white flex items-center justify-center text-sm font-semibold 
+  <div className="flex-1 text-center">
+    <div className={`w-10 h-10 rounded-full mx-auto mb-2 text-white flex items-center justify-center text-sm font-semibold 
         ${currentStep === stepNumber ? "bg-primary" : "bg-gray-300"}`}>
-        {stepNumber}
-      </div>
-      <p className={`text-sm ${currentStep === stepNumber ? "text-primary font-semibold" : "text-gray-500"}`}>
-        {title}
-      </p>
+      {stepNumber}
     </div>
-  );
+    <p className={`text-sm ${currentStep === stepNumber ? "text-primary font-semibold" : "text-gray-500"}`}>
+      {title}
+    </p>
+  </div>
+);
 
-  const FileInput = ({ name, label, value, onChange }) => {
-    const [isFocused, setIsFocused] = useState(false);
-  
-    return (
-      <div className="space-y-1">
-        <label className="block text-sm font-medium text-gray-700">{label}</label>
-        <div className="relative">
-          <input 
-            type="file" 
-            name={name} 
-            onChange={onChange}
-            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-          />
-          <div className={`flex items-center justify-between px-3 py-2 border rounded-md shadow-sm bg-white ${
-            isFocused 
-              ? "border-primary ring-1 ring-primary" 
-              : "border-gray-300 hover:border-gray-400"
+const FileInput = ({ name, label, value, onChange }) => {
+  const [isFocused, setIsFocused] = useState(false);
+
+  return (
+    <div className="space-y-1">
+      <label className="block text-sm font-medium text-gray-700">{label}</label>
+      <div className="relative">
+        <input
+          type="file"
+          name={name}
+          onChange={onChange}
+          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+        />
+        <div className={`flex items-center justify-between px-3 py-2 border rounded-md shadow-sm bg-white ${isFocused
+          ? "border-primary ring-1 ring-primary"
+          : "border-gray-300 hover:border-gray-400"
           }`}>
-            <span className="text-sm text-gray-500 truncate">
-              {value ? value.name : "Choose file"}
-            </span>
-            <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-            </svg>
-          </div>
+          <span className="text-sm text-gray-500 truncate">
+            {value ? value.name : "Choose file"}
+          </span>
+          <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+          </svg>
         </div>
       </div>
-    );
-  };
+    </div>
+  );
+};
 FileInput.displayName = "FileInput";
 
 const AddScreen = () => {
@@ -175,8 +175,15 @@ const AddScreen = () => {
   const renderScreenFields = () => renderSection("Screen Information", <>
     <Input label="Name" name="name" value={form.name} onChange={handleChange} required />
     <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-700 mb-1">Screen Type *</label>
-      <select
+      <DropdownInput
+        name="screenType"
+        value={form.screenType}
+        options={screenTypeOptions}
+        onChange={handleChange}
+        label="Screen Type"
+        required
+      />
+      {/* <select
         name="screenType"
         value={form.screenType}
         onChange={handleChange}
@@ -189,7 +196,7 @@ const AddScreen = () => {
             {option.label}
           </option>
         ))}
-      </select>
+      </select> */}
     </div>
     <Input label="Location" name="location" value={form.location} onChange={handleChange} required />
     <div className="grid grid-cols-2 gap-4">
@@ -216,30 +223,30 @@ const AddScreen = () => {
     {renderSection("Files", <>
       <div className="grid grid-cols-3 gap-4">
         <div onClick={() => connectionFileRef.current?.click()} className="cursor-pointer">
-          <FileInput 
+          <FileInput
             ref={connectionFileRef}
-            name="connectionFile" 
-            label="Connection File" 
-            value={form.connectionFile} 
-            onChange={handleChange} 
+            name="connectionFile"
+            label="Connection File"
+            value={form.connectionFile}
+            onChange={handleChange}
           />
         </div>
         <div onClick={() => configFileRef.current?.click()} className="cursor-pointer">
-          <FileInput 
+          <FileInput
             ref={configFileRef}
-            name="configFile" 
-            label="Config File" 
-            value={form.configFile} 
-            onChange={handleChange} 
+            name="configFile"
+            label="Config File"
+            value={form.configFile}
+            onChange={handleChange}
           />
         </div>
         <div onClick={() => versionFileRef.current?.click()} className="cursor-pointer">
-          <FileInput 
+          <FileInput
             ref={versionFileRef}
-            name="versionFile" 
-            label="Version File" 
-            value={form.versionFile} 
-            onChange={handleChange} 
+            name="versionFile"
+            label="Version File"
+            value={form.versionFile}
+            onChange={handleChange}
           />
         </div>
       </div>
