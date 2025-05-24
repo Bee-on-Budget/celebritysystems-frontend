@@ -9,9 +9,12 @@ const UserForm = ({ onSubmit, currentUserRole }) => {
     username: '',
     email: '',
     password: '',
+    fullName: 'Default name',
     confirmPassword: '',
     role: 'WORKER',
-    companyId: ''
+    companyId: '',
+    canRead: false,
+    canEdit: false
   });
 
   const [errors, setErrors] = useState({});
@@ -38,6 +41,7 @@ const UserForm = ({ onSubmit, currentUserRole }) => {
 
     if (!formData.username.trim()) newErrors.username = 'Username is required';
     if (!formData.email.trim()) newErrors.email = 'Email is required';
+    if (!formData.fullName.trim()) newErrors.fullName = 'Full name is required';
     else if (!/^\S+@\S+\.\S+$/.test(formData.email)) newErrors.email = 'Email is invalid';
     if (!formData.password) newErrors.password = 'Password is required';
     else if (formData.password.length < 8) newErrors.password = 'Password must be at least 8 characters';
@@ -60,6 +64,7 @@ const UserForm = ({ onSubmit, currentUserRole }) => {
         username: formData.username,
         email: formData.email,
         password: formData.password,
+        fullName: formData.fullName,
         role: formData.role,
         companyId: formData.companyId || null
       });
@@ -94,6 +99,20 @@ const UserForm = ({ onSubmit, currentUserRole }) => {
           placeholder="Enter email"
           required
         />
+
+
+        {/* <Input
+          label="Full Name"
+          name="fullName"
+          type="text"
+          icon={<FaLock className="text-gray-400" />}
+          value={formData.fullName}
+          onChange={handleChange}
+          error={errors.fullName}
+          placeholder="Enter full name"
+          className="w-full col-span-1 sm:col-span-2"
+          required
+        /> */}
 
         <Input
           label="Password"
