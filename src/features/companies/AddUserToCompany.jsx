@@ -12,6 +12,7 @@ const AddUserToCompany = () => {
         name: "",
         email: "",
         password: "",
+        fullName: "Default Name",
         role: "COMPANY",
     });
     const navigate = useNavigate();
@@ -25,6 +26,7 @@ const AddUserToCompany = () => {
                 email: form.email,
                 username: form.name, // Map to "username"
                 password: form.password,
+                fullName: form.fullName,
                 role: form.role.toUpperCase(), // Make sure it's like "COMPANY"
                 company: {
                     id: parseInt(form.companyId),
