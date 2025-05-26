@@ -1,13 +1,17 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { getAllUsers, updateUser, deleteUser } from "./UserService";
-import Button from "../../components/Button";
+import { getAllCompanies } from "../companies/CompanyService";
 import MultiSearchBar from "../../components/MultiSearchBar";
-import { FaTrash, FaEdit, FaSave, FaTimes } from "react-icons/fa";
+import UserTable from "./UserTable";
+import { roleOptions } from "./constants";
+import { filterUsersByRole, searchUsers } from "./userUtils";
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
+  const [companies, setCompanies] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [editingUserId, setEditingUserId] = useState(null);
+  const [selectedRoleFilter, setSelectedRoleFilter] = useState("ALL");
   const [editFormData, setEditFormData] = useState({
     fullName: "",
     email: "",
@@ -16,31 +20,32 @@ const UserList = () => {
     canEdit: false
   });
 
-  const roleOptions = [
-    { value: "ADMIN", label: "Admin" },
-    { value: "USER", label: "User" },
-  ];
-
-  const fetchUsers = async () => {
+  const fetchData = useCallback(async () => {
     try {
-      const res = await getAllUsers();
-      setUsers(res);  // Changed from res.data to res
-      setFiltered(res);  // Changed from res.data to res
+      const [usersRes, companiesRes] = await Promise.all([
+        getAllUsers(),
+        getAllCompanies()
+      ]);
+      
+      setUsers(usersRes);
+      setCompanies(companiesRes.data);
+      setFiltered(filterUsersByRole(usersRes, selectedRoleFilter));
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error("Error fetching data:", error);
       setUsers([]);
       setFiltered([]);
+      setCompanies([]);
     }
-  };
-
+  }, [selectedRoleFilter]);
+  
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    fetchData();
+  }, [fetchData]);
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       await deleteUser(id);
-      fetchUsers();
+      fetchData();
     }
   };
 
@@ -71,7 +76,7 @@ const UserList = () => {
     try {
       await updateUser(userId, editFormData);
       setEditingUserId(null);
-      fetchUsers();
+      fetchData();
     } catch (error) {
       console.error("Error updating user:", error);
     }
@@ -79,40 +84,54 @@ const UserList = () => {
 
   const handleSearch = useCallback(
     async (query) => {
-      return (users || [])
-        .filter((user) =>
-          user.fullName?.toLowerCase().includes(query.toLowerCase()) ||
-          user.email?.toLowerCase().includes(query.toLowerCase()) ||
-          user.username?.toLowerCase().includes(query.toLowerCase())
-        )
-        .map((u) => `${u.fullName} (${u.email})`);
+      const results = searchUsers(users, query);
+      return results.map((u) => `${u.fullName} (${u.email})`);
     },
     [users]
   );
   
   const handleResultClick = (query) => {
-    const result = (users || []).filter((user) =>
-      user.fullName?.toLowerCase().includes(query.toLowerCase()) ||
-      user.email?.toLowerCase().includes(query.toLowerCase()) ||
-      user.username?.toLowerCase().includes(query.toLowerCase())
-    );
+    let result = searchUsers(users, query);
+    result = filterUsersByRole(result, selectedRoleFilter);
     setFiltered(result);
   };
 
   const handleClearSearch = () => {
-    setFiltered(users);
+    setFiltered(filterUsersByRole(users, selectedRoleFilter));
+  };
+
+  const handleRoleFilterChange = (e) => {
+    const role = e.target.value;
+    setSelectedRoleFilter(role);
+    setFiltered(filterUsersByRole(users, role));
   };
 
   return (
     <div className="my-2">
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <h1 className="text-2xl font-semibold">Users</h1>
-        <div className="w-full sm:w-64">
-          <MultiSearchBar
-            onSearch={handleSearch}
-            onSelectResult={handleResultClick}
-            onClear={handleClearSearch}
-          />
+        <div className="flex gap-4 w-full sm:w-auto">
+          <div className="w-full sm:w-64">
+            <MultiSearchBar
+              onSearch={handleSearch}
+              onSelectResult={handleResultClick}
+              onClear={handleClearSearch}
+            />
+          </div>
+          <div className="w-full sm:w-48">
+            <select
+              value={selectedRoleFilter}
+              onChange={handleRoleFilterChange}
+              className="border rounded px-3 py-2 w-full text-sm"
+            >
+              <option value="ALL">All Types</option>
+              {roleOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
@@ -120,159 +139,17 @@ const UserList = () => {
         {filtered.length === 0 ? (
           <p className="p-4 text-gray-500">No users found.</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Permissions</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filtered.map((user) => (
-                  <tr key={user.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {editingUserId === user.id ? (
-                        <input
-                          type="text"
-                          name="fullName"
-                          value={editFormData.fullName}
-                          onChange={handleEditFormChange}
-                          className="border rounded px-2 py-1 w-full"
-                        />
-                      ) : (
-                        <div className="text-sm font-medium text-gray-900">{user.fullName}</div>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {user.username}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {editingUserId === user.id ? (
-                        <input
-                          type="email"
-                          name="email"
-                          value={editFormData.email}
-                          onChange={handleEditFormChange}
-                          className="border rounded px-2 py-1 w-full"
-                        />
-                      ) : (
-                        <div className="text-sm text-gray-500">{user.email}</div>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {editingUserId === user.id ? (
-                        <select
-                          name="role"
-                          value={editFormData.role}
-                          onChange={handleEditFormChange}
-                          className="border rounded px-2 py-1 w-full"
-                        >
-                          {roleOptions.map((option) => (
-                            <option key={option.value} value={option.value}>
-                              {option.label}
-                            </option>
-                          ))}
-                        </select>
-                      ) : (
-                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          user.role === 'ADMIN' 
-                            ? 'bg-purple-100 text-purple-800' 
-                            : 'bg-green-100 text-green-800'
-                        }`}>
-                          {user.role}
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {editingUserId === user.id ? (
-                        <div className="flex gap-4 items-center">
-                          <label className="inline-flex items-center">
-                            <input
-                              type="checkbox"
-                              name="canRead"
-                              checked={editFormData.canRead}
-                              onChange={handleEditFormChange}
-                              className="form-checkbox h-4 w-4 text-blue-600"
-                            />
-                            <span className="ml-2 text-sm text-gray-700">Read</span>
-                          </label>
-                          <label className="inline-flex items-center">
-                            <input
-                              type="checkbox"
-                              name="canEdit"
-                              checked={editFormData.canEdit}
-                              onChange={handleEditFormChange}
-                              className="form-checkbox h-4 w-4 text-green-600"
-                            />
-                            <span className="ml-2 text-sm text-gray-700">Edit</span>
-                          </label>
-                        </div>
-                      ) : (
-                        <div className="flex gap-4">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            user.canRead ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'
-                          }`}>
-                            {user.canRead ? 'Can Read' : 'No Read'}
-                          </span>
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            user.canEdit ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                          }`}>
-                            {user.canEdit ? 'Can Edit' : 'No Edit'}
-                          </span>
-                        </div>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      {editingUserId === user.id ? (
-                        <div className="flex gap-2">
-                          <Button
-                            variant="success"
-                            onClick={() => handleSaveEdit(user.id)}
-                            className="text-sm px-2 py-1"
-                            icon={<FaSave size={12} />}
-                          >
-                            Save
-                          </Button>
-                          <Button
-                            variant="secondary"
-                            onClick={handleCancelEdit}
-                            className="text-sm px-2 py-1"
-                            icon={<FaTimes size={12} />}
-                          >
-                            Cancel
-                          </Button>
-                        </div>
-                      ) : (
-                        <div className="flex gap-2">
-                          <Button
-                            variant="primary"
-                            onClick={() => handleEditClick(user)}
-                            className="text-sm px-2 py-1"
-                            icon={<FaEdit size={12} />}
-                          >
-                            Edit
-                          </Button>
-                          <Button
-                            variant="danger"
-                            onClick={() => handleDelete(user.id)}
-                            className="text-sm px-2 py-1"
-                            icon={<FaTrash size={12} />}
-                          >
-                            Delete
-                          </Button>
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <UserTable
+            users={filtered}
+            companies={companies}
+            editingUserId={editingUserId}
+            editFormData={editFormData}
+            handleEditFormChange={handleEditFormChange}
+            handleEditClick={handleEditClick}
+            handleSaveEdit={handleSaveEdit}
+            handleCancelEdit={handleCancelEdit}
+            handleDelete={handleDelete}
+          />
         )}
       </div>
     </div>
