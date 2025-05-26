@@ -13,7 +13,13 @@ import Dashboard from "../features/dashboard/Dashboard";
 import Profile from "../features/profile/Profile";
 import NotFound from "../features/notfound/NotFound";
 import AddSystem from "../features/systems/AddSystem";
+
+// User management
+
 import CreateUser from "../features/accounts/CreateUser";
+import ManageUsers from "../features/accounts/UserList";
+
+
 
 // Company management
 import CreateCompany from "../features/companies/CreateCompany";
@@ -63,6 +69,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
               <CreateUser />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="manage-users"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
+              <ManageUsers />
             </ProtectedRoute>
           }
         />
