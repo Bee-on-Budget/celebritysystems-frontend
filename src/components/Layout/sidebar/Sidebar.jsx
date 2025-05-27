@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaHome, FaUser, FaBars, FaUsers, FaBuilding ,FaDesktop} from "react-icons/fa";
+import { FaFileContract,FaHome, FaUser, FaBars, FaUsers, FaBuilding ,FaDesktop} from "react-icons/fa";
 // import Logo from '../../../assets/logo.png';
 import CompanyLogo from '../../CompanyLogo';
 import NavButton from '../../NavButton';
@@ -58,6 +58,14 @@ const Sidebar = ({ open, setOpen }) => (
                     { label: "All Screens", href: "/screen" },
                     { label: "Create Screen", href: "/screen/AddScreen" }
                    
+                ]}
+            />
+                <SidebarDropdown
+                icon={FaFileContract}
+                label="Contracts"
+                items={[
+                    { label: "All Contracts", href: "/contracts" },
+                    { label: "Create Contract", href: "/contracts/create" }
                 ]}
             />
             {/* <NavButton
