@@ -27,7 +27,7 @@ import CompanyList from "../features/companies/CompanyList";
 import AddUserToCompany from "../features/companies/AddUserToCompany";
 
 // Screen management
-import AddScreen from "../features/screen/AddScreen";
+import AddScreen from "../features/screen/addScreen/";
 
 // Test
 import TestPage from "../features/test/TestPage";
