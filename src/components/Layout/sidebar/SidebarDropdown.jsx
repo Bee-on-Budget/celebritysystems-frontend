@@ -1,9 +1,8 @@
-import React, { useState, useRef, useLayoutEffect } from "react";
+import React, { useRef, useLayoutEffect, useState } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import NavButton from "../../NavButton";
 
-const SidebarDropdown = ({ icon: Icon, label, items }) => {
-  const [open, setOpen] = useState(false);
+const SidebarDropdown = ({ icon: Icon, label, items, isOpen, onToggle }) => {
   const dropdownRef = useRef(null);
   const [dropdownHeight, setDropdownHeight] = useState(0);
   const buttonRef = useRef(null);
@@ -12,16 +11,16 @@ const SidebarDropdown = ({ icon: Icon, label, items }) => {
     if (dropdownRef.current && buttonRef.current) {
       const dropdownContentHeight = dropdownRef.current.scrollHeight;
       const buttonHeight = buttonRef.current.offsetHeight;
-      setDropdownHeight(buttonHeight - 24 + (open ? dropdownContentHeight : 0));
+      setDropdownHeight(buttonHeight - 12 + (isOpen ? dropdownContentHeight : 0));
     }
-  }, [open]);
+  }, [isOpen]);
 
   return (
     <div className="relative w-full">
       {/* Vertical line */}
-      {open && (
+      {isOpen && (
         <div
-          className="absolute -left-6 top-3 w-1 bg-primary transition-all duration-300"
+          className="absolute -left-6 -top-4 w-1 bg-primary transition-all duration-300 rounded-full"
           style={{
             top: 0,
             height: `${dropdownHeight}px`,
@@ -32,21 +31,21 @@ const SidebarDropdown = ({ icon: Icon, label, items }) => {
       {/* Toggle Button */}
       <button
         ref={buttonRef}
-        onClick={() => setOpen(!open)}
+        onClick={onToggle}
         className="w-full flex items-center justify-between text-white hover:text-primary font-medium py-2 pr-2 transition duration-200"
       >
         <div className="flex items-center space-x-2">
           <Icon />
           <span>{label}</span>
         </div>
-        {open ? <FaChevronUp /> : <FaChevronDown />}
+        {isOpen ? <FaChevronUp /> : <FaChevronDown />}
       </button>
 
       {/* Dropdown Items */}
       <div
         ref={dropdownRef}
         className={`overflow-hidden transition-all duration-300 ease-in-out ${
-          open ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
         {items.map((item, idx) => (
@@ -54,7 +53,7 @@ const SidebarDropdown = ({ icon: Icon, label, items }) => {
             key={idx}
             to={item.href}
             label={item.label}
-            className="font-normal pl-6 py-1"
+            className="font-normal pl-6 py-1 m-1"
           />
         ))}
       </div>
