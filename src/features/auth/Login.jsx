@@ -6,18 +6,6 @@ import Button from "../../components/Button";
 import Input from "../../components/Input";
 import Logo from "../../assets/logo.png";
 
-// const Logo = () => (
-//   <div className="flex items-center space-x-2">
-//     <div className="w-12 h-12 flex items-center justify-center rounded-full bg-red-600">
-//       <span className="text-white font-bold text-xl">CS</span>
-//     </div>
-//     <div>
-//       <span className="block text-xl font-bold text-gray-900">Celebrity</span>
-//       <span className="block text-xl font-bold text-red-600 -mt-2">Systems</span>
-//     </div>
-//   </div>
-// );
-
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -38,86 +26,99 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-white">
-      {/* Left: Logo and Login Card */}
-      <div className="flex flex-col flex-1 justify-center items-center">
-        <div className="absolute top-10 left-10">
-          <img src={Logo} alt="Celebrity Systems Logo" className="w-32 h-auto" />
-        </div>
-        <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-lg z-10">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-            Sign in to your account
-          </h2>
+    <div className="min-h-screen bg-gradient-to-br from-white via-neutral-100 to-neutral-200 dark:from-neutral-900 dark:to-neutral-800 flex items-center justify-center px-4">
+      <div className="w-full max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 rounded-3xl overflow-hidden shadow-2xl">
+        {/* Left: Form Section */}
+        <div className="p-10 flex flex-col justify-center backdrop-blur-2xl bg-white/60 dark:bg-neutral-800/60 border border-white/30 dark:border-white/10 shadow-inner shadow-white/10">
+          <div className="mb-8">
+            <img src={Logo} alt="Logo" className="w-32 mb-4" />
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Welcome back</h1>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              Please enter your credentials to sign in.
+            </p>
+          </div>
+
           {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            <div className="mb-4 rounded-lg bg-red-100 border border-red-300 text-red-700 p-3 text-sm text-center dark:bg-red-500/20 dark:text-red-400">
               {error}
             </div>
           )}
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div className="space-y-4">
-              <Input label="Email"
-                type="email"
-                id="login-email"
-                placeholder="example@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                trainling=
-                {email && (
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <Input
+              label="Email"
+              type="email"
+              placeholder="name@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              trainling={
+                email && (
                   <button
                     type="button"
-                    className="absolute right-3 top-9 text-gray-400 hover:text-gray-600"
+                    className="text-gray-400 hover:text-gray-600 absolute right-3 top-9"
                     onClick={() => setEmail("")}
+                    aria-label="Clear email"
                   >
-                    &#10005;
+                    &times;
                   </button>
-                )}
-                required />
-              <Input label="Password"
-                type={showPassword ? "text" : "password"}
-                id="login-password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                trainling=
-                {
-                  <button
-                    type="button"
-                    className="absolute right-3 top-9 text-gray-400 hover:text-gray-600"
-                    onClick={() => setShowPassword((v) => !v)}
-                    tabIndex={-1}
-                  >
-                    {showPassword ? "🙈" : "👁️"}
-                  </button>}
-                required />
-            </div>
-            <div className="flex items-center justify-between">
-              <label className="flex items-center">
+                )
+              }
+              required
+            />
+
+            <Input
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              trainling={
+                <button
+                  type="button"
+                  className="text-gray-400 hover:text-gray-600 absolute right-3 top-9"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-label="Toggle password visibility"
+                >
+                  {showPassword ? "🙈" : "👁️"}
+                </button>
+              }
+              required
+            />
+
+            <div className="flex justify-between items-center text-sm">
+              <label className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
                 <input type="checkbox" className="form-checkbox" />
-                <span className="ml-2 text-sm text-gray-600">Remember me</span>
+                Remember me
               </label>
-              <a href="\#" className="text-sm text-primary hover:underline font-semibold">
+              <a href="#" className="text-primary font-semibold hover:underline">
                 Forgot password?
               </a>
             </div>
-            <Button type="submit" className="w-full bg-primary hover:bg-primary-hover text-white font-bold py-2 rounded">
+
+            <Button className="w-full py-3 text-white font-semibold bg-primary hover:bg-primary-hover rounded-xl transition-all shadow-lg backdrop-blur-sm">
               Log in
             </Button>
           </form>
         </div>
-      </div>
-      {/* Right: Gradient Box */}
-      <div className="hidden md:flex flex-1 items-center justify-center">
-        <div
-          className="w-4/5 h-4/5 rounded-3xl"
-          style={{
-            background: "linear-gradient(135deg, #ffe084 0%, #f76a6a 40%, #5a9fff 100%)",
-            boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
-          }}
-        ></div>
+
+{/* Right: Visual Section */}
+<div className="hidden md:block relative overflow-hidden backdrop-blur-2xl bg-white/60 dark:bg-neutral-800/60 border border-white/30 dark:border-white/10 shadow-inner shadow-white/10">
+  <div className="absolute inset-0 bg-gradient-to-br from-primary to-blue-400 opacity-80 brightness-90" />
+  <div className="relative z-10 flex items-center justify-center h-full">
+    <div className="text-center px-6 text-white">
+      <h2 className="text-3xl font-bold">Celebrity Systems</h2>
+      <p className="mt-2 text-sm text-white/80">
+        Powering the future of digital displays.
+      </p>
+    </div>
+  </div>
+</div>
+
+
+
       </div>
     </div>
   );
 };
 
 export default Login;
-
