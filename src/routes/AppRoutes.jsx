@@ -32,6 +32,12 @@ import AddScreen from "../features/screen/addScreen/";
 // Test
 import TestPage from "../features/test/TestPage";
 
+// Contratc management
+// Contract management
+import CreateContract from "../features/contract/CreateContract"; 
+import ContractList from "../features/contract/ContractList";
+import ContractDetails from "../features/contract/ContractDetails";
+
 const AppRoutes = () => {
   return (
     <Routes>
@@ -121,6 +127,32 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR", "TECHNICIAN"]}>
               <AddScreen />
+            </ProtectedRoute>
+          }
+        />
+
+      {/* Contract management */}
+      <Route
+          path="contracts"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
+              <ContractList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="contracts/create"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
+              <CreateContract />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="contracts/:id"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
+              <ContractDetails />
             </ProtectedRoute>
           }
         />
