@@ -5,7 +5,7 @@ import Button from '../../components/Button';
 import { showToast } from '../../components/ToastNotifier';
 import { createContract } from './contractService';
 import { getAllCompanies } from '../../features/companies/CompanyService';
-import { getScreens } from '../../features/screen/ScreenService';
+import { getScreens } from '../../api/ScreenService';
 import Select from 'react-select';
 import AsyncSelect from 'react-select/async';
 import debounce from 'lodash/debounce';
