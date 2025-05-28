@@ -90,7 +90,7 @@ const Login = () => {
                 <input type="checkbox" className="form-checkbox" />
                 Remember me
               </label>
-              <a href="#" className="text-primary font-semibold hover:underline">
+              <a href="\#" className="text-primary font-semibold hover:underline">
                 Forgot password?
               </a>
             </div>
@@ -101,18 +101,18 @@ const Login = () => {
           </form>
         </div>
 
-{/* Right: Visual Section */}
-<div className="hidden md:block relative overflow-hidden backdrop-blur-2xl bg-white/60 dark:bg-neutral-800/60 border border-white/30 dark:border-white/10 shadow-inner shadow-white/10">
-  <div className="absolute inset-0 bg-gradient-to-br from-primary to-blue-400 opacity-80 brightness-90" />
-  <div className="relative z-10 flex items-center justify-center h-full">
-    <div className="text-center px-6 text-white">
-      <h2 className="text-3xl font-bold">Celebrity Systems</h2>
-      <p className="mt-2 text-sm text-white/80">
-        Powering the future of digital displays.
-      </p>
-    </div>
-  </div>
-</div>
+        {/* Right: Visual Section */}
+        <div className="hidden md:block relative overflow-hidden backdrop-blur-2xl bg-white/60 dark:bg-neutral-800/60 border border-white/30 dark:border-white/10 shadow-inner shadow-white/10">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary to-blue-400 opacity-80 brightness-90" />
+          <div className="relative z-10 flex items-center justify-center h-full">
+            <div className="text-center px-6 text-white">
+              <h2 className="text-3xl font-bold">Celebrity Systems</h2>
+              <p className="mt-2 text-sm text-white/80">
+                Powering the future of digital displays.
+              </p>
+            </div>
+          </div>
+        </div>
 
 
 
