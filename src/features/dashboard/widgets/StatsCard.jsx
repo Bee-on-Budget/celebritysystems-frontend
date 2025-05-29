@@ -10,7 +10,7 @@ const colorStyles = {
 
 export default function StatsCard({ color = 'blue', label, value, icon }) {
   return (
-    <div className={`rounded-2xl p-4 text-white shadow-md w-full sm:w-1/2 lg:w-1/4 ${colorStyles[color]}`}>
+    <div className={`rounded-md p-4 text-white shadow-md w-full sm:w-1/2 lg:w-1/4 ${colorStyles[color]}`}>
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm opacity-80">{label}</p>
