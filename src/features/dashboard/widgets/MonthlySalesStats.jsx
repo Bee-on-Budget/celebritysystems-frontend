@@ -1,0 +1,135 @@
+// features/dashboard/widgets/MonthlySalesStats.jsx
+import React from 'react';
+import { 
+  FaArrowUp, 
+  FaArrowDown, 
+  FaFire, 
+  FaChartLine,
+  FaCalendarAlt
+} from 'react-icons/fa';
+import { 
+  LineChart, 
+  Line, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip,
+  ResponsiveContainer 
+} from 'recharts';
+
+const MonthlySalesStats = () => {
+  // Sample data - replace with API data
+  const currentMonthData = [
+    { day: '1', screens: 3 }, { day: '2', screens: 5 }, 
+    { day: '3', screens: 7 }, { day: '4', screens: 2 },
+    { day: '5', screens: 8 }, { day: '6', screens: 6 },
+    { day: '7', screens: 4 }, { day: '8', screens: 9 },
+    { day: '9', screens: 5 }, { day: '10', screens: 6 },
+    // ... continue for all days
+  ];
+
+  const lastMonthData = [
+    { day: '1', screens: 2 }, { day: '2', screens: 4 }, 
+    // ... last month's data
+  ];
+
+  // Calculate totals
+  const currentMonthTotal = currentMonthData.reduce((sum, day) => sum + day.screens, 0);
+  const lastMonthTotal = lastMonthData.reduce((sum, day) => sum + day.screens, 0);
+  
+  // Calculate percentage change
+  const percentChange = ((currentMonthTotal - lastMonthTotal) / lastMonthTotal) * 100;
+  const isPositive = percentChange >= 0;
+
+  return (
+    <div className="bg-white rounded-lg shadow p-4">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="font-semibold text-lg flex items-center gap-2">
+          <FaChartLine className="text-blue-500" />
+          Daily Screen Sales
+        </h3>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-gray-500 flex items-center">
+            <FaCalendarAlt className="mr-1" /> Last 30 Days
+          </span>
+        </div>
+      </div>
+
+      {/* MoM Comparison Badge */}
+      <div className={`flex items-center justify-between p-3 mb-4 rounded-lg ${
+        isPositive ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
+      }`}>
+        <div className="flex items-center gap-2">
+          {isPositive ? (
+            <FaArrowUp className="text-lg" />
+          ) : (
+            <FaArrowDown className="text-lg" />
+          )}
+          <span className="font-medium">
+            {Math.abs(percentChange).toFixed(1)}% {isPositive ? 'increase' : 'decrease'} 
+          </span>
+          vs last month
+        </div>
+        {isPositive && currentMonthTotal > 15 && (
+          <span className="flex items-center text-orange-500">
+            <FaFire className="mr-1" /> Hot streak!
+          </span>
+        )}
+      </div>
+
+      {/* Line Chart */}
+      <div className="h-64">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={currentMonthData}>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <XAxis 
+              dataKey="day" 
+              tick={{ fontSize: 12 }}
+              tickMargin={10}
+            />
+            <YAxis 
+              tick={{ fontSize: 12 }}
+              tickMargin={10}
+            />
+            <Tooltip 
+              contentStyle={{ 
+                borderRadius: '8px',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
+              }}
+            />
+            <Line 
+              type="monotone" 
+              dataKey="screens" 
+              stroke="#3B82F6" 
+              strokeWidth={2}
+              dot={{ r: 4 }}
+              activeDot={{ r: 6, stroke: '#2563EB' }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Summary Stats */}
+      <div className="grid grid-cols-3 gap-4 mt-4 text-center">
+        <div className="p-2 bg-blue-50 rounded">
+          <div className="text-sm text-blue-600">Current Month</div>
+          <div className="text-xl font-bold">{currentMonthTotal}</div>
+        </div>
+        <div className="p-2 bg-gray-50 rounded">
+          <div className="text-sm text-gray-600">Last Month</div>
+          <div className="text-xl font-bold">{lastMonthTotal}</div>
+        </div>
+        <div className={`p-2 rounded ${
+          isPositive ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'
+        }`}>
+          <div className="text-sm">Difference</div>
+          <div className="text-xl font-bold">
+            {isPositive ? '+' : ''}{currentMonthTotal - lastMonthTotal}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default MonthlySalesStats;
