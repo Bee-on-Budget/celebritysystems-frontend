@@ -2,10 +2,10 @@
 import React from 'react';
 
 const colorStyles = {
-  orange: 'bg-[linear-gradient(90deg,theme(colors.orange.500)_20%,theme(colors.orange.400)_60%,theme(colors.orange.300)_100%)]',
-  green: 'bg-[linear-gradient(90deg,theme(colors.green.500)_20%,theme(colors.green.400)_60%,theme(colors.green.300)_100%)]',
-  red: 'bg-[linear-gradient(90deg,theme(colors.red.500)_20%,theme(colors.red.400)_60%,theme(colors.red.300)_100%)]',
-  blue: 'bg-[linear-gradient(90deg,theme(colors.cyan.500)_20%,theme(colors.cyan.400)_60%,theme(colors.cyan.300)_100%)]',
+  orange: 'bg-[linear-gradient(70deg,theme(colors.orange.600)_20%,theme(colors.orange.500)_60%,theme(colors.orange.300)_100%)]',
+  green: 'bg-[linear-gradient(70deg,theme(colors.green.600)_20%,theme(colors.green.500)_60%,theme(colors.green.300)_100%)]',
+  red: 'bg-[linear-gradient(70deg,theme(colors.red.600)_20%,theme(colors.red.500)_60%,theme(colors.red.300)_100%)]',
+  blue: 'bg-[linear-gradient(70deg,theme(colors.cyan.600)_20%,theme(colors.cyan.500)_60%,theme(colors.cyan.300)_100%)]',
 };
 
 export default function StatsCard({ color = 'blue', label, value, icon }) {
