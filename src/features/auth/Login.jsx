@@ -26,20 +26,20 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-neutral-100 to-neutral-200 dark:from-neutral-900 dark:to-neutral-800 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-br from-white via-neutral-100 to-neutral-200 flex items-center justify-center px-4">
       <div className="w-full max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 rounded-3xl overflow-hidden shadow-2xl">
         {/* Left: Form Section */}
-        <div className="p-10 flex flex-col justify-center backdrop-blur-2xl bg-white/60 dark:bg-neutral-800/60 border border-white/30 dark:border-white/10 shadow-inner shadow-white/10">
+        <div className="p-10 flex flex-col justify-center backdrop-blur-2xl bg-white/60 border border-white/30 shadow-inner shadow-white/10">
           <div className="mb-8">
             <img src={Logo} alt="Logo" className="w-32 mb-4" />
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Welcome back</h1>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            <h1 className="text-3xl font-bold text-gray-900">Welcome back</h1>
+            <p className="text-sm text-gray-600 mt-1">
               Please enter your credentials to sign in.
             </p>
           </div>
 
           {error && (
-            <div className="mb-4 rounded-lg bg-red-100 border border-red-300 text-red-700 p-3 text-sm text-center dark:bg-red-500/20 dark:text-red-400">
+            <div className="mb-4 rounded-lg bg-red-100 border border-red-300 text-red-700 p-3 text-sm text-center">
               {error}
             </div>
           )}
@@ -86,7 +86,7 @@ const Login = () => {
             />
 
             <div className="flex justify-between items-center text-sm">
-              <label className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
+              <label className="flex items-center gap-2 text-gray-600">
                 <input type="checkbox" className="form-checkbox" />
                 Remember me
               </label>
@@ -102,7 +102,7 @@ const Login = () => {
         </div>
 
         {/* Right: Visual Section */}
-        <div className="hidden md:block relative overflow-hidden backdrop-blur-2xl bg-white/60 dark:bg-neutral-800/60 border border-white/30 dark:border-white/10 shadow-inner shadow-white/10">
+        <div className="hidden md:block relative overflow-hidden backdrop-blur-2xl bg-white/60 border border-white/30 shadow-inner shadow-white/10">
           <div className="absolute inset-0 bg-gradient-to-br from-primary to-blue-400 opacity-80 brightness-90" />
           <div className="relative z-10 flex items-center justify-center h-full">
             <div className="text-center px-6 text-white">
@@ -113,9 +113,6 @@ const Login = () => {
             </div>
           </div>
         </div>
-
-
-
       </div>
     </div>
   );
