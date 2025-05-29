@@ -1,6 +1,26 @@
 import React from "react";
 import StatsCard from './widgets/StatsCard';
+import Feeds from './widgets/Feeds';
+import MonthlySalesStats from './widgets/MonthlySalesStats';
 import { FaShoppingCart, FaCreditCard, FaUser, FaTicketAlt } from "react-icons/fa";
+
+const customFeeds = [
+  {
+    type: 'task',
+    message: 'Complete user profile implementation',
+    time: new Date().toISOString(),
+  },
+  {
+    type: 'order',
+    message: 'New subscription purchase',
+    time: '2025-05-29T11:20:00',
+  },
+  {
+    type: 'pending',
+    message: 'New subscription purchase',
+    time: '2025-05-29T11:20:00',
+  },
+];
 
 const Dashboard = () => {
   return (
@@ -15,7 +35,11 @@ const Dashboard = () => {
       <StatsCard label="Ticket" value="42" color="red" icon={<FaTicketAlt />} />
       <StatsCard label="Orders" value="$5,242" color="blue" icon={<FaShoppingCart />} />
 
-      {/* You can keep the recent activity section here as before */}
+      <Feeds
+        title="Recent Activity"
+        items={customFeeds}
+      />
+      <MonthlySalesStats />
     </div>
   );
 };
