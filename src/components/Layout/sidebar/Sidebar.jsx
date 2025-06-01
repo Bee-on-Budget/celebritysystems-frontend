@@ -74,7 +74,8 @@ const Sidebar = ({ open, setOpen }) => {
           <SidebarDropdown
   icon={FaFileContract}
   label="Tickets"
-  isOpen={activeDropdown === "Tickets"}
+  isOpen={openDropdowns["Tickets"]}
+
   onToggle={() => handleDropdownToggle("Tickets")}
   items={[
     { label: "All Tickets", href: "/tickets" },
