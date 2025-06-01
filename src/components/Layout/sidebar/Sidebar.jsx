@@ -35,8 +35,8 @@ const Sidebar = ({ open, setOpen }) => {
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto mt-4 flex flex-col space-y-2 pr-[calc(1.5rem-8px)] pl-6 pb-4 scrollbar-gutter-stable">
         <div className="pr-2">
-          <NavButton to={"/dashboard"} icon={<FaHome />} label="Home" />
-          <NavButton to={"/profile"} icon={<FaUser />} label="Profile" />
+          <NavButton to={"/dashboard"} icon={<FaHome />} label="Home" onClick={() => setOpen(false)} />
+          <NavButton to={"/profile"} icon={<FaUser />} label="Profile" onClick={() => setOpen(false)} />
 
           <SidebarDropdown
             icon={FaUsers}
@@ -44,10 +44,10 @@ const Sidebar = ({ open, setOpen }) => {
             isOpen={openDropdowns["Accounts"]}
             onToggle={() => handleDropdownToggle("Accounts")}
             items={[
-              { label: "Create User", href: "/create-user" },
-              { label: "Manage Users", href: "/manage-users" },
-              { label: "Manage Supervisors", href: "/manage-supervisors" },
-              { label: "View Workers", href: "/view-workers" },
+              { label: "Create User", href: "/create-user", onClick: () => setOpen(false) },
+              { label: "Manage Users", href: "/manage-users", onClick: () => setOpen(false) },
+              { label: "Manage Supervisors", href: "/manage-supervisors", onClick: () => setOpen(false) },
+              { label: "View Workers", href: "/view-workers", onClick: () => setOpen(false) },
             ]}
           />
           <SidebarDropdown
@@ -56,9 +56,9 @@ const Sidebar = ({ open, setOpen }) => {
             isOpen={openDropdowns["Companies"]}
             onToggle={() => handleDropdownToggle("Companies")}
             items={[
-              { label: "All Companies", href: "/companies" },
-              { label: "Create Company", href: "/companies/create" },
-              { label: "Add User", href: "/companies/add-user" }
+              { label: "All Companies", href: "/companies", onClick: () => setOpen(false) },
+              { label: "Create Company", href: "/companies/create", onClick: () => setOpen(false) },
+              { label: "Add User", href: "/companies/add-user", onClick: () => setOpen(false) }
             ]}
           />
           <SidebarDropdown
@@ -67,8 +67,8 @@ const Sidebar = ({ open, setOpen }) => {
             isOpen={openDropdowns["Screens"]}
             onToggle={() => handleDropdownToggle("Screens")}
             items={[
-              { label: "All Screens", href: "/screen" },
-              { label: "Create Screen", href: "/screen/AddScreen" }
+              { label: "All Screens", href: "/screen", onClick: () => setOpen(false) },
+              { label: "Create Screen", href: "/screen/AddScreen", onClick: () => setOpen(false) }
             ]}
           />
           <SidebarDropdown
@@ -77,8 +77,8 @@ const Sidebar = ({ open, setOpen }) => {
             isOpen={openDropdowns["Contracts"]}
             onToggle={() => handleDropdownToggle("Contracts")}
             items={[
-              { label: "All Contracts", href: "/contracts" },
-              { label: "Create Contract", href: "/contracts/create" }
+              { label: "All Contracts", href: "/contracts", onClick: () => setOpen(false) },
+              { label: "Create Contract", href: "/contracts/create", onClick: () => setOpen(false) }
             ]}
           />
         </div>

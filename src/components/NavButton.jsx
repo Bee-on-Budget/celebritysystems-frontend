@@ -1,9 +1,10 @@
 import { NavLink } from 'react-router-dom';
 
-const NavButton = ({ to, icon, label, className }) => {
+const NavButton = ({ to, icon, label, className , onClick}) => {
     return (
         <NavLink 
             to={to} 
+            onClick={onClick}
             className={`flex items-center space-x-2 text-white hover:text-primary font-medium py-2 ${className}`}
         >
             {icon}
