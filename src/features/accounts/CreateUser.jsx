@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import UserForm from '../../components/UserForm';
 import { useAuth } from '../../auth/useAuth';
-import { createUser } from '../../api/axios';
+import { createUser } from '../../api/creation';
 import { showToast } from '../../components/ToastNotifier';
 import { FaUserPlus } from 'react-icons/fa';
 
