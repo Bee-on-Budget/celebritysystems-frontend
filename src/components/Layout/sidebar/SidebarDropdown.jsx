@@ -53,6 +53,7 @@ const SidebarDropdown = ({ icon: Icon, label, items, isOpen, onToggle }) => {
             key={idx}
             to={item.href}
             label={item.label}
+            onClick={item.onClick}
             className="font-normal pl-6 py-1 m-1"
           />
         ))}
