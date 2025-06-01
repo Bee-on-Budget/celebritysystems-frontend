@@ -34,10 +34,13 @@ import TestPage from "../features/test/TestPage";
 
 // Contratc management
 // Contract management
-import CreateContract from "../features/contract/CreateContract"; 
+import CreateContract from "../features/contract/CreateContract";
 import ContractList from "../features/contract/ContractList";
 import ContractDetails from "../features/contract/ContractDetails";
-
+// Ticket management
+import TicketList from "../features/ticket/TicketList";
+import CreateTicket from "../features/ticket/CreateTicket";
+import TicketDetails from "../features/ticket/TicketDetails";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -131,8 +134,8 @@ const AppRoutes = () => {
           }
         />
 
-      {/* Contract management */}
-      <Route
+        {/* Contract management */}
+        <Route
           path="contracts"
           element={
             <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
@@ -156,7 +159,31 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-
+        {/*Tickets*/}
+        <Route
+          path="tickets"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR", "TECHNICIAN"]}>
+              <TicketList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="tickets/create"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR", "TECHNICIAN"]}>
+              <CreateTicket />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="tickets/:id"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR", "TECHNICIAN"]}>
+              <TicketDetails />
+            </ProtectedRoute>
+          }
+        />
         {/* Catch-all inside layout */}
         <Route path="*" element={<NotFound />} />
       </Route>
