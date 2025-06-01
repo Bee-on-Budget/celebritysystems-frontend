@@ -5,25 +5,24 @@ import NavButton from '../../NavButton';
 import SidebarDropdown from './SidebarDropdown';
 
 const Sidebar = ({ open, setOpen }) => {
-  const [activeDropdown, setActiveDropdown] = useState(null);
+  const [openDropdowns, setOpenDropdowns] = useState({});
 
   const handleDropdownToggle = (label) => {
-    setActiveDropdown(activeDropdown === label ? null : label);
+    setOpenDropdowns((prev) => ({
+      ...prev,
+      [label]: !prev[label],
+    }));
   };
 
   return (
-    <div className={`
-      fixed inset-y-0 left-0 z-30 w-64 bg-gradient-to-b from-slate-900 to-blue-950 backdrop-blur-lg shadow-2xl 
+    <div className={`fixed inset-y-0 left-0 z-30 w-64 bg-gradient-to-b from-slate-900 to-blue-950 backdrop-blur-lg shadow-2xl 
       transform ${open ? "translate-x-0" : "-translate-x-full"} 
       transition-transform duration-200 ease-in-out 
       md:translate-x-0 md:static md:inset-0 
-      flex flex-col
-    `}>
+      flex flex-col`}>
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-gray-800">
-        <a href="/dashboard">
-          <CompanyLogo />
-        </a>
+        <a href="/dashboard"><CompanyLogo /></a>
         <button
           className="md:hidden text-gray-400 hover:text-white transition-colors"
           onClick={() => setOpen(false)}
@@ -36,20 +35,13 @@ const Sidebar = ({ open, setOpen }) => {
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto mt-4 flex flex-col space-y-2 pr-[calc(1.5rem-8px)] pl-6 pb-4 scrollbar-gutter-stable">
         <div className="pr-2">
-          <NavButton
-            to={"/dashboard"}
-            icon={<FaHome />}
-            label="Home"
-          />
-          <NavButton
-            to={"/profile"}
-            icon={<FaUser />}
-            label="Profile"
-          />
+          <NavButton to={"/dashboard"} icon={<FaHome />} label="Home" />
+          <NavButton to={"/profile"} icon={<FaUser />} label="Profile" />
+
           <SidebarDropdown
             icon={FaUsers}
             label="Accounts"
-            isOpen={activeDropdown === "Accounts"}
+            isOpen={openDropdowns["Accounts"]}
             onToggle={() => handleDropdownToggle("Accounts")}
             items={[
               { label: "Create User", href: "/create-user" },
@@ -61,7 +53,7 @@ const Sidebar = ({ open, setOpen }) => {
           <SidebarDropdown
             icon={FaBuilding}
             label="Companies"
-            isOpen={activeDropdown === "Companies"}
+            isOpen={openDropdowns["Companies"]}
             onToggle={() => handleDropdownToggle("Companies")}
             items={[
               { label: "All Companies", href: "/companies" },
@@ -72,7 +64,7 @@ const Sidebar = ({ open, setOpen }) => {
           <SidebarDropdown
             icon={FaDesktop}
             label="Screens"
-            isOpen={activeDropdown === "Screens"}
+            isOpen={openDropdowns["Screens"]}
             onToggle={() => handleDropdownToggle("Screens")}
             items={[
               { label: "All Screens", href: "/screen" },
@@ -82,7 +74,7 @@ const Sidebar = ({ open, setOpen }) => {
           <SidebarDropdown
             icon={FaFileContract}
             label="Contracts"
-            isOpen={activeDropdown === "Contracts"}
+            isOpen={openDropdowns["Contracts"]}
             onToggle={() => handleDropdownToggle("Contracts")}
             items={[
               { label: "All Contracts", href: "/contracts" },
@@ -94,5 +86,6 @@ const Sidebar = ({ open, setOpen }) => {
     </div>
   );
 };
+
 
 export default Sidebar;
