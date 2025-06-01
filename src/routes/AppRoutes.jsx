@@ -11,7 +11,7 @@ import Layout from "../components/Layout/Layout";
 import Login from "../features/auth/Login";
 import Dashboard from "../features/dashboard/Dashboard";
 import Profile from "../features/profile/Profile";
-import NotFound from "../features/notfound/NotFound";
+import NotFound from "../features/errors/NotFound";
 import AddSystem from "../features/systems/AddSystem";
 
 // User management
