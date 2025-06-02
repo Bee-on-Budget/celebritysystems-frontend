@@ -1,7 +1,13 @@
 // src/components/tickets/CreateTicket.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { createTicket, prepareTicketFormData } from "./TicketService";
+import { getAllCompanies } from "../../features/companies/CompanyService";
+import { getScreens } from "../../api/ScreenService";
+import { getUsersByRole } from "./TicketService";
+import Select from 'react-select';
+import AsyncSelect from 'react-select/async';
+import debounce from 'lodash/debounce';
 
 const CreateTicket = () => {
   const navigate = useNavigate();
@@ -17,23 +23,80 @@ const CreateTicket = () => {
   });
   const [files, setFiles] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [companies, setCompanies] = useState([]);
+  const [screens, setScreens] = useState([]);
+  const [workers, setWorkers] = useState([]);
+  const [supervisors, setSupervisors] = useState([]);
+  const [fetching, setFetching] = useState(true);
 
   const MAX_FILE_SIZE_MB = 10;
   const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'application/pdf'];
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  // Fetch initial data
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        const [companiesRes, workerRes, supervisorRes] = await Promise.all([
+          getAllCompanies(),
+          getUsersByRole("CELEBRITY_SYSTEM_WORKER"),
+          getUsersByRole("SUPERVISOR")
+        ]);
+  
+        const companiesData = Array.isArray(companiesRes) ? companiesRes : companiesRes?.content || companiesRes?.data || [];
+        setCompanies(companiesData);
+  
+        setWorkers(workerRes || []);
+        setSupervisors(supervisorRes || []);
+      } catch (error) {
+        console.error("Error fetching initial data:", error);
+      } finally {
+        setFetching(false);
+      }
+    };
+  
+    fetchInitialData();
+  }, []);
+  
+  // Load screens with search
+  const loadScreens = async (search = '') => {
+    try {
+      const screensRes = await getScreens({ search });
+      const screensData = Array.isArray(screensRes) ? screensRes : 
+                        screensRes?.content || screensRes?.data || [];
+      setScreens(screensData);
+      return screensData.map(screen => ({
+        value: screen.id,
+        label: `${screen.name} (${screen.location})`
+      }));
+    } catch (error) {
+      console.error("Error loading screens:", error);
+      return [];
+    }
   };
 
-  const handleNumberChange = (e) => {
+  // Debounced screen search
+  const debouncedLoadScreens = useMemo(
+    () => debounce((inputValue, callback) => {
+      loadScreens(inputValue).then(options => callback(options));
+    }, 500),
+    []
+  );
+
+  // Handle form field changes
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ 
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  // Handle select changes
+  const handleSelectChange = (name, selectedOption) => {
+    setFormData(prev => ({ 
       ...prev, 
-      [name]: value === "" ? null : Number(value) 
+      [name]: selectedOption?.value || "" 
     }));
   };
 
+  // Handle file changes
   const handleFileChange = (e) => {
     const selected = Array.from(e.target.files);
     const validFiles = selected.filter(file =>
@@ -43,6 +106,7 @@ const CreateTicket = () => {
     setFiles(validFiles);
   };
 
+  // Form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -57,6 +121,10 @@ const CreateTicket = () => {
       setIsSubmitting(false);
     }
   };
+
+  if (fetching) {
+    return <div className="p-6 max-w-4xl mx-auto">Loading initial data...</div>;
+  }
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
@@ -98,58 +166,92 @@ const CreateTicket = () => {
               onChange={handleChange}
               required
             >
-              <option value="Open">Open</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Resolved">Resolved</option>
-              <option value="Closed">Closed</option>
+              <option value="OPEN">Open</option>
+              <option value="IN_PROGRESS">In Progress</option>
+              <option value="RESOLVED">Resolved</option>
+              <option value="CLOSED">Closed</option>
             </select>
           </div>
 
-          {/* Company ID */}
+          {/* Company */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Company ID</label>
-            <input
-              className="w-full border border-gray-300 px-4 py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              name="companyId"
-              type="number"
-              value={formData.companyId}
-              onChange={handleNumberChange}
+            <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
+            <Select
+              options={companies.map(company => ({
+                value: company.id,
+                label: company.name
+              }))}
+              value={companies.find(c => c.id === formData.companyId) ? {
+                value: formData.companyId,
+                label: companies.find(c => c.id === formData.companyId).name
+              } : null}
+              onChange={(option) => handleSelectChange('companyId', option)}
+              isClearable
+              placeholder="Select company"
+              className="react-select-container"
+              classNamePrefix="react-select"
             />
           </div>
 
-          {/* Screen ID */}
+          {/* Screen */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Screen ID</label>
-            <input
-              className="w-full border border-gray-300 px-4 py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              name="screenId"
-              type="number"
-              value={formData.screenId}
-              onChange={handleNumberChange}
+            <label className="block text-sm font-medium text-gray-700 mb-1">Screen</label>
+            <AsyncSelect
+              cacheOptions
+              defaultOptions
+              loadOptions={debouncedLoadScreens}
+              value={screens.find(s => s.id === formData.screenId) ? {
+                value: formData.screenId,
+                label: `${screens.find(s => s.id === formData.screenId).name} (${screens.find(s => s.id === formData.screenId).location})`
+              } : null}
+              onChange={(option) => handleSelectChange('screenId', option)}
+              isClearable
+              placeholder="Search screens..."
+              noOptionsMessage={({ inputValue }) =>
+                inputValue ? 'No screens found' : 'Start typing to search screens'
+              }
+              className="react-select-container"
+              classNamePrefix="react-select"
             />
           </div>
 
-          {/* Assigned To */}
+          {/* Assigned To Worker */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Assigned to Worker ID</label>
-            <input
-              className="w-full border border-gray-300 px-4 py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              name="assignedToWorkerId"
-              type="number"
-              value={formData.assignedToWorkerId}
-              onChange={handleNumberChange}
+            <label className="block text-sm font-medium text-gray-700 mb-1">Assigned to Worker</label>
+            <Select
+              options={workers.map(worker => ({
+                value: worker.id,
+                label: `${worker.username} (${worker.email})`
+              }))}
+              value={workers.find(w => w.id === formData.assignedToWorkerId) ? {
+                value: formData.assignedToWorkerId,
+                label: `${workers.find(w => w.id === formData.assignedToWorkerId).username} (${workers.find(w => w.id === formData.assignedToWorkerId).email})`
+              } : null}
+              onChange={(option) => handleSelectChange('assignedToWorkerId', option)}
+              isClearable
+              placeholder="Select worker"
+              className="react-select-container"
+              classNamePrefix="react-select"
             />
           </div>
 
-          {/* Assigned By */}
+          {/* Assigned By Supervisor */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Assigned by Supervisor ID</label>
-            <input
-              className="w-full border border-gray-300 px-4 py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              name="assignedBySupervisorId"
-              type="number"
-              value={formData.assignedBySupervisorId}
-              onChange={handleNumberChange}
+            <label className="block text-sm font-medium text-gray-700 mb-1">Assigned by Supervisor</label>
+            <Select
+              options={supervisors.map(supervisor => ({
+                value: supervisor.id,
+                label: `${supervisor.username} (${supervisor.email})`
+              }))}
+              value={supervisors.find(s => s.id === formData.assignedBySupervisorId) ? {
+                value: formData.assignedBySupervisorId,
+                label: `${supervisors.find(s => s.id === formData.assignedBySupervisorId).username} (${supervisors.find(s => s.id === formData.assignedBySupervisorId).email})`
+              } : null}
+              onChange={(option) => handleSelectChange('assignedBySupervisorId', option)}
+              isClearable
+              placeholder="Select supervisor"
+              className="react-select-container"
+              classNamePrefix="react-select"
             />
           </div>
         </div>
@@ -207,6 +309,17 @@ const CreateTicket = () => {
           </button>
         </div>
       </form>
+
+      <style jsx global>{`
+        .react-select-container .react-select__control {
+          border: 1px solid #d1d5db;
+          min-height: 42px;
+        }
+        .react-select-container .react-select__control--is-focused {
+          border-color: #3b82f6;
+          box-shadow: 0 0 0 1px #3b82f6;
+        }
+      `}</style>
     </div>
   );
 };

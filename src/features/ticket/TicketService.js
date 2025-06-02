@@ -121,3 +121,10 @@ export const prepareTicketFormData = (ticketData, files = []) => {
 
   return formData;
 };
+
+
+export const getUsersByRole = async (role) => {
+    const response = await axios.get(`/users/roles/${role}`); // <-- roles not role
+    return response.data;
+  };
+  
