@@ -1,4 +1,3 @@
-// src/routes/AppRoutes.jsx
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
@@ -11,15 +10,14 @@ import Layout from "../components/Layout/Layout";
 import Login from "../features/auth/Login";
 import Dashboard from "../features/dashboard/Dashboard";
 import Profile from "../features/profile/Profile";
-import NotFound from "../features/errors/NotFound";
 import AddSystem from "../features/systems/AddSystem";
 
-// User management
+// Errors
+import { NotFound, Forbidden, ServerError } from "../features/errors";
 
+// User management
 import CreateUser from "../features/accounts/CreateUser";
 import ManageUsers from "../features/accounts/UserList";
-
-
 
 // Company management
 import CreateCompany from "../features/companies/CreateCompany";
@@ -32,7 +30,6 @@ import AddScreen from "../features/screen/addScreen/";
 // Test
 import TestPage from "../features/test/TestPage";
 
-// Contratc management
 // Contract management
 import CreateContract from "../features/contract/CreateContract";
 import ContractList from "../features/contract/ContractList";
@@ -185,6 +182,8 @@ const AppRoutes = () => {
           }
         />
         {/* Catch-all inside layout */}
+        <Route path="/forbidden" element={<Forbidden />} />
+        <Route path="/server-error" element={<ServerError />} />
         <Route path="*" element={<NotFound />} />
       </Route>
 
