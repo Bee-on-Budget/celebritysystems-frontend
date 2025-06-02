@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input, Button } from '../../../../components';
+import { Input, Button } from '../../../components';
 import { SectionContainer } from '../components';
 
 const CablesStep = ({ form, errors, onChange, onNext, onBack }) => {

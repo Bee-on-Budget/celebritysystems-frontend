@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { showToast } from "../../../../components/ToastNotifier";
-import { createScreen, createModules, createCabinets } from "../../../../api/ScreenService";
+import { showToast } from "../../../components/ToastNotifier";
+import { createScreen, createModules, createCabinets } from "../../../api/ScreenService";
 
 const useAddScreenForm = () => {
     const [step, setStep] = useState(1);
@@ -9,11 +9,10 @@ const useAddScreenForm = () => {
     const [form, setForm] = useState({
         name: "",
         screenType: "",
+        solutionTypeInScreen: "",
         location: "",
         height: "",
         width: "",
-        solution: "",
-        screenFan: "",
         powerSupply: "",
         powerSupplyQuantity: "",
         sparePowerSupplyQuantity: "",
@@ -29,20 +28,25 @@ const useAddScreenForm = () => {
         dataCable: "",
         dataCableQuantity: "",
         spareDataCableQuantity: "",
+        media: "",
+        mediaQuantity: "",
+        spareMediaQuantity: "",
+        fan: "",
+        fanQuantity: "",
         connectionFile: null,
         configFile: null,
         versionFile: null,
         cabinets: [
             {
+                cabinetName: "",
                 quantity: "",
                 height: "",
                 width: "",
-                type: "",
-                module: {
+                moduleDto: {
                     quantity: "",
                     height: "",
                     width: "",
-                    batchNumber: ""
+                    moduleBatchNumber: ""
                 }
             }
         ]
@@ -54,15 +58,15 @@ const useAddScreenForm = () => {
             cabinets: [
                 ...prev.cabinets,
                 {
+                    cabinetName: "",
                     quantity: "",
                     height: "",
                     width: "",
-                    type: "",
-                    module: {
+                    moduleDto: {
                         quantity: "",
                         height: "",
                         width: "",
-                        batchNumber: ""
+                        moduleBatchNumber: ""
                     }
                 }
             ]
@@ -101,7 +105,7 @@ const useAddScreenForm = () => {
                 return { ...prev, cabinets: updatedCabinets };
             });
         }
-        else if (name.startsWith("module_")) {
+        else if (name.startsWith("moduleDto_")) {
             const [, cabinetIndex, field] = name.split("_");
             const index = parseInt(cabinetIndex);
 
@@ -109,8 +113,8 @@ const useAddScreenForm = () => {
                 const updatedCabinets = [...prev.cabinets];
                 updatedCabinets[index] = {
                     ...updatedCabinets[index],
-                    module: {
-                        ...updatedCabinets[index].module,
+                    moduleDto: {
+                        ...updatedCabinets[index].moduleDto,
                         [field]: files ? files[0] : value
                     }
                 };
@@ -131,9 +135,12 @@ const useAddScreenForm = () => {
             if (!form.location.trim()) newErrors.location = "Location is required";
             if (!form.height) newErrors.height = "Height is required";
             if (!form.width) newErrors.width = "Width is required";
-            if (!form.solution) newErrors.solution = "Solution is required";
-            if (form.solution === "Cabinet" && !form.screenFan) {
-                newErrors.screenFan = "Screen fan is required for Cabinet solution";
+            if (!form.solutionTypeInScreen) newErrors.solutionTypeInScreen = "Solution is required";
+            if (form.solutionTypeInScreen === "Cabinet" && !form.fan) {
+                newErrors.fan = "Screen fan is required for Cabinet solution";
+            }
+            if (form.solutionTypeInScreen === "Cabinet" && !form.fanQuantity) {
+                newErrors.fanQuantity = "Screen fan quantity is required for Cabinet solution";
             }
 
             if (form.powerSupply && !form.powerSupplyQuantity) {
@@ -142,6 +149,10 @@ const useAddScreenForm = () => {
 
             if (form.receivingCard && !form.receivingCardQuantity) {
                 newErrors.receivingCardQuantity = "Quantity is required when receiving card type is specified";
+            }
+
+            if (form.media && !form.mediaQuantity) {
+                newErrors.mediaQuantity = "Quantity is required when media type is specified";
             }
         }
 
@@ -153,19 +164,19 @@ const useAddScreenForm = () => {
 
         if (currentStep === 3) {
             form.cabinets.forEach((cabinet, index) => {
+                if (!cabinet.cabinetName) newErrors[`cabinet_${index}_name`] = "Cabinet name is required";
                 if (!cabinet.quantity) newErrors[`cabinet_${index}_quantity`] = "Quantity is required";
                 if (!cabinet.height) newErrors[`cabinet_${index}_height`] = "Height is required";
                 if (!cabinet.width) newErrors[`cabinet_${index}_width`] = "Width is required";
-                if (!cabinet.type) newErrors[`cabinet_${index}_type`] = "Type is required";
             });
         }
 
-        if (currentStep === 4 && form.solution === "Module") {
+        if (currentStep === 4 && form.solutionTypeInScreen === "Module") {
             form.cabinets.forEach((cabinet, index) => {
-                if (!cabinet.module.quantity) newErrors[`module_${index}_quantity`] = "Quantity is required";
-                if (!cabinet.module.height) newErrors[`module_${index}_height`] = "Height is required";
-                if (!cabinet.module.width) newErrors[`module_${index}_width`] = "Width is required";
-                if (!cabinet.module.batchNumber) newErrors[`module_${index}_batchNumber`] = "Batch number is required";
+                if (!cabinet.moduleDto.quantity) newErrors[`moduleDto_${index}_quantity`] = "Quantity is required";
+                if (!cabinet.moduleDto.height) newErrors[`moduleDto_${index}_height`] = "Height is required";
+                if (!cabinet.moduleDto.width) newErrors[`moduleDto_${index}_width`] = "Width is required";
+                if (!cabinet.moduleDto.moduleBatchNumber) newErrors[`moduleDto_${index}_moduleBatchNumber`] = "Batch number is required";
             });
         }
 
@@ -201,21 +212,21 @@ const useAddScreenForm = () => {
             });
 
             const cabinetsData = form.cabinets.map(cabinet => ({
+                cabinetName: cabinet.cabinetName,
                 quantity: cabinet.quantity,
                 height: cabinet.height,
-                width: cabinet.width,
-                type: cabinet.type
+                width: cabinet.width
             }));
 
             await createScreen(screenFormData);
             await createCabinets(cabinetsData);
 
-            if (form.solution === "Module") {
+            if (form.solutionTypeInScreen === "Module") {
                 const modulesData = form.cabinets.map(cabinet => ({
-                    quantity: cabinet.module.quantity,
-                    height: cabinet.module.height,
-                    width: cabinet.module.width,
-                    batchNumber: cabinet.module.batchNumber
+                    quantity: cabinet.moduleDto.quantity,
+                    height: cabinet.moduleDto.height,
+                    width: cabinet.moduleDto.width,
+                    moduleBatchNumber: cabinet.moduleDto.moduleBatchNumber
                 }));
                 await createModules(modulesData);
             }

@@ -1,7 +1,5 @@
 import { useRef } from "react";
-import Input from '../../../../components/Input';
-import DropdownInput from '../../../../components/DropdownInput';
-import Button from '../../../../components/Button';
+import { Input, Button, DropdownInput } from "../../../components";
 import { FileInput, SectionContainer } from '../components';
 
 const ScreenStep = ({ form, errors, onChange, onNext }) => {
@@ -21,44 +19,65 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
 
   return (
     <>
+      {/* Screen name */}
       <Input label="Name" name="name" value={form.name} onChange={onChange} error={errors.name} required />
+
+      {/* Screen type & Solution type */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <DropdownInput
-          name="solution"
-          value={form.solution}
+          name="screenType"
+          value={form.screenType}
+          options={screenTypeOptions}
+          onChange={onChange}
+          label="Screen Type"
+          error={errors.screenType}
+          required
+        />
+        <DropdownInput
+          name="solutionTypeInScreen"
+          value={form.solutionTypeInScreen}
           options={solutionOptions}
           onChange={onChange}
           label="Solution"
-          error={errors.solution}
+          error={errors.solutionTypeInScreen}
           required
         />
+      </div>
+
+      {/* Screen fan */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Input
           label="Screen Fan"
-          name="screenFan"
-          value={form.screenFan}
+          name="fan"
+          value={form.fan}
           onChange={onChange}
-          error={errors.screenFan}
-          required={form.solution === "Cabinet"}
-          disabled={form.solution === "Module"}
+          error={errors.fan}
+          required={form.solutionTypeInScreen === "Cabinet"}
+          disabled={form.solutionTypeInScreen === "Module"}
+        />
+
+        <Input
+          label="Screen Fan Quantity"
+          name="fanQuantity"
+          value={form.fanQuantity}
+          onChange={onChange}
+          error={errors.fanQuantity}
+          required={form.solutionTypeInScreen === "Cabinet"}
+          disabled={form.solutionTypeInScreen === "Module"}
         />
       </div>
-      <DropdownInput
-        name="screenType"
-        value={form.screenType}
-        options={screenTypeOptions}
-        onChange={onChange}
-        label="Screen Type"
-        error={errors.screenType}
-        required
-      />
 
+      {/* Screen Location */}
       <Input label="Location" name="location" value={form.location} onChange={onChange} error={errors.location} required />
 
+
+      {/* Screen height & width */}
       <div className="grid grid-cols-2 gap-4">
-        <Input label="Height" name="height" type="number" value={form.height} onChange={onChange} error={errors.height} required />
         <Input label="Width" name="width" type="number" value={form.width} onChange={onChange} error={errors.width} required />
+        <Input label="Height" name="height" type="number" value={form.height} onChange={onChange} error={errors.height} required />
       </div>
 
+      {/* Power Supply */}
       <SectionContainer title={"Power Supply"}>
         <Input label="Power Supply Type" name="powerSupply" value={form.powerSupply} onChange={onChange} />
         <div className="grid grid-cols-2 gap-4">
@@ -75,6 +94,7 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
         </div>
       </SectionContainer>
 
+      {/* Receiving card */}
       <SectionContainer title="Receiving Card">
         <Input label="Receiving Card Type" name="receivingCard" value={form.receivingCard} onChange={onChange} />
         <div className="grid grid-cols-2 gap-4">
@@ -91,6 +111,30 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
         </div>
       </SectionContainer>
 
+      {/* Media */}
+      <SectionContainer title="Media">
+        <Input label="Media Type" name="media" value={form.media} onChange={onChange} />
+        <div className="grid grid-cols-2 gap-4">
+          <Input
+            label="Quantity"
+            name="mediaQuantity"
+            type="number"
+            value={form.mediaQuantity}
+            onChange={onChange}
+            error={errors.mediaQuantity}
+            disabled={!form.media}
+            required={!!form.media}
+          />
+          <Input label="Spare Media Quantity"
+            name="spareMediaQuantity"
+            type="number"
+            value={form.spareMediaQuantity}
+            onChange={onChange}
+            disabled={!form.media} />
+        </div>
+      </SectionContainer>
+
+      {/* Files */}
       <SectionContainer title="Files">
         <div className="grid grid-cols-3 gap-4">
           <FileInput

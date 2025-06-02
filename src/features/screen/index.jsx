@@ -30,7 +30,7 @@ const AddScreen = () => {
           stepNumber={4} 
           title="Modules" 
           currentStep={step} 
-          visible={form.solution === "Module"} 
+          visible={form.solutionTypeInScreen === "Module"} 
         />
       </div>
 
@@ -65,7 +65,7 @@ const AddScreen = () => {
             loading={loading}
           />
         )}
-        {step === 4 && form.solution === "Module" && (
+        {step === 4 && form.solutionTypeInScreen === "Module" && (
           <ModulesStep 
             form={form}
             errors={errors}

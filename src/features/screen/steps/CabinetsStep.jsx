@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Input } from '../../../../components';
+import { Button, Input } from '../../../components';
 
 const CabinetsStep = ({
   form,
@@ -61,11 +61,11 @@ const CabinetsStep = ({
             />
           </div>
           <Input
-            label="Type"
-            name={`cabinet_${index}_type`}
-            value={cabinet.type}
+            label="Name"
+            name={`cabinet_${index}_cabinetName`}
+            value={cabinet.cabinetName}
             onChange={onChange}
-            error={errors[`cabinet_${index}_type`]}
+            error={errors[`cabinet_${index}_cabinetName`]}
             required
           />
         </div>
@@ -74,11 +74,11 @@ const CabinetsStep = ({
       <div className="flex justify-between pt-6">
         <Button type="button" variant="ghost" onClick={onBack}>Back</Button>
         <Button
-          type={form.solution === "Cabinet" ? "submit" : "button"}
-          onClick={form.solution === "Cabinet" ? null : onNext}
+          type={form.solutionTypeInScreen === "Cabinet" ? "submit" : "button"}
+          onClick={form.solutionTypeInScreen === "Cabinet" ? null : onNext}
           isLoading={loading}
         >
-          {form.solution === "Cabinet" ? "Create Screen" : "Next: Module"}
+          {form.solutionTypeInScreen === "Cabinet" ? "Create Screen" : "Next: Module"}
         </Button>
       </div>
     </div>);
