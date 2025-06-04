@@ -31,8 +31,8 @@ const AddScreen = () => {
           stepNumber={3}
           title="Cabinets"
           currentStep={step}
-          visible={form.solutionTypeInScreen === "Cabinet"} />
-        <StepIndicator stepNumber={form.solutionTypeInScreen === "Cabinet" ? 4 : 3} title="Modules" currentStep={step} />
+          visible={form.solutionTypeInScreen === "CABINET_SOLUTION"} />
+        <StepIndicator stepNumber={form.solutionTypeInScreen === "CABINET_SOLUTION" ? 4 : 3} title="Modules" currentStep={step} />
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl shadow-xl space-y-6 border border-gray-100">
@@ -53,7 +53,7 @@ const AddScreen = () => {
             onBack={prevStep}
           />
         )}
-        {step === 3 && form.solutionTypeInScreen === "Cabinet" && (
+        {step === 3 && form.solutionTypeInScreen === "CABINET_SOLUTION" && (
           <CabinetsStep
             form={form}
             errors={errors}
@@ -66,7 +66,7 @@ const AddScreen = () => {
             loading={loading}
           />
         )}
-        {(step === 4 || (step === 3 && form.solutionTypeInScreen === "Module")) && (
+        {(step === 4 || (step === 3 && form.solutionTypeInScreen === "MODULE_SOLUTION")) && (
           <ModulesStep
             form={form}
             errors={errors}

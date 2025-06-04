@@ -2,7 +2,7 @@ import React from 'react';
 import { Input, Button } from '../../../components';
 
 const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, loading }) => {
-  if (form.solutionTypeInScreen === "Module") {
+  if (form.solutionTypeInScreen === "MODULE_SOLUTION") {
     return (
       <div className="space-y-6">
         <div className="flex justify-between items-center">

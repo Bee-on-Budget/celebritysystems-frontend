@@ -13,8 +13,8 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
   ];
 
   const solutionOptions = [
-    { value: "Cabinet", label: "Cabinet" },
-    { value: "Module", label: "Module" }
+    { value: "CABINET_SOLUTION", label: "Cabinet" },
+    { value: "MODULE_SOLUTION", label: "Module" }
   ];
 
   return (
@@ -52,8 +52,8 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
           value={form.fan}
           onChange={onChange}
           error={errors.fan}
-          required={form.solutionTypeInScreen === "Cabinet"}
-          disabled={form.solutionTypeInScreen === "Module"}
+          required={form.solutionTypeInScreen === "CABINET_SOLUTION"}
+          disabled={form.solutionTypeInScreen === "MODULE_SOLUTION"}
         />
 
         <Input
@@ -62,8 +62,8 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
           value={form.fanQuantity}
           onChange={onChange}
           error={errors.fanQuantity}
-          required={form.solutionTypeInScreen === "Cabinet"}
-          disabled={form.solutionTypeInScreen === "Module"}
+          required={form.solutionTypeInScreen === "CABINET_SOLUTION"}
+          disabled={form.solutionTypeInScreen === "MODULE_SOLUTION"}
         />
       </div>
 
