@@ -16,8 +16,16 @@ const CablesStep = ({ form, errors, onChange, onNext, onBack }) => {
             onChange={onChange}
             error={errors.cableQuantity}
             required={!!form.cable}
+            disabled={!form.cable}
           />
-          <Input label="Spare Quantity" name="spareCableQuantity" type="number" value={form.spareCableQuantity} onChange={onChange} />
+          <Input
+            label="Spare Quantity"
+            name="spareCableQuantity"
+            type="number"
+            value={form.spareCableQuantity}
+            onChange={onChange}
+            disabled={!form.cable}
+          />
         </div>
       </SectionContainer>
 
@@ -32,8 +40,16 @@ const CablesStep = ({ form, errors, onChange, onNext, onBack }) => {
             onChange={onChange}
             error={errors.powerCableQuantity}
             required={!!form.powerCable}
+            disabled={!form.powerCable}
           />
-          <Input label="Spare Quantity" name="sparePowerCableQuantity" type="number" value={form.sparePowerCableQuantity} onChange={onChange} />
+          <Input
+            label="Spare Quantity"
+            name="sparePowerCableQuantity"
+            type="number"
+            value={form.sparePowerCableQuantity}
+            onChange={onChange}
+            disabled={!form.powerCable}
+          />
         </div>
       </SectionContainer>
 
@@ -48,8 +64,16 @@ const CablesStep = ({ form, errors, onChange, onNext, onBack }) => {
             onChange={onChange}
             error={errors.dataCableQuantity}
             required={!!form.dataCable}
+            disabled={!form.dataCable}
           />
-          <Input label="Spare Quantity" name="spareDataCableQuantity" type="number" value={form.spareDataCableQuantity} onChange={onChange} />
+          <Input
+            label="Spare Quantity"
+            name="spareDataCableQuantity"
+            type="number"
+            value={form.spareDataCableQuantity}
+            onChange={onChange}
+            disabled={!form.dataCable}
+          />
         </div>
       </SectionContainer>
 
