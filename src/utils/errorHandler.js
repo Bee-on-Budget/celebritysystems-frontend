@@ -17,18 +17,21 @@ export const classifyError = (error) => {
 };
 
 export const handleAuthError = (error, navigate) => {
-  showErrorMessage(`There is an error: ${error.response?.status}`);
-  console.log(error);
-  // const status = error.response?.status;
+  // showErrorMessage(`There is an error: ${error.response?.status}`);
+  const status = error.response?.status;
 
-  // removeToken();
   // window.location.reload();
 
-  // if (status === 401) {
-    // showErrorMessage('Your session has expired. Please log in again.');
-  // } else if (status === 403) {
-  //   showErrorMessage('Your unauthorized for this type of action');
-  // }
+  if (status === 401) {
+    showErrorMessage('Your session has expired. Please log in again.');
+    removeToken();
+    navigate('/login');
+  } else if (status === 403) {
+    if (process.env.REACT_APP_NODE_ENV === 'development') {
+      console.log(error);
+    }
+    // showErrorMessage('Your unauthorized for this type of action');
+  }
 };
 
 export const handleValidationError = (error, setFormErrors) => {
