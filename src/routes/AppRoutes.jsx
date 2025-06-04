@@ -11,6 +11,8 @@ import Login from "../features/auth/Login";
 import Dashboard from "../features/dashboard/Dashboard";
 import Profile from "../features/profile/Profile";
 import AddSystem from "../features/systems/AddSystem";
+import ScreenList from "../features/screen/components/ScreenList";
+
 
 // Errors
 import { NotFound, Forbidden, ServerError } from "../features/errors";
@@ -114,14 +116,14 @@ const AppRoutes = () => {
         />
 
         {/* Screen management */}
-        {/* <Route
-          path="screens"
+        <Route
+          path="screen" // ✅ updated to plural and matches Sidebar link
           element={
             <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR", "TECHNICIAN"]}>
               <ScreenList />
             </ProtectedRoute>
           }
-        /> */}
+        />
         <Route
           path="screen/AddScreen"
           element={
