@@ -1,9 +1,10 @@
 // axios.jsx
 import axios from "axios";
-import { getToken, removeToken } from "../utils/token";
+// import { getToken, removeToken } from "../utils/token";
+import { getToken } from "../utils/token";
 import { classifyError, handleAuthError, handleValidationError } from "../utils/errorHandler";
 import { navigate } from "../utils/navigationService";
-import { showToast } from "../components/ToastNotifier";
+// import { showToast } from "../components/ToastNotifier";
 
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL + "/api",
@@ -22,6 +23,7 @@ api.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${token}`;
     if (process.env.REACT_APP_NODE_ENV === 'development') {
       console.debug('Auth token attached to request');
+      console.log(token);
     }
   }
 
