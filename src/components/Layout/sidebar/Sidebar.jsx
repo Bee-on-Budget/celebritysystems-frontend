@@ -46,8 +46,7 @@ const Sidebar = ({ open, setOpen }) => {
             items={[
               { label: "Create User", href: "/create-user", onClick: () => setOpen(false) },
               { label: "Manage Users", href: "/manage-users", onClick: () => setOpen(false) },
-              { label: "Manage Supervisors", href: "/manage-supervisors", onClick: () => setOpen(false) },
-              { label: "View Workers", href: "/view-workers", onClick: () => setOpen(false) },
+
             ]}
           />
           <SidebarDropdown
