@@ -18,7 +18,7 @@ const UserForm = ({ onSubmit, currentUserRole }) => {
     password: '',
     fullName: '',
     confirmPassword: '',
-    role: 'WORKER'
+    role: 'CELEBRITY_SYSTEM_WORKER'
   });
 
   const [errors, setErrors] = useState({});
@@ -148,7 +148,7 @@ const UserForm = ({ onSubmit, currentUserRole }) => {
             )
           }
           options={[
-            { value: "WORKER", label: "Worker" },
+            { value: "CELEBRITY_SYSTEM_WORKER", label: "Worker" },
             { value: "SUPERVISOR", label: "Supervisor" },
             ...(currentUserRole === "ADMIN"
               ? [{ value: "ADMIN", label: "Administrator" }]
