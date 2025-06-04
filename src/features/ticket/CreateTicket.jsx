@@ -1,5 +1,5 @@
 // src/components/tickets/CreateTicket.jsx
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { createTicket, prepareTicketFormData } from "./TicketService";
 import { getAllCompanies } from "../../features/companies/CompanyService";
@@ -41,10 +41,10 @@ const CreateTicket = () => {
           getUsersByRole("CELEBRITY_SYSTEM_WORKER"),
           getUsersByRole("SUPERVISOR")
         ]);
-  
+
         const companiesData = Array.isArray(companiesRes) ? companiesRes : companiesRes?.content || companiesRes?.data || [];
         setCompanies(companiesData);
-  
+
         setWorkers(workerRes || []);
         setSupervisors(supervisorRes || []);
       } catch (error) {
@@ -53,16 +53,16 @@ const CreateTicket = () => {
         setFetching(false);
       }
     };
-  
+
     fetchInitialData();
   }, []);
-  
+
   // Load screens with search
   const loadScreens = async (search = '') => {
     try {
       const screensRes = await getScreens({ search });
-      const screensData = Array.isArray(screensRes) ? screensRes : 
-                        screensRes?.content || screensRes?.data || [];
+      const screensData = Array.isArray(screensRes) ? screensRes :
+        screensRes?.content || screensRes?.data || [];
       setScreens(screensData);
       return screensData.map(screen => ({
         value: screen.id,
@@ -90,9 +90,9 @@ const CreateTicket = () => {
 
   // Handle select changes
   const handleSelectChange = (name, selectedOption) => {
-    setFormData(prev => ({ 
-      ...prev, 
-      [name]: selectedOption?.value || "" 
+    setFormData(prev => ({
+      ...prev,
+      [name]: selectedOption?.value || ""
     }));
   };
 
