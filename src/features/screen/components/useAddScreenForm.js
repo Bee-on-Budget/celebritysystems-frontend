@@ -1,10 +1,6 @@
 import { useState } from "react";
 import { showToast } from "../../../components/ToastNotifier";
-import {
-  createScreen,
-  createModules,
-  createCabinets,
-} from "../../../api/ScreenService";
+import { createScreen } from "../../../api/ScreenService";
 
 const initialFormState = {
   name: "",
@@ -36,6 +32,14 @@ const initialFormState = {
   connectionFile: null,
   configFile: null,
   versionFile: null,
+  modulesDto: [
+    {
+      quantity: "",
+      height: "",
+      width: "",
+      moduleBatchNumber: "",
+    }
+  ],
   cabinets: [
     {
       cabinetName: "",
@@ -91,6 +95,34 @@ const useAddScreenForm = () => {
     }));
   };
 
+  const addModule = () => {
+    if (form.solutionTypeInScreen !== "MODULE_SOLUTION") return;
+
+    setForm((prev) => ({
+      ...prev,
+      modulesDto: [
+        ...prev.modulesDto,
+        {
+          quantity: "",
+          height: "",
+          width: "",
+          moduleBatchNumber: "",
+        },
+      ],
+    }));
+  };
+
+  const removeModule = (index) => {
+    if (form.modulesDto.length <= 1) {
+      showToast("You must have at least one module", "warning");
+      return;
+    }
+    setForm((prev) => ({
+      ...prev,
+      modulesDto: prev.modulesDto.filter((_, i) => i !== index),
+    }));
+  };
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
@@ -98,7 +130,7 @@ const useAddScreenForm = () => {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
 
-    if (name.startsWith("cabinet_")) {
+    if (name.startsWith("cabinet_") && form.solutionTypeInScreen === 'CABINET_SOLUTION') {
       const [, index, field] = name.split("_");
       const cabinetIndex = parseInt(index);
 
@@ -110,7 +142,7 @@ const useAddScreenForm = () => {
         };
         return { ...prev, cabinets: updatedCabinets };
       });
-    } else if (name.startsWith("moduleDto_")) {
+    } else if (name.startsWith("moduleDto_") && form.solutionTypeInScreen === 'CABINET_SOLUTION') {
       const [, cabinetIndex, field] = name.split("_");
       const index = parseInt(cabinetIndex);
 
@@ -125,7 +157,20 @@ const useAddScreenForm = () => {
         };
         return { ...prev, cabinets: updatedCabinets };
       });
-    } else {
+    } else if (name.startsWith("moduleDto_") && form.solutionTypeInScreen === 'MODULE_SOLUTION') {
+      const [, index, field] = name.split("_");
+      const moduleIndex = parseInt(index);
+
+      setForm((prev) => {
+        const updatedModules = [...prev.modulesDto];
+        updatedModules[moduleIndex] = {
+          ...updatedModules[moduleIndex],
+          [field]: files ? files[0] : value,
+        };
+        return { ...prev, modulesDto: updatedModules };
+      });
+    }
+    else {
       setForm((prev) => ({ ...prev, [name]: files ? files[0] : value }));
     }
   };
@@ -141,10 +186,10 @@ const useAddScreenForm = () => {
       if (!form.width) newErrors.width = "Width is required";
       if (!form.solutionTypeInScreen)
         newErrors.solutionTypeInScreen = "Solution is required";
-      if (form.solutionTypeInScreen === "Cabinet" && !form.fan) {
+      if (form.solutionTypeInScreen === "CABINET_SOLUTION" && !form.fan) {
         newErrors.fan = "Screen fan is required for Cabinet solution";
       }
-      if (form.solutionTypeInScreen === "Cabinet" && !form.fanQuantity) {
+      if (form.solutionTypeInScreen === "CABINET_SOLUTION" && !form.fanQuantity) {
         newErrors.fanQuantity =
           "Screen fan quantity is required for Cabinet solution";
       }
@@ -175,19 +220,35 @@ const useAddScreenForm = () => {
     }
 
     if (currentStep === 3) {
-      form.cabinets.forEach((cabinet, index) => {
-        if (!cabinet.cabinetName)
-          newErrors[`cabinet_${index}_name`] = "Cabinet name is required";
-        if (!cabinet.quantity)
-          newErrors[`cabinet_${index}_quantity`] = "Quantity is required";
-        if (!cabinet.height)
-          newErrors[`cabinet_${index}_height`] = "Height is required";
-        if (!cabinet.width)
-          newErrors[`cabinet_${index}_width`] = "Width is required";
-      });
+      if (form.solutionTypeInScreen === "CABINET_SOLUTION") {
+        form.cabinets.forEach((cabinet, index) => {
+          if (!cabinet.cabinetName)
+            newErrors[`cabinet_${index}_name`] = "Cabinet name is required";
+          if (!cabinet.quantity)
+            newErrors[`cabinet_${index}_quantity`] = "Quantity is required";
+          if (!cabinet.height)
+            newErrors[`cabinet_${index}_height`] = "Height is required";
+          if (!cabinet.width)
+            newErrors[`cabinet_${index}_width`] = "Width is required";
+        });
+      }
+
+      if (form.solutionTypeInScreen === "MODULE_SOLUTION") {
+        form.modulesDto.forEach((module, index) => {
+          if (!module.quantity)
+            newErrors[`moduleDto_${index}_quantity`] = "Quantity is required";
+          if (!module.height)
+            newErrors[`moduleDto_${index}_height`] = "Height is required";
+          if (!module.width)
+            newErrors[`moduleDto_${index}_width`] = "Width is required";
+          if (!module.moduleBatchNumber)
+            newErrors[`moduleDto_${index}_moduleBatchNumber`] =
+              "Batch number is required";
+        })
+      }
     }
 
-    if (currentStep === 4 && form.solutionTypeInScreen === "Module") {
+    if (currentStep === 4) {
       form.cabinets.forEach((cabinet, index) => {
         if (!cabinet.moduleDto.quantity)
           newErrors[`moduleDto_${index}_quantity`] = "Quantity is required";
@@ -225,7 +286,33 @@ const useAddScreenForm = () => {
 
     setLoading(true);
     try {
-      // Prepare the form data according to the new structure
+      // Prepare solution-specific data first
+      let solutionData = {};
+      if (form.solutionTypeInScreen === "MODULE_SOLUTION") {
+        solutionData.modulesDto = form.modulesDto.map(module => ({
+          moduleBatchNumber: module.moduleBatchNumber,
+          quantity: Number(module.quantity),
+          height: Number(module.height),
+          width: Number(module.width)
+        }));
+      } else {
+        solutionData.cabinDtoListJson = JSON.stringify(
+          form.cabinets.map(cabinet => ({
+            cabinetName: cabinet.cabinetName,
+            quantity: Number(cabinet.quantity),
+            height: Number(cabinet.height),
+            width: Number(cabinet.width),
+            moduleDto: {
+              moduleBatchNumber: cabinet.moduleDto.moduleBatchNumber,
+              quantity: Number(cabinet.moduleDto.quantity),
+              height: Number(cabinet.moduleDto.height),
+              width: Number(cabinet.moduleDto.width)
+            }
+          }))
+        );
+      }
+
+      // Prepare the complete form data
       const formData = {
         // Basic Information
         name: form.name,
@@ -235,67 +322,45 @@ const useAddScreenForm = () => {
 
         // Power Supply Information
         powerSupply: form.powerSupply,
-        powerSupplyQuantity: form.powerSupplyQuantity,
-        sparePowerSupplyQuantity: form.sparePowerSupplyQuantity,
+        powerSupplyQuantity: Number(form.powerSupplyQuantity),
+        sparePowerSupplyQuantity: Number(form.sparePowerSupplyQuantity),
 
         // Receiving Card Information
         receivingCard: form.receivingCard,
-        receivingCardQuantity: form.receivingCardQuantity,
-        spareReceivingCardQuantity: form.spareReceivingCardQuantity,
+        receivingCardQuantity: Number(form.receivingCardQuantity),
+        spareReceivingCardQuantity: Number(form.spareReceivingCardQuantity),
 
         // Cable Information
         cable: form.cable,
-        cableQuantity: form.cableQuantity,
-        spareCableQuantity: form.spareCableQuantity,
+        cableQuantity: Number(form.cableQuantity),
+        spareCableQuantity: Number(form.spareCableQuantity),
 
         // Power Cable Information
         powerCable: form.powerCable,
-        powerCableQuantity: form.powerCableQuantity,
-        sparePowerCableQuantity: form.sparePowerCableQuantity,
+        powerCableQuantity: Number(form.powerCableQuantity),
+        sparePowerCableQuantity: Number(form.sparePowerCableQuantity),
 
         // Data Cable Information
         dataCable: form.dataCable,
-        dataCableQuantity: form.dataCableQuantity,
-        spareDataCableQuantity: form.spareDataCableQuantity,
+        dataCableQuantity: Number(form.dataCableQuantity),
+        spareDataCableQuantity: Number(form.spareDataCableQuantity),
 
         // Media Information
         media: form.media,
-        mediaQuantity: form.mediaQuantity,
-        spareMediaQuantity: form.spareMediaQuantity,
+        mediaQuantity: Number(form.mediaQuantity),
+        spareMediaQuantity: Number(form.spareMediaQuantity),
 
         // Fan Information
         fan: form.fan,
-        fanQuantity: form.fanQuantity,
+        fanQuantity: Number(form.fanQuantity),
 
-        // Files (handled separately)
+        // Files
         connectionFile: form.connectionFile,
         configFile: form.configFile,
         versionFile: form.versionFile,
 
-        // Solution-specific data
-        ...(form.solutionTypeInScreen === "Module" && {
-          moduleDtoListJson: form.cabinets.map((cabinet) => ({
-            moduleBatchNumber: cabinet.moduleDto.moduleBatchNumber,
-            quantity: cabinet.moduleDto.quantity,
-            height: cabinet.moduleDto.height,
-            width: cabinet.moduleDto.width,
-          })),
-        }),
-
-        ...(form.solutionTypeInScreen === "Cabinet" && {
-          cabinDtoListJson: form.cabinets.map((cabinet) => ({
-            cabinetName: cabinet.cabinetName,
-            quantity: cabinet.quantity,
-            height: cabinet.height,
-            width: cabinet.width,
-            moduleDto: {
-              moduleBatchNumber: cabinet.moduleDto.moduleBatchNumber,
-              quantity: cabinet.moduleDto.quantity,
-              height: cabinet.moduleDto.height,
-              width: cabinet.moduleDto.width,
-            },
-          })),
-        }),
+        // Add the solution-specific data
+        ...solutionData
       };
 
       console.log("Submitting form data:", formData);
@@ -326,6 +391,8 @@ const useAddScreenForm = () => {
     handleChange,
     addCabinet,
     removeCabinet,
+    addModule,
+    removeModule,
   };
 };
 
