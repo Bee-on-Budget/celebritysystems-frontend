@@ -74,11 +74,11 @@ const CabinetsStep = ({
       <div className="flex justify-between pt-6">
         <Button type="button" variant="ghost" onClick={onBack}>Back</Button>
         <Button
-          type={form.solutionTypeInScreen === "Cabinet" ? "submit" : "button"}
-          onClick={form.solutionTypeInScreen === "Cabinet" ? null : onNext}
+          type={form.solutionTypeInScreen === "Module" ? "submit" : "button"}
+          onClick={onNext}
           isLoading={loading}
         >
-          {form.solutionTypeInScreen === "Cabinet" ? "Create Screen" : "Next: Module"}
+          {form.solutionTypeInScreen === "Module" ? "Create Screen" : "Next: Module"}
         </Button>
       </div>
     </div>);
