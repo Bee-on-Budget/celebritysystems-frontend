@@ -89,8 +89,15 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
             onChange={onChange}
             error={errors.powerSupplyQuantity}
             required={!!form.powerSupply}
+            disabled={!form.powerSupply}
           />
-          <Input label="Spare Quantity" name="sparePowerSupplyQuantity" type="number" value={form.sparePowerSupplyQuantity} onChange={onChange} />
+          <Input
+          label="Spare Quantity"
+          name="sparePowerSupplyQuantity"
+          type="number" value={form.sparePowerSupplyQuantity}
+          onChange={onChange}
+          disabled={!form.powerSupply}
+          />
         </div>
       </SectionContainer>
 
@@ -105,9 +112,16 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
             value={form.receivingCardQuantity}
             onChange={onChange}
             error={errors.receivingCardQuantity}
+            disabled={!form.receivingCard}
             required={!!form.receivingCard}
           />
-          <Input label="Spare Quantity" name="spareReceivingCardQuantity" type="number" value={form.spareReceivingCardQuantity} onChange={onChange} />
+          <Input
+            label="Spare Quantity"
+            name="spareReceivingCardQuantity"
+            type="number" value={form.spareReceivingCardQuantity}
+            onChange={onChange}
+            disabled={!form.receivingCard}
+          />
         </div>
       </SectionContainer>
 
