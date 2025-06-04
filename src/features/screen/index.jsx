@@ -17,7 +17,9 @@ const AddScreen = () => {
     handleSubmit,
     handleChange,
     addCabinet,
-    removeCabinet
+    removeCabinet,
+    addModule,
+    removeModule,
   } = useAddScreenForm();
 
   return (
@@ -25,18 +27,17 @@ const AddScreen = () => {
       <div className="flex items-center justify-between mb-10 px-4 md:px-12">
         <StepIndicator stepNumber={1} title="Screen" currentStep={step} />
         <StepIndicator stepNumber={2} title="Cables" currentStep={step} />
-        <StepIndicator stepNumber={3} title="Cabinets" currentStep={step} />
-        <StepIndicator 
-          stepNumber={4} 
-          title="Modules" 
-          currentStep={step} 
-          visible={form.solutionTypeInScreen === "Module"} 
-        />
+        <StepIndicator
+          stepNumber={3}
+          title="Cabinets"
+          currentStep={step}
+          visible={form.solutionTypeInScreen === "Cabinet"} />
+        <StepIndicator stepNumber={form.solutionTypeInScreen === "Cabinet" ? 4 : 3} title="Modules" currentStep={step} />
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl shadow-xl space-y-6 border border-gray-100">
         {step === 1 && (
-          <ScreenStep 
+          <ScreenStep
             form={form}
             errors={errors}
             onChange={handleChange}
@@ -44,7 +45,7 @@ const AddScreen = () => {
           />
         )}
         {step === 2 && (
-          <CablesStep 
+          <CablesStep
             form={form}
             errors={errors}
             onChange={handleChange}
@@ -52,8 +53,8 @@ const AddScreen = () => {
             onBack={prevStep}
           />
         )}
-        {step === 3 && (
-          <CabinetsStep 
+        {step === 3 && form.solutionTypeInScreen === "Cabinet" && (
+          <CabinetsStep
             form={form}
             errors={errors}
             onChange={handleChange}
@@ -65,12 +66,14 @@ const AddScreen = () => {
             loading={loading}
           />
         )}
-        {step === 4 && form.solutionTypeInScreen === "Module" && (
-          <ModulesStep 
+        {(step === 4 || (step === 3 && form.solutionTypeInScreen === "Module")) && (
+          <ModulesStep
             form={form}
             errors={errors}
             onChange={handleChange}
             onBack={prevStep}
+            addModule={addModule}
+            removeModule={removeModule}
             loading={loading}
           />
         )}
