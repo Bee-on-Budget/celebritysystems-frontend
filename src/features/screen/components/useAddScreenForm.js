@@ -192,33 +192,72 @@ const useAddScreenForm = () => {
         newErrors.fan = "Screen fan is required for Cabinet solution";
       }
       if (form.solutionTypeInScreen === "CABINET_SOLUTION" && !form.fanQuantity) {
-        newErrors.fanQuantity =
-          "Screen fan quantity is required for Cabinet solution";
+        newErrors.fanQuantity = "Screen fan quantity is required for Cabinet solution";
+      } else if (form.solutionTypeInScreen === "CABINET_SOLUTION" && Number(form.fanQuantity) <= 0) {
+        newErrors.fanQuantity = "Fan quantity must be greater than 0";
       }
 
+      // Power Supply validation
       if (form.powerSupply && !form.powerSupplyQuantity) {
-        newErrors.powerSupplyQuantity =
-          "Quantity is required when power supply type is specified";
+        newErrors.powerSupplyQuantity = "Quantity is required when power supply type is specified";
+      } else if (form.powerSupply && Number(form.powerSupplyQuantity) <= 0) {
+        newErrors.powerSupplyQuantity = "Power supply quantity must be greater than 0";
+      }
+      if (form.sparePowerSupplyQuantity && Number(form.sparePowerSupplyQuantity) < 0) {
+        newErrors.sparePowerSupplyQuantity = "Spare power supply quantity cannot be negative";
       }
 
+      // Receiving Card validation
       if (form.receivingCard && !form.receivingCardQuantity) {
-        newErrors.receivingCardQuantity =
-          "Quantity is required when receiving card type is specified";
+        newErrors.receivingCardQuantity = "Quantity is required when receiving card type is specified";
+      } else if (form.receivingCard && Number(form.receivingCardQuantity) <= 0) {
+        newErrors.receivingCardQuantity = "Receiving card quantity must be greater than 0";
+      }
+      if (form.spareReceivingCardQuantity && Number(form.spareReceivingCardQuantity) < 0) {
+        newErrors.spareReceivingCardQuantity = "Spare receiving card quantity cannot be negative";
       }
 
+      // Media validation
       if (form.media && !form.mediaQuantity) {
-        newErrors.mediaQuantity =
-          "Quantity is required when media type is specified";
+        newErrors.mediaQuantity = "Quantity is required when media type is specified";
+      } else if (form.media && Number(form.mediaQuantity) <= 0) {
+        newErrors.mediaQuantity = "Media quantity must be greater than 0";
+      }
+      if (form.spareMediaQuantity && Number(form.spareMediaQuantity) < 0) {
+        newErrors.spareMediaQuantity = "Spare media quantity cannot be negative";
       }
     }
 
     if (currentStep === 2) {
-      if (form.cable && !form.cableQuantity)
+      // Cable validation
+      if (form.cable && !form.cableQuantity) {
         newErrors.cableQuantity = "Main cable quantity is required";
-      if (form.powerCable && !form.powerCableQuantity)
+      } else if (form.cable && Number(form.cableQuantity) <= 0) {
+        newErrors.cableQuantity = "Cable quantity must be greater than 0";
+      }
+      if (form.spareCableQuantity && Number(form.spareCableQuantity) < 0) {
+        newErrors.spareCableQuantity = "Spare cable quantity cannot be negative";
+      }
+
+      // Power Cable validation
+      if (form.powerCable && !form.powerCableQuantity) {
         newErrors.powerCableQuantity = "Power cable quantity is required";
-      if (form.dataCable && !form.dataCableQuantity)
+      } else if (form.powerCable && Number(form.powerCableQuantity) <= 0) {
+        newErrors.powerCableQuantity = "Power cable quantity must be greater than 0";
+      }
+      if (form.sparePowerCableQuantity && Number(form.sparePowerCableQuantity) < 0) {
+        newErrors.sparePowerCableQuantity = "Spare power cable quantity cannot be negative";
+      }
+
+      // Data Cable validation
+      if (form.dataCable && !form.dataCableQuantity) {
         newErrors.dataCableQuantity = "Data cable quantity is required";
+      } else if (form.dataCable && Number(form.dataCableQuantity) <= 0) {
+        newErrors.dataCableQuantity = "Data cable quantity must be greater than 0";
+      }
+      if (form.spareDataCableQuantity && Number(form.spareDataCableQuantity) < 0) {
+        newErrors.spareDataCableQuantity = "Spare data cable quantity cannot be negative";
+      }
     }
 
     if (currentStep === 3) {
@@ -228,8 +267,12 @@ const useAddScreenForm = () => {
             newErrors[`cabinet_${index}_cabinetName`] = "Cabinet name is required";
           if (!cabinet.widthQuantity)
             newErrors[`cabinet_${index}_widthQuantity`] = "Width quantity is required";
+          else if (Number(cabinet.widthQuantity) <= 0)
+            newErrors[`cabinet_${index}_widthQuantity`] = "Width quantity must be greater than 0";
           if (!cabinet.heightQuantity)
             newErrors[`cabinet_${index}_heightQuantity`] = "Height quantity is required";
+          else if (Number(cabinet.heightQuantity) <= 0)
+            newErrors[`cabinet_${index}_heightQuantity`] = "Height quantity must be greater than 0";
           if (!cabinet.height)
             newErrors[`cabinet_${index}_height`] = "Height is required";
           if (!cabinet.width)
@@ -241,14 +284,15 @@ const useAddScreenForm = () => {
         form.modulesDto.forEach((module, index) => {
           if (!module.quantity)
             newErrors[`moduleDto_${index}_quantity`] = "Quantity is required";
+          else if (Number(module.quantity) <= 0)
+            newErrors[`moduleDto_${index}_quantity`] = "Quantity must be greater than 0";
           if (!module.height)
             newErrors[`moduleDto_${index}_height`] = "Height is required";
           if (!module.width)
             newErrors[`moduleDto_${index}_width`] = "Width is required";
           if (!module.moduleBatchNumber)
-            newErrors[`moduleDto_${index}_moduleBatchNumber`] =
-              "Batch number is required";
-        })
+            newErrors[`moduleDto_${index}_moduleBatchNumber`] = "Batch number is required";
+        });
       }
     }
 
@@ -256,13 +300,14 @@ const useAddScreenForm = () => {
       form.cabinets.forEach((cabinet, index) => {
         if (!cabinet.moduleDto.quantity)
           newErrors[`moduleDto_${index}_quantity`] = "Quantity is required";
+        else if (Number(cabinet.moduleDto.quantity) <= 0)
+          newErrors[`moduleDto_${index}_quantity`] = "Quantity must be greater than 0";
         if (!cabinet.moduleDto.height)
           newErrors[`moduleDto_${index}_height`] = "Height is required";
         if (!cabinet.moduleDto.width)
           newErrors[`moduleDto_${index}_width`] = "Width is required";
         if (!cabinet.moduleDto.moduleBatchNumber)
-          newErrors[`moduleDto_${index}_moduleBatchNumber`] =
-            "Batch number is required";
+          newErrors[`moduleDto_${index}_moduleBatchNumber`] = "Batch number is required";
       });
     }
 
