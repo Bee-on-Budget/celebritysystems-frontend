@@ -15,12 +15,6 @@ const SidebarDropdown = ({ icon: Icon, label, items, isOpen, onToggle }) => {
     }
   }, [isOpen]);
 
-  const handleFocus = () => {
-    if (!isOpen) {
-      onToggle();
-    }
-  };
-
   return (
     <div className="relative w-full">
       {/* Vertical line */}
@@ -38,7 +32,6 @@ const SidebarDropdown = ({ icon: Icon, label, items, isOpen, onToggle }) => {
       <button
         ref={buttonRef}
         onClick={onToggle}
-        onFocus={handleFocus}
         className="w-full flex items-center justify-between py-2 pl-1 pr-2 rounded-md text-white hover:text-primary font-medium focus:outline-none focus:ring-primary-focus focus:ring-1 transition duration-200"
       >
         <div className="flex items-center space-x-2">
