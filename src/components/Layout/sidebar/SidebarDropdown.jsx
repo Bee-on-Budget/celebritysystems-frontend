@@ -32,7 +32,7 @@ const SidebarDropdown = ({ icon: Icon, label, items, isOpen, onToggle }) => {
       <button
         ref={buttonRef}
         onClick={onToggle}
-        className="w-full flex items-center justify-between text-white hover:text-primary font-medium py-2 pr-2 transition duration-200"
+        className="w-full flex items-center justify-between py-2 pl-1 pr-2 rounded-md text-white hover:text-primary font-medium focus:outline-none focus:ring-primary-focus focus:ring-1 transition duration-200"
       >
         <div className="flex items-center space-x-2">
           <Icon />
@@ -44,7 +44,7 @@ const SidebarDropdown = ({ icon: Icon, label, items, isOpen, onToggle }) => {
       {/* Dropdown Items */}
       <div
         ref={dropdownRef}
-        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+        className={`overflow-hidden transition-all duration-300 pr-2 pl-5 ease-in-out ${
           isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
@@ -54,7 +54,7 @@ const SidebarDropdown = ({ icon: Icon, label, items, isOpen, onToggle }) => {
             to={item.href}
             label={item.label}
             onClick={item.onClick}
-            className="font-normal pl-6 py-1 m-1"
+            className="font-normal py-1 m-1"
           />
         ))}
       </div>
