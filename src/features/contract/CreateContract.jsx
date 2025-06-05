@@ -22,7 +22,7 @@ const CreateContract = () => {
     accountName: '',
     durationType: 'MONTHLY',
     contractValue: '',
-    accountPermissions: []
+    accountPermissions: [] 
   });
 
   const [companies, setCompanies] = useState([]);
@@ -165,11 +165,9 @@ const CreateContract = () => {
         expiredAt: form.expiredAt || null,
         accountName: form.accountName || null,
         accountPermissions: form.accountPermissions.map(perm => ({
-          accountIdentifier: perm.accountIdentifier,
-          permissions: {
-            read: perm.canRead,
-            write: perm.canEdit
-          }
+          name: perm.accountIdentifier,
+          canRead: perm.canRead,
+          canEdit: perm.canEdit
         }))
       });
       showToast('Contract created successfully!');
