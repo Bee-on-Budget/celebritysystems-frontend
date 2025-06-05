@@ -225,7 +225,7 @@ const useAddScreenForm = () => {
       if (form.solutionTypeInScreen === "CABINET_SOLUTION") {
         form.cabinets.forEach((cabinet, index) => {
           if (!cabinet.cabinetName)
-            newErrors[`cabinet_${index}_name`] = "Cabinet name is required";
+            newErrors[`cabinet_${index}_cabinetName`] = "Cabinet name is required";
           if (!cabinet.widthQuantity)
             newErrors[`cabinet_${index}_widthQuantity`] = "Width quantity is required";
           if (!cabinet.heightQuantity)
