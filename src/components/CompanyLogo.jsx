@@ -1,6 +1,6 @@
 const CompanyLogo = () => {
   return (
-    <div className="flex items-center space-x-3 select-none cursor-default">
+    <div className="flex items-center space-x-3 select-none cursor-pointer">
       {/* Circle with initials */}
       <div className="flex items-center justify-center rounded-full bg-primary w-9 h-9">
         <span className="text-white font-semibold text-lg leading-none">CS</span>
