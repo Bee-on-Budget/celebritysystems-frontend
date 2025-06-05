@@ -6,6 +6,7 @@ import UserForm from "./UserForm";
 import CompanyLogo from "./CompanyLogo";
 import MultiSearchBar from "./MultiSearchBar";
 import ToastNotifier from "./ToastNotifier";
+import showToast from "./ToastNotifier";
 import PasswordStrengthMeter from "./PasswordStrengthMeter";
 import NavButton from "./NavButton";
 import Loading from "./Loading";
@@ -19,6 +20,7 @@ export {
   CompanyLogo,
   MultiSearchBar,
   ToastNotifier,
+  showToast,
   PasswordStrengthMeter,
   NavButton,
   Loading
