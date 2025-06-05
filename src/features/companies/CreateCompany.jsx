@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-import Input from "../../components/Input";
-import Button from "../../components/Button";
 import { createCompany } from "./CompanyService";
-import { showToast } from "../../components/ToastNotifier";
+import { Button, Input, showToast, FormsContainer } from "../../components";
 
 const CreateCompany = () => {
     const [form, setForm] = useState({ name: "", email: "", phone: "", location: "" });
@@ -25,7 +23,7 @@ const CreateCompany = () => {
     };
 
     return (
-        <div className="max-w-lg mx-auto mt-8">
+        <FormsContainer>
             <h1 className="text-2xl font-semibold mb-4">Create New Company</h1>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <Input label="Name" id="name" name="name" value={form.name} onChange={handleChange} required />
@@ -34,7 +32,7 @@ const CreateCompany = () => {
                 <Input label="Location" id="location" name="location" value={form.location} onChange={handleChange} required />
                 <Button isLoading={loading} type="submit">Create Company</Button>
             </form>
-        </div>
+        </FormsContainer>
     );
 };
 
