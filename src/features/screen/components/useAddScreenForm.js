@@ -43,7 +43,8 @@ const initialFormState = {
   cabinets: [
     {
       cabinetName: "",
-      quantity: "",
+      widthQuantity: "",
+      heightQuantity: "",
       height: "",
       width: "",
       moduleDto: {
@@ -69,7 +70,8 @@ const useAddScreenForm = () => {
         ...prev.cabinets,
         {
           cabinetName: "",
-          quantity: "",
+          widthQuantity: "",
+          heightQuantity: "",
           height: "",
           width: "",
           moduleDto: {
@@ -224,8 +226,10 @@ const useAddScreenForm = () => {
         form.cabinets.forEach((cabinet, index) => {
           if (!cabinet.cabinetName)
             newErrors[`cabinet_${index}_name`] = "Cabinet name is required";
-          if (!cabinet.quantity)
-            newErrors[`cabinet_${index}_quantity`] = "Quantity is required";
+          if (!cabinet.widthQuantity)
+            newErrors[`cabinet_${index}_widthQuantity`] = "Width quantity is required";
+          if (!cabinet.heightQuantity)
+            newErrors[`cabinet_${index}_heightQuantity`] = "Height quantity is required";
           if (!cabinet.height)
             newErrors[`cabinet_${index}_height`] = "Height is required";
           if (!cabinet.width)
@@ -299,7 +303,8 @@ const useAddScreenForm = () => {
         solutionData.cabinDtoListJson = JSON.stringify(
           form.cabinets.map(cabinet => ({
             cabinetName: cabinet.cabinetName,
-            quantity: Number(cabinet.quantity),
+            widthQuantity: Number(cabinet.widthQuantity),
+            heightQuantity: Number(cabinet.heightQuantity),
             height: Number(cabinet.height),
             width: Number(cabinet.width),
             moduleDto: {

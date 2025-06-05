@@ -31,15 +31,35 @@ const CabinetsStep = ({
             </button>
           )}
           <h3 className="font-medium">Cabinet {index + 1}</h3>
+
           <Input
-            label="Quantity"
-            name={`cabinet_${index}_quantity`}
-            type="number"
-            value={cabinet.quantity}
+            label="Name"
+            name={`cabinet_${index}_cabinetName`}
+            value={cabinet.cabinetName}
             onChange={onChange}
-            error={errors[`cabinet_${index}_quantity`]}
+            error={errors[`cabinet_${index}_cabinetName`]}
             required
           />
+          <div className="grid grid-cols-2 gap-4">
+            <Input
+              label="Width Quantity"
+              name={`cabinet_${index}_widthQuantity`}
+              type="number"
+              value={cabinet.widthQuantity}
+              onChange={onChange}
+              error={errors[`cabinet_${index}_widthQuantity`]}
+              required
+            />
+            <Input
+              label="Height Quantity"
+              name={`cabinet_${index}_heightQuantity`}
+              type="number"
+              value={cabinet.heightQuantity}
+              onChange={onChange}
+              error={errors[`cabinet_${index}_heightQuantity`]}
+              required
+            />
+          </div>
           <div className="grid grid-cols-2 gap-4">
             <Input
               label="Height"
@@ -60,14 +80,6 @@ const CabinetsStep = ({
               required
             />
           </div>
-          <Input
-            label="Name"
-            name={`cabinet_${index}_cabinetName`}
-            value={cabinet.cabinetName}
-            onChange={onChange}
-            error={errors[`cabinet_${index}_cabinetName`]}
-            required
-          />
         </div>
       ))}
 
