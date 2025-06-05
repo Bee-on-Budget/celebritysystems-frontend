@@ -19,9 +19,10 @@ const CreateContract = () => {
     screenIds: [],
     supplyType: 'CELEBRITY_SYSTEMS',
     operatorType: 'OWNER',
+    accountName: '',
     durationType: 'MONTHLY',
     contractValue: '',
-    accountPermissions: []
+    accountPermissions: [] 
   });
 
   const [companies, setCompanies] = useState([]);
@@ -32,12 +33,10 @@ const CreateContract = () => {
   const [screenSearch, setScreenSearch] = useState('');
   const navigate = useNavigate();
 
-  // Fetch companies on mount
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
         const companiesRes = await getAllCompanies();
-        // Handle both array and paginated response
         let companiesData = [];
         if (Array.isArray(companiesRes)) {
           companiesData = companiesRes;
@@ -60,7 +59,6 @@ const CreateContract = () => {
     fetchInitialData();
   }, []);
 
-  // Load screens with pagination and search
   const loadScreens = async (search = '', page = 0) => {
     try {
       const screensRes = await getScreens({ 
@@ -69,7 +67,6 @@ const CreateContract = () => {
         search 
       });
       
-      // Handle both array and paginated response
       let screensData = [];
       if (Array.isArray(screensRes)) {
         screensData = screensRes;
@@ -99,7 +96,6 @@ const CreateContract = () => {
     }
   };
 
-  // Debounced screen search function
   const debouncedLoadScreens = useMemo(
     () => debounce((inputValue, callback) => {
       loadScreens(inputValue, 0).then(options => callback(options));
@@ -107,14 +103,12 @@ const CreateContract = () => {
     []
   );
 
-  // Load more screens when scrolling
   const handleScreenMenuScrollToBottom = useCallback(() => {
     const newPage = screenPage + 1;
     loadScreens(screenSearch, newPage);
     setScreenPage(newPage);
   }, [screenPage, screenSearch]);
 
-  // Handle screen selection change
   const handleScreenChange = (selectedOptions) => {
     setForm(prev => ({
       ...prev,
@@ -122,18 +116,15 @@ const CreateContract = () => {
     }));
   };
 
-  // Handle company selection
   const handleCompanyChange = (selectedOption) => {
     setForm(prev => ({ ...prev, companyId: selectedOption?.value || '' }));
   };
 
-  // Handle form field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  // Account permissions management
   const handleAddAccountPermission = () => {
     setForm(prev => ({
       ...prev,
@@ -163,7 +154,6 @@ const CreateContract = () => {
     setForm(prev => ({ ...prev, accountPermissions: updated }));
   };
 
-  // Form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -173,13 +163,11 @@ const CreateContract = () => {
         contractValue: parseFloat(form.contractValue),
         startContractAt: form.startContractAt || null,
         expiredAt: form.expiredAt || null,
-        
+        accountName: form.accountName || null,
         accountPermissions: form.accountPermissions.map(perm => ({
-          accountIdentifier: perm.accountIdentifier,
-          permissions: {
-            read: perm.canRead,
-            write: perm.canEdit
-          }
+          name: perm.accountIdentifier,
+          canRead: perm.canRead,
+          canEdit: perm.canEdit
         }))
       });
       showToast('Contract created successfully!');
@@ -226,6 +214,14 @@ const CreateContract = () => {
         </div>
 
         <div className="grid grid-cols-1 gap-4">
+          <Input
+            label="Account Name"
+            name="accountName"
+            value={form.accountName}
+            onChange={handleChange}
+            placeholder="Enter account name (optional)"
+          />
+
           <div>
             <label className="block mb-2 text-sm font-medium">Company</label>
             <Select
