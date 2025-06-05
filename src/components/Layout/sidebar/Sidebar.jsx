@@ -21,10 +21,12 @@ const Sidebar = ({ open, setOpen }) => {
       md:translate-x-0 md:static md:inset-0 
       flex flex-col`}>
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-gray-800">
-        <a href="/dashboard"><CompanyLogo /></a>
+      <div className="flex items-center justify-between px-6 py-4 border-b border-dark">
+        <a href="/">
+          <CompanyLogo />
+        </a>
         <button
-          className="md:hidden text-gray-400 hover:text-white transition-colors"
+          className="md:hidden text-white hover:text-primary transition-colors duration-200"
           onClick={() => setOpen(false)}
           aria-label="Close sidebar"
         >
@@ -33,7 +35,7 @@ const Sidebar = ({ open, setOpen }) => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto mt-4 flex flex-col space-y-2 pr-[calc(1.5rem-8px)] pl-6 pb-4 scrollbar-gutter-stable">
+      <nav className="flex-1 overflow-y-auto mt-1 flex flex-col space-y-2 pr-[calc(1.5rem-8px)] pl-6 pb-4 pt-1 scrollbar-gutter-stable">
         <div className="pr-2">
           <NavButton to={"/dashboard"} icon={<FaHome />} label="Home" onClick={() => setOpen(false)} />
           <NavButton to={"/profile"} icon={<FaUser />} label="Profile" onClick={() => setOpen(false)} />
