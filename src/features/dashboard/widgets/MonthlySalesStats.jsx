@@ -17,28 +17,39 @@ import {
   ResponsiveContainer 
 } from 'recharts';
 
-const MonthlySalesStats = () => {
-  // Sample data - replace with API data
-  const currentMonthData = [
-    { day: '1', screens: 3 }, { day: '2', screens: 5 }, 
-    { day: '3', screens: 7 }, { day: '4', screens: 2 },
-    { day: '5', screens: 8 }, { day: '6', screens: 6 },
-    { day: '7', screens: 4 }, { day: '8', screens: 9 },
-    { day: '9', screens: 5 }, { day: '10', screens: 6 },
-    // ... continue for all days
-  ];
+const MonthlySalesStats = ({ salesData }) => {
+  // Process the sales data for the chart
+  const processChartData = (sales) => {
+    const dailyData = {};
+    
+    // Initialize all days of the month with 0
+    const daysInMonth = new Date().getDate();
+    for (let i = 1; i <= daysInMonth; i++) {
+      dailyData[i] = 0;
+    }
+    
+    // Sum up sales for each day
+    sales.forEach(sale => {
+      const day = new Date(sale.date).getDate();
+      dailyData[day] = (dailyData[day] || 0) + sale.screens;
+    });
+    
+    // Convert to array format for the chart
+    return Object.entries(dailyData).map(([day, screens]) => ({
+      day,
+      screens
+    }));
+  };
 
-  const lastMonthData = [
-    { day: '1', screens: 2 }, { day: '2', screens: 4 }, 
-    // ... last month's data
-  ];
+  const currentMonthData = processChartData(salesData.currentMonth);
+  const lastMonthData = processChartData(salesData.lastMonth);
 
   // Calculate totals
   const currentMonthTotal = currentMonthData.reduce((sum, day) => sum + day.screens, 0);
   const lastMonthTotal = lastMonthData.reduce((sum, day) => sum + day.screens, 0);
   
   // Calculate percentage change
-  const percentChange = ((currentMonthTotal - lastMonthTotal) / lastMonthTotal) * 100;
+  const percentChange = lastMonthTotal === 0 ? 0 : ((currentMonthTotal - lastMonthTotal) / lastMonthTotal) * 100;
   const isPositive = percentChange >= 0;
 
   return (
