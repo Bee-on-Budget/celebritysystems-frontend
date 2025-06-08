@@ -14,7 +14,7 @@ const NavButton = ({
   const baseClasses = "flex items-center font-medium focus:outline-none focus:ring-primary-focus focus:ring-1 transition duration-200";
   const variantClasses = {
     primary: "bg-primary text-white hover:bg-primary-hover",
-    sidebar: "space-x-2 text-white hover:text-primary px-1"
+    sidebar: "space-x-2 text-white hover:text-primary pl-1"
   };
 
   const sizeClasses = {
