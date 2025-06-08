@@ -22,15 +22,26 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
               </button>
             )}
             <h3 className="font-medium">Module {index + 1}</h3>
-            <Input
-              label="Quantity"
-              name={`moduleDto_${index}_quantity`}
-              type="number"
-              value={module.quantity}
-              onChange={onChange}
-              error={errors[`moduleDto_${index}_quantity`]}
-              required
-            />
+            <div className="grid grid-cols-2 gap-4">
+              <Input
+                label="Width Quantity"
+                name={`moduleDto_${index}_widthQuantity`}
+                type="number"
+                value={module.widthQuantity}
+                onChange={onChange}
+                error={errors[`moduleDto_${index}_widthQuantity`]}
+                required
+              />
+              <Input
+                label="Height Quantity"
+                name={`moduleDto_${index}_heightQuantity`}
+                type="number"
+                value={module.heightQuantity}
+                onChange={onChange}
+                error={errors[`moduleDto_${index}_heightQuantity`]}
+                required
+              />
+            </div>
             <div className="grid grid-cols-2 gap-4">
               <Input
                 label="Height"
@@ -75,15 +86,26 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
       {form.cabinets.map((cabinet, index) => (
         <div key={index} className="space-y-4 p-4 border rounded-lg">
           <h3 className="font-medium">Module for Cabinet {index + 1}</h3>
-          <Input
-            label="Quantity"
-            name={`moduleDto_${index}_quantity`}
-            type="number"
-            value={cabinet.moduleDto.quantity}
-            onChange={onChange}
-            error={errors[`moduleDto_${index}_quantity`]}
-            required
-          />
+          <div className="grid grid-cols-2 gap-4">
+            <Input
+              label="Width Quantity"
+              name={`moduleDto_${index}_widthQuantity`}
+              type="number"
+              value={cabinet.moduleDto.widthQuantity}
+              onChange={onChange}
+              error={errors[`moduleDto_${index}_widthQuantity`]}
+              required
+            />
+            <Input
+              label="Height Quantity"
+              name={`moduleDto_${index}_heightQuantity`}
+              type="number"
+              value={cabinet.moduleDto.heightQuantity}
+              onChange={onChange}
+              error={errors[`moduleDto_${index}_heightQuantity`]}
+              required
+            />
+          </div>
           <div className="grid grid-cols-2 gap-4">
             <Input
               label="Height"

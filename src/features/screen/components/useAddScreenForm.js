@@ -34,7 +34,8 @@ const initialFormState = {
   versionFile: null,
   modulesDto: [
     {
-      quantity: "",
+      widthQuantity: "",
+      heightQuantity: "",
       height: "",
       width: "",
       moduleBatchNumber: "",
@@ -48,7 +49,8 @@ const initialFormState = {
       height: "",
       width: "",
       moduleDto: {
-        quantity: "",
+        widthQuantity: "",
+        heightQuantity: "",
         height: "",
         width: "",
         moduleBatchNumber: "",
@@ -75,7 +77,8 @@ const useAddScreenForm = () => {
           height: "",
           width: "",
           moduleDto: {
-            quantity: "",
+            widthQuantity: "",
+            heightQuantity: "",
             height: "",
             width: "",
             moduleBatchNumber: "",
@@ -105,7 +108,8 @@ const useAddScreenForm = () => {
       modulesDto: [
         ...prev.modulesDto,
         {
-          quantity: "",
+          widthQuantity: "",
+          heightQuantity: "",
           height: "",
           width: "",
           moduleBatchNumber: "",
@@ -282,10 +286,14 @@ const useAddScreenForm = () => {
 
       if (form.solutionTypeInScreen === "MODULE_SOLUTION") {
         form.modulesDto.forEach((module, index) => {
-          if (!module.quantity)
-            newErrors[`moduleDto_${index}_quantity`] = "Quantity is required";
-          else if (Number(module.quantity) <= 0)
-            newErrors[`moduleDto_${index}_quantity`] = "Quantity must be greater than 0";
+          if (!module.widthQuantity)
+            newErrors[`moduleDto_${index}_widthQuantity`] = "Quantity is required";
+          else if (Number(module.widthQuantity) <= 0)
+            newErrors[`moduleDto_${index}_widthQuantity`] = "Quantity must be greater than 0";
+          if (!module.heightQuantity)
+            newErrors[`moduleDto_${index}_heightQuantity`] = "Height quantity is required";
+          else if (Number(module.heightQuantity) <= 0)
+            newErrors[`moduleDto_${index}_heightQuantity`] = "Height quantity must be greater than 0";
           if (!module.height)
             newErrors[`moduleDto_${index}_height`] = "Height is required";
           if (!module.width)
@@ -298,10 +306,14 @@ const useAddScreenForm = () => {
 
     if (currentStep === 4) {
       form.cabinets.forEach((cabinet, index) => {
-        if (!cabinet.moduleDto.quantity)
-          newErrors[`moduleDto_${index}_quantity`] = "Quantity is required";
-        else if (Number(cabinet.moduleDto.quantity) <= 0)
-          newErrors[`moduleDto_${index}_quantity`] = "Quantity must be greater than 0";
+        if (!cabinet.moduleDto.widthQuantity)
+          newErrors[`moduleDto_${index}_widthQuantity`] = "Width quantity is required";
+        else if (Number(cabinet.moduleDto.widthQuantity) <= 0)
+          newErrors[`moduleDto_${index}_widthQuantity`] = "Width quantity must be greater than 0";
+        if (!cabinet.moduleDto.heightQuantity)
+          newErrors[`moduleDto_${index}_heightQuantity`] = "Height quantity is required";
+        else if (Number(cabinet.moduleDto.heightQuantity) <= 0)
+          newErrors[`moduleDto_${index}_heightQuantity`] = "Height quantity must be greater than 0";
         if (!cabinet.moduleDto.height)
           newErrors[`moduleDto_${index}_height`] = "Height is required";
         if (!cabinet.moduleDto.width)
@@ -340,7 +352,8 @@ const useAddScreenForm = () => {
       if (form.solutionTypeInScreen === "MODULE_SOLUTION") {
         solutionData.modulesDto = form.modulesDto.map(module => ({
           moduleBatchNumber: module.moduleBatchNumber,
-          quantity: Number(module.quantity),
+          widthQuantity: Number(module.widthQuantity),
+          heightQuantity: Number(module.heightQuantity),
           height: Number(module.height),
           width: Number(module.width)
         }));
@@ -354,7 +367,8 @@ const useAddScreenForm = () => {
             width: Number(cabinet.width),
             moduleDto: {
               moduleBatchNumber: cabinet.moduleDto.moduleBatchNumber,
-              quantity: Number(cabinet.moduleDto.quantity),
+              widthQuantity: Number(cabinet.moduleDto.widthQuantity),
+              heightQuantity: Number(cabinet.moduleDto.heightQuantity),
               height: Number(cabinet.moduleDto.height),
               width: Number(cabinet.moduleDto.width)
             }

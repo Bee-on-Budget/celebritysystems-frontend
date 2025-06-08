@@ -49,9 +49,10 @@ export const createScreen = async (screenData) => {
                 'moduleDtoListJson',
                 JSON.stringify(screenData.modulesDto.map(m => ({
                     moduleBatchNumber: m.moduleBatchNumber,
-                    quantity: Number(m.quantity),
-                    height: Number(m.height),
-                    width: Number(m.width)
+                    widthQuantity: Number(m.widthQuantity),
+                    heightQuantity: Number(m.heightQuantity),
+                    width: Number(m.width),
+                    height: Number(m.height)
                 })))
             );
         } else if (screenData.solutionTypeInScreen === 'CABINET_SOLUTION') {
