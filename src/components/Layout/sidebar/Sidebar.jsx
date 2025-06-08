@@ -35,7 +35,7 @@ const Sidebar = ({ open, setOpen }) => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto mt-1 flex flex-col space-y-2 pr-[calc(1.5rem-8px)] pl-6 pb-4 pt-1 scrollbar-gutter-stable">
+      <nav className="flex-1 overflow-y-auto mt-1 flex flex-col space-y-2 pr-[calc(1.5rem-8px)] pl-4 pb-4 pt-1 scrollbar-gutter-stable">
         <div className="pr-2">
           <NavButton to={"/dashboard"} icon={<FaHome />} label="Home" onClick={() => setOpen(false)} />
           <NavButton to={"/profile"} icon={<FaUser />} label="Profile" onClick={() => setOpen(false)} />

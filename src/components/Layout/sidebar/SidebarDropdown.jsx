@@ -20,7 +20,7 @@ const SidebarDropdown = ({ icon: Icon, label, items, isOpen, onToggle }) => {
       {/* Vertical line */}
       {isOpen && (
         <div
-          className="absolute -left-6 -top-4 w-1 bg-primary transition-all duration-300 rounded-full"
+          className="absolute -left-4 -top-4 w-1 bg-primary transition-all duration-300 rounded-full"
           style={{
             top: 0,
             height: `${dropdownHeight}px`,
