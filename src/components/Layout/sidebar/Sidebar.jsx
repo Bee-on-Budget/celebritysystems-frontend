@@ -3,9 +3,11 @@ import { FaFileContract, FaHome, FaUser, FaBars, FaUsers, FaBuilding, FaDesktop 
 import CompanyLogo from '../../CompanyLogo';
 import NavButton from '../../NavButton';
 import SidebarDropdown from './SidebarDropdown';
+import { useAuth } from '../../../auth/useAuth';
 
 const Sidebar = ({ open, setOpen }) => {
   const [openDropdowns, setOpenDropdowns] = useState({});
+  const {user} = useAuth();
 
   const handleDropdownToggle = (label) => {
     setOpenDropdowns((prev) => ({
@@ -40,17 +42,18 @@ const Sidebar = ({ open, setOpen }) => {
           <NavButton to={"/dashboard"} icon={<FaHome />} label="Home" onClick={() => setOpen(false)} />
           <NavButton to={"/profile"} icon={<FaUser />} label="Profile" onClick={() => setOpen(false)} />
 
-          <SidebarDropdown
-            icon={FaUsers}
-            label="Accounts"
-            isOpen={openDropdowns["Accounts"]}
-            onToggle={() => handleDropdownToggle("Accounts")}
-            items={[
-              { label: "Create User", href: "/create-user", onClick: () => setOpen(false) },
-              { label: "Manage Users", href: "/manage-users", onClick: () => setOpen(false) },
-
-            ]}
-          />
+          {user?.role === "ADMIN" && (
+            <SidebarDropdown
+              icon={FaUsers}
+              label="Accounts"
+              isOpen={openDropdowns["Accounts"]}
+              onToggle={() => handleDropdownToggle("Accounts")}
+              items={[
+                { label: "Create User", href: "/create-user", onClick: () => setOpen(false) },
+                { label: "Manage Users", href: "/manage-users", onClick: () => setOpen(false) },
+              ]}
+            />
+           )}
           <SidebarDropdown
             icon={FaBuilding}
             label="Companies"
