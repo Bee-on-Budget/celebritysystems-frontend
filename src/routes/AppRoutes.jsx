@@ -57,7 +57,7 @@ const AppRoutes = () => {
       <Route
         path="/"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
             <Layout />
           </ProtectedRoute>
         }
@@ -75,7 +75,7 @@ const AppRoutes = () => {
         <Route
           path="create-user"
           element={
-            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
               <CreateUser />
             </ProtectedRoute>
           }
@@ -83,7 +83,7 @@ const AppRoutes = () => {
         <Route
           path="manage-users"
           element={
-            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
               <ManageUsers />
             </ProtectedRoute>
           }
@@ -119,7 +119,7 @@ const AppRoutes = () => {
         <Route
           path="screen" // ✅ updated to plural and matches Sidebar link
           element={
-            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR", "TECHNICIAN"]}>
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
               <ScreenList />
             </ProtectedRoute>
           }
@@ -127,7 +127,7 @@ const AppRoutes = () => {
         <Route
           path="screen/AddScreen"
           element={
-            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR", "TECHNICIAN"]}>
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
               <AddScreen />
             </ProtectedRoute>
           }
@@ -162,7 +162,7 @@ const AppRoutes = () => {
         <Route
           path="tickets"
           element={
-            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR", "TECHNICIAN"]}>
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
               <TicketList />
             </ProtectedRoute>
           }
@@ -170,7 +170,7 @@ const AppRoutes = () => {
         <Route
           path="tickets/create"
           element={
-            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR", "TECHNICIAN"]}>
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
               <CreateTicket />
             </ProtectedRoute>
           }
@@ -178,7 +178,7 @@ const AppRoutes = () => {
         <Route
           path="tickets/:id"
           element={
-            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR", "TECHNICIAN"]}>
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
               <TicketDetails />
             </ProtectedRoute>
           }
