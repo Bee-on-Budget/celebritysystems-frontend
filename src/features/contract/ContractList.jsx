@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllContracts } from './contractService';
 import { MultiSearchBar, Loading, NavButton, showToast } from '../../components';
-import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { FaChevronDown, FaChevronUp, FaPlus } from 'react-icons/fa';
 
 const ContractList = () => {
   const [contracts, setContracts] = useState([]);
@@ -13,7 +13,7 @@ const ContractList = () => {
   const fetchContracts = async () => {
     try {
       setLoading(true);
-      const data = await getAllContracts(); // Note: No .data here compared to previous version
+      const data = await getAllContracts();
       setContracts(data);
       setFilteredContracts(data);
     } catch (error) {
@@ -62,12 +62,16 @@ const ContractList = () => {
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Contracts</h1>
+        <h1 className="text-2xl font-bold text-gray-800">Contracts</h1>
         <NavButton
           to="/contracts/create"
-          variant="primary"
-          label="Create New Contract"
-          fullWidth={false}
+          className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow-sm transition"
+          label={
+            <>
+              <FaPlus className="text-sm" />
+              Create New Contract
+            </>
+          }
         />
       </div>
 
@@ -94,30 +98,30 @@ const ContractList = () => {
                   onClick={() => toggleExpandContract(contract.id)}
                 >
                   <div>
-                    <h3 className="text-lg font-medium text-dark">
+                    <h3 className="text-lg font-medium text-gray-900">
                       {contract.info || 'Untitled Contract'}
                     </h3>
                     <div className="flex gap-4 mt-1">
-                      <span className="text-sm text-dark-light">
-                        <span className="font-semibold">Company ID:</span> {contract.companyId}
-                      </span>
-                      <span className="text-sm text-dark-light">
+                      <span className="text-sm text-gray-600">
                         <span className="font-semibold">Start:</span> {formatDate(contract.startContractAt)}
+                      </span>
+                      <span className="text-sm text-gray-600">
+                        <span className="font-semibold">Expires:</span> {formatDate(contract.expiredAt)}
                       </span>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
                     <Link
                       to={`/contracts/${contract.id}`}
-                      className="text-primary hover:text-primary-hover"
+                      className="text-indigo-600 hover:text-indigo-800 font-medium"
                       onClick={(e) => e.stopPropagation()}
                     >
                       View
                     </Link>
                     {expandedContract === contract.id ? (
-                      <FaChevronUp className="text-dark-light" />
+                      <FaChevronUp className="text-gray-400" />
                     ) : (
-                      <FaChevronDown className="text-dark-light" />
+                      <FaChevronDown className="text-gray-400" />
                     )}
                   </div>
                 </div>
@@ -127,20 +131,18 @@ const ContractList = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <h4 className="text-md font-medium text-gray-700 mb-2">Details</h4>
-                        <div className="space-y-1 text-sm">
-                          <p>
-                            <span className="font-medium text-gray-600">Expires:</span> {formatDate(contract.expiredAt)}
-                          </p>
-                          <p>
-                            <span className="font-medium text-gray-600">Type:</span> {contract.supplyType}
-                          </p>
-                          <p>
-                            <span className="font-medium text-gray-600">Value:</span> ${contract.contractValue?.toLocaleString()}
-                          </p>
+                        <div className="space-y-1 text-sm text-gray-700">
+                          <p><span className="font-medium">Supply Type:</span> {contract.supplyType}</p>
+                          <p><span className="font-medium">Operator Type:</span> {contract.operatorType}</p>
+                          <p><span className="font-medium">Duration Type:</span> {contract.durationType}</p>
+                          <p><span className="font-medium">Account Name:</span> {contract.accountName}</p>
+                          <p><span className="font-medium">Contract Value:</span> ${contract.contractValue?.toLocaleString()}</p>
                         </div>
                       </div>
                       <div>
-                        <h4 className="text-md font-medium text-gray-700 mb-2">Screens ({contract.screenIds?.length || 0})</h4>
+                        <h4 className="text-md font-medium text-gray-700 mb-2">
+                          Screens ({contract.screenIds?.length || 0})
+                        </h4>
                         {contract.screenIds?.length > 0 ? (
                           <div className="flex flex-wrap gap-2">
                             {contract.screenIds.map(screenId => (
@@ -153,9 +155,23 @@ const ContractList = () => {
                             ))}
                           </div>
                         ) : (
-                          <p className="text-sm text-dark-light italic">No screens assigned</p>
+                          <p className="text-sm text-gray-500 italic">No screens assigned</p>
                         )}
                       </div>
+                    </div>
+                    <div className="mt-4">
+                      <h4 className="text-md font-medium text-gray-700 mb-2">Account Permissions</h4>
+                      {contract.accountPermissions?.length > 0 ? (
+                        <ul className="list-disc list-inside text-sm text-gray-700">
+                          {contract.accountPermissions.map((perm, index) => (
+                            <li key={index}>
+                              <span className="font-medium">{perm.name}</span> – Read: {perm.canRead ? 'Yes' : 'No'}, Edit: {perm.canEdit ? 'Yes' : 'No'}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-sm text-gray-500 italic">No account permissions defined</p>
+                      )}
                     </div>
                   </div>
                 )}

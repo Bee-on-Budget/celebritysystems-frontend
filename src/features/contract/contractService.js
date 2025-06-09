@@ -19,7 +19,12 @@ export const createContract = async (contractData) => {
 
 export const getAllContracts = async () => {
   try {
-    const response = await axios.get(CONTRACT_API_URL);
+    const response = await axios.get(CONTRACT_API_URL, {
+      params: {
+        includeCompany: true,
+        includeScreens: true
+      }
+    });
     return response.data;
   } catch (error) {
     throw error.response?.data?.message || "Error fetching contracts";
@@ -28,7 +33,13 @@ export const getAllContracts = async () => {
 
 export const getContractById = async (id) => {
   try {
-    const response = await axios.get(`${CONTRACT_API_URL}/${id}`);
+    const response = await axios.get(`${CONTRACT_API_URL}/${id}`, {
+      params: {
+        includeCompany: true,
+        includeScreens: true,
+        includePermissions: true
+      }
+    });
     return response.data;
   } catch (error) {
     throw error.response?.data?.message || "Error fetching contract";
@@ -93,5 +104,13 @@ export const checkContractExists = async (companyId, screenId) => {
     return response.data;
   } catch (error) {
     throw error.response?.data?.message || "Error checking contract existence";
+  }
+};
+export const getCompanyById = async (id) => {
+  try {
+    const response = await axios.get(`/company/id/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data?.message || "Error fetching company";
   }
 };

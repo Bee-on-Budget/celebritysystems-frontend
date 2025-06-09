@@ -165,7 +165,7 @@ const CreateContract = () => {
         expiredAt: form.expiredAt || null,
         accountName: form.accountName || null,
         accountPermissions: form.accountPermissions.map(perm => ({
-          name: perm.accountIdentifier,
+          permissionName: perm.accountIdentifier,
           canRead: perm.canRead,
           canEdit: perm.canEdit
         }))
@@ -178,6 +178,7 @@ const CreateContract = () => {
       setLoading(false);
     }
   };
+  
 
   if (fetching) return <div className="p-4">Loading initial data...</div>;
 
