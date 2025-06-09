@@ -19,7 +19,7 @@ export const createContract = async (contractData) => {
 
 export const getAllContracts = async () => {
   try {
-    const response = await axios.get(CONTRACT_API_URL, {
+    const response = await axios.get(`${CONTRACT_API_URL}/with-names`, {
       params: {
         includeCompany: true,
         includeScreens: true

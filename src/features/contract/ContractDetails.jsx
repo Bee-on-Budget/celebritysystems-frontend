@@ -1,160 +1,157 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { getContractById, getCompanyById } from './contractService';
-import { showToast } from '../../components/ToastNotifier';
-import { Loading } from '../../components';
+import React, { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { getContractById } from "./contractService";
+import Loading from "../../components/Loading";
 
-const FullyContractDetails = () => {
+const ContractDetails = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [contract, setContract] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchContract = async () => {
       try {
+        setLoading(true);
         const data = await getContractById(id);
-
-        // If company has only ID, fetch the full company info
-        if (data.company?.id && !data.company.name) {
-          try {
-            const company = await getCompanyById(data.company.id);
-            data.company = company;
-          } catch (err) {
-            showToast("Failed to fetch company details", "error");
-          }
-        }
-
         setContract(data);
-      } catch (error) {
-        showToast(error.message || 'Failed to load contract', 'error');
-        navigate('/contracts');
+      } catch (err) {
+        setError(err.message || "Failed to load contract");
       } finally {
         setLoading(false);
       }
     };
-
     fetchContract();
-  }, [id, navigate]);
+  }, [id]);
 
-  const formatDate = (date) =>
-    date ? new Date(date).toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
-    }) : 'N/A';
+  const formatDateTime = (dateTime) => {
+    if (!dateTime) return "N/A";
+    const date = new Date(dateTime);
+    return date.toLocaleString();
+  };
 
   if (loading) return <Loading />;
-  if (!contract) return <div className="text-red-500">Contract not found</div>;
+  if (error) return <div className="text-red-500 p-4">{error}</div>;
+  if (!contract) return <div className="p-4">Contract not found</div>;
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-semibold text-gray-800">Contract #{contract.id}</h1>
-        <button
-          onClick={() => navigate('/contracts')}
-          className="bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-md"
+    <div className="max-w-6xl mx-auto p-6 bg-white shadow rounded-lg">
+      <div className="flex justify-between items-start mb-6">
+        <h2 className="text-2xl font-bold">
+          Contract Details - {contract.companyName || `ID: ${contract.id}`}
+        </h2>
+        <Link
+          to="/contracts"
+          className="inline-block px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded transition"
         >
-          Back to Contracts
-        </button>
+          ← Back to Contracts
+        </Link>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-        <div>
-          <h2 className="text-lg font-semibold text-gray-700 mb-2">General Info</h2>
-          <Detail label="Info" value={contract.info} />
-          <Detail label="Account Name" value={contract.accountName} />
-          <Detail label="Operator Type" value={contract.operatorType} />
-          <Detail label="Supply Type" value={contract.supplyType} />
-          <Detail label="Duration Type" value={contract.durationType} />
-        </div>
-
-        <div>
-          <h2 className="text-lg font-semibold text-gray-700 mb-2">Timeline & Value</h2>
-          <Detail label="Start Date" value={formatDate(contract.startContractAt)} />
-          <Detail label="Expiry Date" value={formatDate(contract.expiredAt)} />
-          <Detail label="Contract Value" value={contract.contractValue ? `$${contract.contractValue.toLocaleString()}` : 'N/A'} />
-          <Detail label="Created At" value={formatDate(contract.createdAt)} />
-          <Detail label="Updated At" value={formatDate(contract.updatedAt)} />
-        </div>
-      </div>
-
-      <Section title="Company Information">
-        {contract.company ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Detail label="Company Name" value={contract.company.name} />
-            <Detail label="Company ID" value={contract.company.id} />
-            <Detail label="Contact Email" value={contract.company.email} />
-            <Detail label="Phone Number" value={contract.company.phone} />
+      <div className="space-y-6">
+        {/* Basic Information Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-gray-50 rounded-lg">
+          <div>
+            <h3 className="text-lg font-semibold mb-3 border-b pb-2">Contract Information</h3>
+            <div className="space-y-2">
+              <p><span className="font-medium">ID:</span> {contract.id}</p>
+              <p><span className="font-medium">Info:</span> {contract.info || "N/A"}</p>
+              <p><span className="font-medium">Company:</span> {contract.companyName || "N/A"}</p>
+              <p><span className="font-medium">Account:</span> {contract.accountName || "N/A"}</p>
+            </div>
           </div>
-        ) : (
-          <EmptyText text="No company information available" />
-        )}
-      </Section>
+          <div>
+            <h3 className="text-lg font-semibold mb-3 border-b pb-2">Financial & Timing</h3>
+            <div className="space-y-2">
+              <p><span className="font-medium">Value:</span> ${contract.contractValue?.toLocaleString() || "0"}</p>
+              <p><span className="font-medium">Start:</span> {formatDateTime(contract.startContractAt)}</p>
+              <p><span className="font-medium">Expires:</span> {formatDateTime(contract.expiredAt)}</p>
+              <p><span className="font-medium">Created:</span> {formatDateTime(contract.createdAt)}</p>
+              <p><span className="font-medium">Updated:</span> {formatDateTime(contract.updatedAt)}</p>
+            </div>
+          </div>
+        </div>
 
-      <Section title="Screens">
-        {contract.screens?.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Screen ID</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {contract.screens.map((screen) => (
-                  <tr key={screen.id}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{screen.id}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{screen.name}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{screen.location}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{screen.status || 'N/A'}</td>
+        {/* Type Information Section */}
+        <div className="p-4 bg-gray-50 rounded-lg">
+          <h3 className="text-lg font-semibold mb-3 border-b pb-2">Contract Types</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <p><span className="font-medium">Duration:</span> {contract.durationType || "N/A"}</p>
+            </div>
+            <div>
+              <p><span className="font-medium">Operator:</span> {contract.operatorType || "N/A"}</p>
+            </div>
+            <div>
+              <p><span className="font-medium">Supply:</span> {contract.supplyType || "N/A"}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Screen Names Section - Now properly displayed */}
+        <div className="p-4 bg-gray-50 rounded-lg">
+          <h3 className="text-lg font-semibold mb-3 border-b pb-2">
+            Screen Names ({contract.screenNames?.length || 0})
+          </h3>
+          {contract.screenNames?.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {contract.screenNames.map((name, index) => (
+                <span
+                  key={index}
+                  className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
+                >
+                  {name}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 italic">No screen names available</p>
+          )}
+        </div>
+
+        {/* Account Permissions Section */}
+        <div className="p-4 bg-gray-50 rounded-lg">
+          <h3 className="text-lg font-semibold mb-3 border-b pb-2">
+            Account Permissions ({contract.accountPermissions?.length || 0})
+          </h3>
+          {contract.accountPermissions?.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-100">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Can Read</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Can Edit</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <EmptyText text="No screens associated with this contract" />
-        )}
-      </Section>
-
-      <Section title="Account Permissions">
-        {contract.accountPermissions?.length > 0 ? (
-          <ul className="divide-y divide-gray-100">
-            {contract.accountPermissions.map((perm, index) => (
-              <li key={index} className="py-3">
-                <p><span className="font-medium">Name:</span> {perm.name}</p>
-                <p><span className="font-medium">Can Read:</span> {perm.canRead ? 'Yes' : 'No'}</p>
-                <p><span className="font-medium">Can Edit:</span> {perm.canEdit ? 'Yes' : 'No'}</p>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <EmptyText text="No account permissions defined" />
-        )}
-      </Section>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {contract.accountPermissions.map((perm, index) => (
+                    <tr key={index}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {perm.name || "N/A"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${perm.canRead ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                          {perm.canRead ? "Yes" : "No"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${perm.canEdit ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                          {perm.canEdit ? "Yes" : "No"}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="text-gray-500 italic">No account permissions available</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
 
-const Detail = ({ label, value }) => (
-  <p className="text-sm text-gray-800 mb-1">
-    <span className="font-medium">{label}:</span> {value || 'N/A'}
-  </p>
-);
-
-const Section = ({ title, children }) => (
-  <div className="mt-8 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-    <h2 className="text-lg font-semibold text-gray-700 mb-4">{title}</h2>
-    {children}
-  </div>
-);
-
-const EmptyText = ({ text }) => (
-  <p className="text-sm text-gray-500 italic">{text}</p>
-);
-
-export default FullyContractDetails;
+export default ContractDetails;
