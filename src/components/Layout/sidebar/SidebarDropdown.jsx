@@ -44,19 +44,21 @@ const SidebarDropdown = ({ icon: Icon, label, items, isOpen, onToggle }) => {
       {/* Dropdown Items */}
       <div
         ref={dropdownRef}
-        className={`overflow-hidden transition-all duration-300 pr-2 pl-5 ease-in-out ${
-          isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-        }`}
+        className={`overflow-hidden transition-all duration-300 pr-2 pl-5 ease-in-out ${isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          }`}
       >
-        {items.map((item, idx) => (
-          <NavButton
-            key={idx}
-            to={item.href}
-            label={item.label}
-            onClick={item.onClick}
-            className="font-normal py-1 m-1"
-          />
-        ))}
+        {items.map((item, idx) => {
+          if(item.hideNavButton) return (<></>);
+          return (
+            <NavButton
+              key={idx}
+              to={item.href}
+              label={item.label}
+              onClick={item.onClick}
+              className="font-normal py-1 m-1"
+            />
+          );
+        })}
       </div>
     </div>
   );
