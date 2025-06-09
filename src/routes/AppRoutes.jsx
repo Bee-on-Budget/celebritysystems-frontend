@@ -35,7 +35,7 @@ import TestPage from "../features/test/TestPage";
 // Contract management
 import CreateContract from "../features/contract/CreateContract";
 import ContractList from "../features/contract/ContractList";
-import ContractDetails from "../features/contract/ContractDetails";
+// import ContractDetails from "../features/contract/ContractDetails";
 // Ticket management
 import TicketList from "../features/ticket/TicketList";
 import CreateTicket from "../features/ticket/CreateTicket";
@@ -150,14 +150,14 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-        <Route
+        {/* <Route
           path="contracts/:id"
           element={
             <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
               <ContractDetails />
             </ProtectedRoute>
           }
-        />
+        /> */}
         {/*Tickets*/}
         <Route
           path="tickets"
