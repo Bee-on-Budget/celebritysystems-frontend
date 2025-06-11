@@ -1,6 +1,6 @@
-// src/features/screen/ScreenList.js
 import React, { useState, useEffect } from 'react';
-import { getScreens } from '../../../api/ScreenService';
+import { getScreens, searchScreens } from '../../../api/ScreenService';
+import { FiSearch } from 'react-icons/fi';
 
 const ScreenList = () => {
   const [screens, setScreens] = useState([]);
@@ -9,6 +9,8 @@ const ScreenList = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
   const [error, setError] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
 
   const fetchScreens = async (pageNumber) => {
     setLoading(true);
@@ -27,14 +29,52 @@ const ScreenList = () => {
     }
   };
 
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) {
+      setIsSearching(false);
+      fetchScreens(0);
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    try {
+      const results = await searchScreens(searchQuery);
+      setScreens(results || []);
+      setIsSearching(true);
+      setTotalPages(1);
+      setPage(0);
+      setTotalElements(results.length || 0);
+    } catch (err) {
+      setError('Failed to search screens. Please try again.');
+      console.error('Error searching screens:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    fetchScreens(page);
-  }, [page]);
+    if (!isSearching) {
+      fetchScreens(page);
+    }
+  }, [page, isSearching]);
 
   const handlePageChange = (newPage) => {
     if (newPage >= 0 && newPage < totalPages) {
       setPage(newPage);
     }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery('');
+    setIsSearching(false);
+    fetchScreens(0);
   };
 
   if (loading) return (
@@ -45,8 +85,31 @@ const ScreenList = () => {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <div className="mb-6 flex justify-between items-center">
+      <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2 className="text-2xl font-bold text-gray-800">LED Screen Inventory</h2>
+        
+        <div className="relative w-full sm:w-64">
+          <div className="flex items-center">
+            <input
+              type="text"
+              placeholder="Search screens..."
+              className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
+            <FiSearch className="absolute left-3 text-gray-400" />
+          </div>
+          {isSearching && (
+            <button
+              onClick={handleClearSearch}
+              className="absolute right-2 top-2 text-xs text-blue-600 hover:text-blue-800"
+            >
+              Clear
+            </button>
+          )}
+        </div>
+
         <span className="text-sm text-gray-600">
           Total: {totalElements} screens
         </span>
@@ -60,7 +123,19 @@ const ScreenList = () => {
 
       {screens.length === 0 && !loading ? (
         <div className="bg-white p-8 rounded-lg shadow-md text-center">
-          <p className="text-gray-600">No screens found. Create a new one to get started.</p>
+          <p className="text-gray-600">
+            {isSearching 
+              ? `No screens found matching "${searchQuery}"`
+              : 'No screens found. Create a new one to get started.'}
+          </p>
+          {isSearching && (
+            <button
+              onClick={handleClearSearch}
+              className="mt-2 text-blue-600 hover:text-blue-800 text-sm"
+            >
+              Clear search
+            </button>
+          )}
         </div>
       ) : (
         <>
@@ -153,7 +228,7 @@ const ScreenList = () => {
                 <div className="mt-4 pt-4 border-t border-gray-100">
                   <h4 className="text-sm font-semibold text-gray-800 mb-2">Cabinets</h4>
                   <ul className="space-y-2 text-sm">
-                    {screen.cabinList.map((cabin) => (
+                    {screen.cabinList?.map((cabin) => (
                       <li key={cabin.id} className="bg-gray-50 p-2 rounded">
                         <div className="font-medium">{cabin.cabinName}</div>
                         <div className="flex justify-between text-xs text-gray-600">
@@ -177,31 +252,33 @@ const ScreenList = () => {
             ))}
           </div>
 
-          {/* Pagination */}
-          <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div className="text-sm text-gray-600">
-              Showing {screens.length} of {totalElements} screens
+          {/* Pagination - only show if not searching */}
+          {!isSearching && totalPages > 1 && (
+            <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+              <div className="text-sm text-gray-600">
+                Showing {screens.length} of {totalElements} screens
+              </div>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => handlePageChange(page - 1)}
+                  disabled={page === 0}
+                  className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Previous
+                </button>
+                <span className="px-4 py-2 bg-blue-50 text-blue-700 rounded">
+                  Page {page + 1} of {totalPages}
+                </span>
+                <button
+                  onClick={() => handlePageChange(page + 1)}
+                  disabled={page + 1 >= totalPages}
+                  className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Next
+                </button>
+              </div>
             </div>
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={() => handlePageChange(page - 1)}
-                disabled={page === 0}
-                className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Previous
-              </button>
-              <span className="px-4 py-2 bg-blue-50 text-blue-700 rounded">
-                Page {page + 1} of {totalPages}
-              </span>
-              <button
-                onClick={() => handlePageChange(page + 1)}
-                disabled={page + 1 >= totalPages}
-                className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Next
-              </button>
-            </div>
-          </div>
+          )}
         </>
       )}
     </div>

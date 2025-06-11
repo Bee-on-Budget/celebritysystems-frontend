@@ -19,6 +19,15 @@ export const getScreenById = async (id) => {
         throw error.response?.data?.message || "Error fetching screen";
     }
 };
+// Add this to your existing ScreenService.js
+export const searchScreens = async (name) => {
+    try {
+        const response = await api.get('/screens/search', { params: { name } });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data?.message || "Error searching screens";
+    }
+};
 
 // POST endpoints (existing)
 export const createScreen = async (screenData) => {
