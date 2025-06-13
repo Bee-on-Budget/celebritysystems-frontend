@@ -11,7 +11,6 @@ import Login from "../features/auth/Login";
 import Dashboard from "../features/dashboard/Dashboard";
 import Profile from "../features/profile/Profile";
 import AddSystem from "../features/systems/AddSystem";
-import ScreenList from "../features/screen/components/ScreenList";
 
 
 // Errors
@@ -28,6 +27,9 @@ import AddUserToCompany from "../features/companies/AddUserToCompany";
 
 // Screen management
 import AddScreen from "../features/screen/";
+import ScreenDetails from "../features/screen/components/ScreenDetails";
+// import ScreenList from "../features/screen/components/ScreenList";
+import ScreenPage from "../features/screen/ScreenPage";
 
 // Test
 import TestPage from "../features/test/TestPage";
@@ -120,7 +122,7 @@ const AppRoutes = () => {
           path="screen" // ✅ updated to plural and matches Sidebar link
           element={
             <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
-              <ScreenList />
+              <ScreenPage />
             </ProtectedRoute>
           }
         />
@@ -129,6 +131,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
               <AddScreen />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="screens/:id" // This will match paths like /screen/1, /screen/2, etc.
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
+              <ScreenDetails />
             </ProtectedRoute>
           }
         />
