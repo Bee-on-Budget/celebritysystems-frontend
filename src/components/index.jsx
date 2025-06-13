@@ -10,6 +10,8 @@ import showToast from "./ToastNotifier";
 import PasswordStrengthMeter from "./PasswordStrengthMeter";
 import NavButton from "./NavButton";
 import Loading from "./Loading";
+import DataList from "./DataList";
+import Pagination from "./Pagination";
 
 export {
   Button,
@@ -23,5 +25,7 @@ export {
   showToast,
   PasswordStrengthMeter,
   NavButton,
-  Loading
+  Loading,
+  DataList,
+  Pagination,
 };
