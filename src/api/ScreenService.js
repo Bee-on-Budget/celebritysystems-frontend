@@ -13,7 +13,7 @@ export const getScreens = async (params = {}) => {
 
 export const getScreenById = async (id) => {
     try {
-        const response = await api.get(`/screens/${id}`);
+        const response = await api.get(`/screens/screen_id/${id}`);
         return response.data;
     } catch (error) {
         throw error.response?.data?.message || "Error fetching screen";
