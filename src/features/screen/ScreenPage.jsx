@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { DataList, Pagination } from '../../components';
-import { getScreens } from '../../api/ScreenService';
+import { getScreens, searchScreens } from '../../api/ScreenService';
 import { useNavigate } from 'react-router-dom';
 
 const ScreensPage = () => {
@@ -38,20 +38,24 @@ const ScreensPage = () => {
 
   const handleSearch = useCallback(
     async (query) => {
-      return screens
-        .filter((screen) =>
-          screen.name.toLowerCase().includes(query.toLowerCase())
-        )
-        .map((screen) => screen.name);
+      try {
+        const results = await searchScreens(query);
+        return (results || []).map((screen) => screen.name);
+      } catch (e) {
+        setError('Failed to search screens');
+        return [];
+      }
     },
-    [screens]
+    []
   );
 
-  const handleResultClick = (query) => {
-    const result = screens.filter((screen) =>
-      screen.name.toLowerCase().startsWith(query.toLowerCase())
-    );
-    setFiltered(result);
+  const handleResultClick = async (query) => {
+    try {
+      const results = await searchScreens(query);
+      setFiltered(results || []);
+    } catch (e) {
+      setError('Failed to search screens');
+    }
   };
 
   const handleClearSearch = () => {
