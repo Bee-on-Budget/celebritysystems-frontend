@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getAllContracts } from './contractService';
-import { Loading, NavButton } from '../../components';
-import { FaPlus, FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { Loading } from '../../components';
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const ContractAccordionList = () => {
   const [contracts, setContracts] = useState([]);
