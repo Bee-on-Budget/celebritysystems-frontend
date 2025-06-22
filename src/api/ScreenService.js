@@ -117,3 +117,12 @@ export const createCabinets = async (cabinetData) => {
         throw error.response?.data?.message || "Error creating cabin";
     }
 };
+
+export const deleteScreen = async (id) => {
+    try {
+        const response = await api.delete(`/screens/${id}`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data?.message || "Error deleting screen";
+    }
+};
