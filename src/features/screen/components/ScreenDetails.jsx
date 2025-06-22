@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { getScreenById } from '../../../api/ScreenService';
-import { FiArrowLeft, FiEdit, FiTrash2 } from 'react-icons/fi';
+import { FiArrowLeft, FiTrash2 } from 'react-icons/fi';
+import { Button } from '../../../components';
 
 const ScreenDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [screen, setScreen] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -14,6 +16,15 @@ const ScreenDetails = () => {
     const fetchScreenDetails = async () => {
       setLoading(true);
       setError('');
+
+      // Check if screen data was passed from ScreenPage
+      if (location.state?.screen) {
+        setScreen(location.state.screen);
+        setLoading(false);
+        return;
+      }
+
+      // Fallback: fetch from API if no data was passed
       try {
         const data = await getScreenById(id);
         setScreen(data);
@@ -26,11 +37,7 @@ const ScreenDetails = () => {
     };
 
     fetchScreenDetails();
-  }, [id]);
-
-  const handleEdit = () => {
-    navigate(`/screens/${id}/edit`);
-  };
+  }, [id, location.state]);
 
   const handleDelete = async () => {
     // Implement delete functionality
@@ -55,32 +62,46 @@ const ScreenDetails = () => {
     </div>
   );
 
+  const LabelContainer = ({ children }) => (
+    <span className="px-3 py-1 bg-primary bg-opacity-20 text-primary text-sm rounded-full">
+      {children}
+    </span>
+  );
+
+  const getScreenTypeLabel = (type) => {
+    switch (type) {
+      case 'IN_DOOR': return "In Door";
+      case 'OUT_DOOR': return "Out Door";
+      default: return "N/A";
+    }
+  }
+
+  const getScreenSolutionLabel = (type) => {
+    switch (type) {
+      case 'CABINET_SOLUTION': return "Cabinet";
+      case 'MODULE_SOLUTION': return "Module";
+      default: return "N/A";
+    }
+  }
+
   return (
     <div className="p-6 max-w-7xl mx-auto">
       <div className="mb-6 flex items-center justify-between">
-        <button
+        <Button
           onClick={() => navigate(-1)}
-          className="flex items-center text-primary hover:text-primary-dark"
+          variant='text'
+          icon={<FiArrowLeft />}
+          size='sm'
         >
-          <FiArrowLeft className="mr-2" />
           Back to Screens
-        </button>
-        <div className="flex space-x-2">
-          <button
-            onClick={handleEdit}
-            className="flex items-center px-4 py-2 bg-primary bg-opacity-10 text-primary rounded hover:bg-opacity-20"
-          >
-            <FiEdit className="mr-2" />
-            Edit
-          </button>
-          <button
-            onClick={handleDelete}
-            className="flex items-center px-4 py-2 bg-red-100 text-red-700 rounded hover:bg-red-200"
-          >
-            <FiTrash2 className="mr-2" />
-            Delete
-          </button>
-        </div>
+        </Button>
+        <Button
+          onClick={handleDelete}
+          variant='danger'
+          icon={<FiTrash2 />}
+        >
+          Delete
+        </Button>
       </div>
 
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
@@ -90,15 +111,9 @@ const ScreenDetails = () => {
             <div>
               <h1 className="text-2xl font-bold text-primary">{screen.name}</h1>
               <div className="flex flex-wrap gap-2 mt-2">
-                <span className="px-3 py-1 bg-primary bg-opacity-20 text-primary text-sm rounded-full">
-                  {screen.screenType}
-                </span>
-                <span className="px-3 py-1 bg-primary bg-opacity-20 text-primary text-sm rounded-full">
-                  {screen.solutionType}
-                </span>
-                <span className="px-3 py-1 bg-primary bg-opacity-20 text-primary text-sm rounded-full">
-                  Created: {new Date(screen.createdAt).toLocaleDateString()}
-                </span>
+                <LabelContainer>{getScreenTypeLabel(screen.screenType)}</LabelContainer>
+                <LabelContainer>{getScreenSolutionLabel(screen.solutionType)}</LabelContainer>
+                <LabelContainer>Created: {new Date(screen.createdAt).toLocaleDateString()}</LabelContainer>
               </div>
             </div>
             <div className="mt-4 sm:mt-0 text-right">
@@ -180,40 +195,42 @@ const ScreenDetails = () => {
             </h2>
 
             {screen.solutionType === 'MODULE_SOLUTION' ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="space-y-4">
                 {screen.moduleList?.length > 0 ? (
-                  screen.moduleList.map((module) => (
-                    <div key={module.id} className="bg-primary bg-opacity-5 p-4 rounded-lg border border-primary border-opacity-20">
-                      <h3 className="text-lg font-semibold text-primary mb-2">{module.batchNumber}</h3>
-                      <div className="grid grid-cols-2 gap-4 text-sm">
+                  screen.moduleList.map((module, idx) => (
+                    // <div key={idx} className="bg-primary bg-opacity-5 p-4 rounded-lg border border-primary border-opacity-20">                      <div className="flex justify-between items-start">
+                    <div key={idx} className="bg-white p-4 rounded-lg border border-gray-200 hover:border-primary">                      <div className="flex justify-between items-start">
+                      <h3 className="text-lg font-semibold text-primary">{module.batchNumber}</h3>
+                      <div className="text-sm text-gray-500">
+                        {module.width}cm × {module.height}cm
+                      </div>
+                    </div>
+                      {/* <div className="grid grid-cols-2 gap-4 text-sm"> */}
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-3 text-sm">
                         <div>
-                          <p className="text-gray-500">Quantity</p>
-                          <p className="font-medium">{module.quantity || 'N/A'}</p>
+                          <p className="text-gray-500">Batch Number</p>
+                          <p className="font-medium">{module.batchNumber || 'N/A'}</p>
                         </div>
                         <div>
-                          <p className="text-gray-500">Dimensions</p>
-                          <p className="font-medium">{module.width}cm × {module.height}cm</p>
-                        </div>
-                        <div>
-                          <p className="text-gray-500">Height Qty</p>
+                          <p className="text-gray-500">Height Quantity</p>
                           <p className="font-medium">{module.heightQuantity || 'N/A'}</p>
                         </div>
                         <div>
-                          <p className="text-gray-500">Width Qty</p>
+                          <p className="text-gray-500">Width Quantity</p>
                           <p className="font-medium">{module.widthQuantity || 'N/A'}</p>
                         </div>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <p className="text-gray-500">No modules found</p>
+                  <p className="text-dark-light">No modules found</p>
                 )}
               </div>
             ) : (
               <div className="space-y-4">
                 {screen.cabinList?.length > 0 ? (
-                  screen.cabinList.map((cabin) => (
-                    <div key={cabin.id} className="bg-white p-4 rounded-lg border border-gray-200 hover:border-primary">
+                  screen.cabinList.map((cabin, idx) => (
+                    <div key={idx} className="bg-white p-4 rounded-lg border border-gray-200 hover:border-primary">
                       <div className="flex justify-between items-start">
                         <h3 className="text-lg font-semibold text-primary">{cabin.cabinName}</h3>
                         <div className="text-sm text-gray-500">
@@ -222,15 +239,15 @@ const ScreenDetails = () => {
                       </div>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-3 text-sm">
                         <div>
-                          <p className="text-gray-500">Quantity</p>
-                          <p className="font-medium">{cabin.quantity || 'N/A'}</p>
+                          <p className="text-gray-500">Cabinet Name</p>
+                          <p className="font-medium">{cabin.cabinName || 'N/A'}</p>
                         </div>
                         <div>
-                          <p className="text-gray-500">Height Qty</p>
+                          <p className="text-gray-500">Height Quantity</p>
                           <p className="font-medium">{cabin.heightQuantity || 'N/A'}</p>
                         </div>
                         <div>
-                          <p className="text-gray-500">Width Qty</p>
+                          <p className="text-gray-500">Width Quantity</p>
                           <p className="font-medium">{cabin.widthQuantity || 'N/A'}</p>
                         </div>
                       </div>
@@ -244,8 +261,12 @@ const ScreenDetails = () => {
                               <p className="font-medium">{cabin.module.batchNumber}</p>
                             </div>
                             <div>
-                              <p className="text-gray-500">Quantity</p>
-                              <p className="font-medium">{cabin.module.quantity || 'N/A'}</p>
+                              <p className="text-gray-500">Height Quantity</p>
+                              <p className="font-medium">{cabin.module.heightQuantity || 'N/A'}</p>
+                            </div>
+                            <div>
+                              <p className="text-gray-500">Width Quantity</p>
+                              <p className="font-medium">{cabin.module.widthQuantity || 'N/A'}</p>
                             </div>
                             <div>
                               <p className="text-gray-500">Dimensions</p>
@@ -276,13 +297,6 @@ const ScreenDetails = () => {
                   <span>Main: {screen.mediaQuantity || 0}</span>
                   <span>Spare: {screen.spareMediaQuantity || 0}</span>
                 </div>
-              </div>
-
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="text-sm font-medium text-gray-500 mb-2">Notes</h3>
-                <p className="text-gray-600">
-                  {screen.notes || 'No additional notes available'}
-                </p>
               </div>
             </div>
           </div>
