@@ -78,7 +78,6 @@ const ScreensPage = () => {
   }
 
   const getScreenSolutionLabel = (type) => {
-
     switch (type) {
       case 'CABINET_SOLUTION': return <span className={`${labelStyle} ${labelColor1}`}>Cabinet</span>;
       case 'MODULE_SOLUTION': return <span className={`${labelStyle} ${labelColor2}`}>Module</span>;
@@ -105,7 +104,7 @@ const ScreensPage = () => {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {list.map((screen) => (
-              <tr key={screen.id} className={rowStyle} onClick={() => navigate(`/screens/${screen.id}`)}>
+              <tr key={screen.id} className={rowStyle} onClick={() => navigate(`/screens/${screen.id}`, { state: { screen } })}>
                 <td
                   className={nameStyle}>
                   {screen.name}
