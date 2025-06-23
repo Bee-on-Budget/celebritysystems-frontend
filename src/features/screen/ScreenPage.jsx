@@ -103,8 +103,12 @@ const ScreensPage = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {list.map((screen) => (
-              <tr key={screen.id} className={rowStyle} onClick={() => navigate(`/screens/${screen.id}`, { state: { screen } })}>
+            {list.map((screen, idx) => (
+              <tr
+              key={idx}
+              className={rowStyle}
+              onClick={() => navigate(`/screens/${screen.id}`, { state: { screen } })}
+              >
                 <td
                   className={nameStyle}>
                   {screen.name}
@@ -132,18 +136,21 @@ const ScreensPage = () => {
       totalElements={Array.isArray(filtered) ? filtered.length : 0}
     >
       {renderScreenItem(filtered)}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        totalItems={totalScreens}
-        itemsPerPage={pageSize}
-        onPageChange={(newPage) => {
-          if (newPage >= 0 && newPage < totalPages) {
-            setCurrentPage(newPage);
-          }
-        }}
-        className={"mt-8"}
-      />
+
+      {
+        screens.length > pageSize && <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={totalScreens}
+          itemsPerPage={pageSize}
+          onPageChange={(newPage) => {
+            if (newPage >= 0 && newPage < totalPages) {
+              setCurrentPage(newPage);
+            }
+          }}
+          className={"mt-8"}
+        />
+      }
     </DataList>
   );
 };
