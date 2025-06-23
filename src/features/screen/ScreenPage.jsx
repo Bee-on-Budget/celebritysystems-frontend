@@ -11,7 +11,7 @@ const ScreensPage = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [totalScreens, setTotalScreens] = useState(0);
-  const [pageSize, setPageSize] = useState(4);
+  const [pageSize, setPageSize] = useState(10);
   const navigate = useNavigate();
 
 
