@@ -1,4 +1,4 @@
-import { FaSync   } from 'react-icons/fa';
+import { FaSyncAlt } from 'react-icons/fa';
 import { MultiSearchBar, Button, Loading } from './';
 
 export function DataList({
@@ -21,10 +21,10 @@ export function DataList({
         <h1 className="text-2xl font-semibold">{title}</h1>
         <div className="flex items-center justify-end gap-2 flex-wrap">
           <Button
-          variant='icon'
-          size='sm'
-          onClick={()=>window.location.reload()}>
-            <FaSync />
+            variant='icon'
+            size='sm'
+            onClick={() => window.location.reload()}
+            icon={<FaSyncAlt />}>
           </Button>
           <div className="w-full sm:w-64">
             <MultiSearchBar
