@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { getScreenById } from '../../../api/ScreenService';
+import { deleteScreen } from '../../../api/ScreenService';
 import { FiArrowLeft, FiTrash2 } from 'react-icons/fi';
-import { Button } from '../../../components';
+import { Button, Loading, showToast } from '../../../components';
 
 const ScreenDetails = () => {
   const { id } = useParams();
@@ -13,6 +13,7 @@ const ScreenDetails = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    console.log("Loading!!!!");
     const fetchScreenDetails = async () => {
       setLoading(true);
       setError('');
@@ -22,33 +23,29 @@ const ScreenDetails = () => {
         setScreen(location.state.screen);
         setLoading(false);
         return;
-      }
-
-      // Fallback: fetch from API if no data was passed
-      try {
-        const data = await getScreenById(id);
-        setScreen(data);
-      } catch (err) {
-        setError('Failed to load screen details. Please try again later.');
-        console.error('Error fetching screen:', err);
-      } finally {
-        setLoading(false);
+      } else {
+        navigate(-1);
+        showToast("Faild to load screen info, please try again!", "error");
       }
     };
 
     fetchScreenDetails();
-  }, [id, location.state]);
+  }, [navigate, location.state]);
 
   const handleDelete = async () => {
-    // Implement delete functionality
-    console.log('Delete screen', id);
+    if (window.confirm('Are you sure you want to delete this screen? This action cannot be undone.')) {
+      try {
+        await deleteScreen(id);
+        showToast('Screen deleted successfully.', 'success');
+        navigate('/screen');
+      } catch (err) {
+        showToast(err.message || 'Failed to delete screen. Please try again.', 'error');
+        console.error('Error deleting screen:', err);
+      }
+    }
   };
 
-  if (loading) return (
-    <div className="flex justify-center items-center h-64">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-    </div>
-  );
+  if (loading) return <Loading />;
 
   if (error) return (
     <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded">
