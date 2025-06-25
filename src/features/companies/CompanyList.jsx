@@ -1,168 +1,132 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { getAllCompanies, deleteCompany } from "./CompanyService";
-import Button from "../../components/Button";
-import MultiSearchBar from "../../components/MultiSearchBar";
-import { FaChevronDown, FaChevronUp, FaTrash, FaUser } from "react-icons/fa";
+import React, { useState, useEffect, useCallback } from 'react';
+import { DataList, Pagination } from '../../components';
+import { getAllCompanies, searchCompanies } from './CompanyService';
+import { useNavigate } from 'react-router-dom';
 
 const CompanyList = () => {
   const [companies, setCompanies] = useState([]);
   const [filtered, setFiltered] = useState([]);
-  const [expandedCompany, setExpandedCompany] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalCompanies, setTotalCompanies] = useState(0);
+  const [pageSize, setPageSize] = useState(4);
+  const navigate = useNavigate();
 
-  const fetchCompanies = async () => {
-    const res = await getAllCompanies();
-    setCompanies(res.data);
-    setFiltered(res.data);
-  };
+  const fetchCompanies = useCallback(async (page = 0) => {
+    setIsLoading(true);
+    try {
+      const data = await getAllCompanies({ page, size: pageSize });
+      setCompanies(data || []);
+      console.log(data[0]);
+      setFiltered(data || []);
+      setTotalPages(data.totalPages);
+      setTotalCompanies(data.totalElements);
+      setCurrentPage(data.pageNumber);
+      setPageSize(data.pageSize);
+    } catch (e) {
+      setError("Failed to load companies");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [pageSize]);
 
   useEffect(() => {
-    fetchCompanies();
-  }, []);
-
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure?")) {
-      await deleteCompany(id);
-      fetchCompanies();
-    }
-  };
-
-  const toggleExpandCompany = (companyId) => {
-    setExpandedCompany(expandedCompany === companyId ? null : companyId);
-  };
+    fetchCompanies(currentPage);
+  }, [currentPage, fetchCompanies]);
 
   const handleSearch = useCallback(
     async (query) => {
-      return companies
-        .filter((company) =>
-          company.name.toLowerCase().includes(query.toLowerCase())
-        )
-        .map((c) => c.name);
+      try {
+        const results = await searchCompanies(query);
+        return (results || []).map((company) => company.name);
+      } catch (e) {
+        setError(e);
+        // setError('Failed to search companies!!!');
+        return [];
+      }
     },
-    [companies]
+    []
   );
 
-  const handleResultClick = (query) => {
-    const result = companies.filter((company) =>
-      company.name.toLowerCase().startsWith(query.toLowerCase())
-    );
-    setFiltered(result);
+  const handleResultClick = async (query) => {
+    try {
+      const results = await searchCompanies(query);
+      setFiltered(results || []);
+    } catch (e) {
+      setError('Failed to search companies');
+    }
   };
 
   const handleClearSearch = () => {
-    setFiltered(companies);
+    setFiltered([...companies]);
+  };
+
+  const renderCompanyItem = (list) => {
+    const headerStyle = "px-3 py-2 text-left text-sm font-medium text-gray-500 uppercase tracking-wider";
+    const nameStyle = "px-3 py-2 text-sm text-dark font-bold";
+    const bodyStyle = "px-3 py-2 text-sm text-dark";
+    const rowStyle = "hover:bg-gray-100 transition cursor-pointer";
+
+    return (
+      <div className="overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className={`${headerStyle} w-72`}>Name</th>
+              <th className={`${headerStyle} w-32`}>Email</th>
+              <th className={`${headerStyle} w-32`}>Phone</th>
+              <th className={headerStyle}>Location</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {list.map((company, idx) => (
+              <tr
+                key={idx}
+                className={rowStyle}
+                onClick={() => navigate(`/companies/${company.id}`, { state: { company } })}
+              >
+                <td className={nameStyle}>{company.name}</td>
+                <td className={bodyStyle}>{company.email}</td>
+                <td className={bodyStyle}>{company.phone}</td>
+                <td className={bodyStyle}>{company.location}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
   };
 
   return (
-    <div className="my-2">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <h1 className="text-2xl font-semibold">Companies</h1>
-        <div className="w-full sm:w-64">
-          <MultiSearchBar
-            onSearch={handleSearch}
-            onSelectResult={handleResultClick}
-            onClear={handleClearSearch}
-          />
-        </div>
-      </div>
-
-      <div className="bg-white shadow rounded overflow-hidden mt-5">
-        {filtered.length === 0 ? (
-          <p className="p-4 text-gray-500">No companies found.</p>
-        ) : (
-          <div className="divide-y divide-gray-200">
-            {filtered.map((company) => (
-              <div key={company.id} className="p-4">
-                <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleExpandCompany(company.id)}>
-                  <div>
-                    <h3 className="text-lg font-medium text-gray-900">{company.name}</h3>
-                    <p className="text-sm text-gray-500">{company.email} | {company.phone}</p>
-                    <p className="text-sm text-gray-500">{company.location}</p>
-                    <p className="text-xs mt-1">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        {company.userList?.length || 0} users
-                      </span>
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="danger"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete(company.id);
-                      }}
-                      className="text-sm px-2 py-1"
-                      icon={<FaTrash size={12} />}
-                    >
-                      Delete
-                    </Button>
-                    {expandedCompany === company.id ? (
-                      <FaChevronUp className="text-gray-500" />
-                    ) : (
-                      <FaChevronDown className="text-gray-500" />
-                    )}
-                  </div>
-                </div>
-
-                {expandedCompany === company.id && (
-                  <div className="mt-4 pl-4 border-l-2 border-gray-200">
-                    <h4 className="text-md font-medium text-gray-700 mb-2 flex items-center gap-2">
-                      <FaUser className="text-gray-500" /> Users
-                    </h4>
-                    {company.userList?.length > 0 ? (
-                      <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y divide-gray-200">
-                          <thead className="bg-gray-50">
-                            <tr>
-                              <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                              <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                              <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                              <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Permissions</th>
-                            </tr>
-                          </thead>
-                          <tbody className="bg-white divide-y divide-gray-200">
-                            {company.userList.map((user) => (
-                              <tr key={user.id}>
-                                <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-900">{user.fullName}</td>
-                                <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">{user.email}</td>
-                                <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
-                                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                    user.role === 'ADMIN' 
-                                      ? 'bg-purple-100 text-purple-800' 
-                                      : 'bg-green-100 text-green-800'
-                                  }`}>
-                                    {user.role}
-                                  </span>
-                                </td>
-                                <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
-                                  <div className="flex gap-4">
-                                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                      user.canRead ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'
-                                    }`}>
-                                      {user.canRead ? 'Can Read' : 'No Read'}
-                                    </span>
-                                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                      user.canEdit ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                                    }`}>
-                                      {user.canEdit ? 'Can Edit' : 'No Edit'}
-                                    </span>
-                                  </div>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    ) : (
-                      <p className="text-sm text-gray-500 italic">No users in this company</p>
-                    )}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
+    <DataList
+      title="Company Management"
+      label="companies"
+      error={error}
+      isLoading={isLoading}
+      onSearch={handleSearch}
+      onResultClick={handleResultClick}
+      onClearSearch={handleClearSearch}
+      totalElements={Array.isArray(filtered) ? filtered.length : 0}
+    >
+      {renderCompanyItem(filtered)}
+      {
+        companies.length > pageSize && 
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={totalCompanies}
+          itemsPerPage={pageSize}
+          onPageChange={(newPage) => {
+            if (newPage >= 0 && newPage < totalPages) {
+              setCurrentPage(newPage);
+            }
+          }}
+          className={"mt-8"}
+        />
+      }
+    </DataList>
   );
 };
 
