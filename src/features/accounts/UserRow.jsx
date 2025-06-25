@@ -49,7 +49,7 @@ const UserRow = ({
         )}
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-        {getUserCompany(user.id, companies)}
+        {getUserCompany(user.id, companies || [])}
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
         {isEditing ? (
@@ -69,7 +69,7 @@ const UserRow = ({
           <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
             roleColors[user.role] || 'bg-green-100 text-green-800'
           }`}>
-            {roleOptions.find(r => r.value === user.role)?.label || user.role}
+            {roleOptions?.find(r => r.value === user.role)?.label || user.role}
           </span>
         )}
       </td>
