@@ -12,6 +12,7 @@ import NavButton from "./NavButton";
 import Loading from "./Loading";
 import DataList from "./DataList";
 import Pagination from "./Pagination";
+import ConfirmationModal from "./ConfirmationModal";
 
 export {
   Button,
@@ -28,4 +29,5 @@ export {
   Loading,
   DataList,
   Pagination,
+  ConfirmationModal,
 };
