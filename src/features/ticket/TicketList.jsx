@@ -1,66 +1,137 @@
-// src/components/tickets/TicketList.jsx
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { getAllTickets } from "./TicketService";
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { DataList, Pagination } from '../../components';
+import { getAllTickets } from './TicketService';
 
 const TicketList = () => {
   const [tickets, setTickets] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [filtered, setFiltered] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalTickets, setTotalTickets] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const navigate = useNavigate();
+
+  const fetchTickets = useCallback(async (page = 0) => {
+    setIsLoading(true);
+    try {
+      const data = await getAllTickets({ page, size: pageSize });
+      setTickets(data || []);
+      setFiltered(data || []);
+      setTotalPages(data.totalPages);
+      setTotalTickets(data.totalElements);
+      setCurrentPage(data.pageNumber);
+      setPageSize(data.pageSize);
+    } catch (e) {
+      setError("Failed to load tickets");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [pageSize]);
 
   useEffect(() => {
-    const fetchTickets = async () => {
-      try {
-        const data = await getAllTickets();
-        setTickets(data);
-      } catch (error) {
-        console.error("Error loading tickets:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchTickets();
-  }, []);
+    fetchTickets(currentPage);
+  }, [currentPage, fetchTickets]);
 
-  if (loading) return <div className="p-6 text-center text-gray-600">Loading tickets...</div>;
+  const handleSearch = useCallback(
+    async (query) => {
+      return tickets
+        .filter((ticket) =>
+          ticket.title.toLowerCase().includes(query.toLowerCase()) ||
+          ticket.description?.toLowerCase().includes(query.toLowerCase())
+        )
+        .map((t) => t.title);
+    },
+    [tickets]
+  );
+
+  const handleResultClick = (query) => {
+    const result = tickets.filter((ticket) =>
+      ticket.title.toLowerCase().includes(query.toLowerCase())
+    );
+    setFiltered(result);
+  };
+
+  const handleClearSearch = () => {
+    setFiltered([...tickets]);
+  };
+
+  const renderTicketItem = (list) => {
+    const headerStyle = "px-3 py-2 text-left text-sm font-medium text-gray-500 uppercase tracking-wider";
+    const nameStyle = "px-3 py-2 text-sm text-dark font-bold";
+    const bodyStyle = "px-3 py-2 text-sm text-dark";
+    const rowStyle = "hover:bg-gray-100 transition cursor-pointer";
+
+    return (
+      <div className="overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className={`${headerStyle} w-72`}>Title</th>
+              <th className={headerStyle}>Description</th>
+              <th className={headerStyle}>Company</th>
+              <th className={headerStyle}>Status</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {list.map((ticket) => (
+              <tr
+                key={ticket.id}
+                className={rowStyle}
+                onClick={() => navigate(`/tickets/${ticket.id}`, { state: { ticket } })}
+              >
+                <td className={nameStyle}>{ticket.title}</td>
+                <td className={bodyStyle}>
+                  {ticket.description?.substring(0, 50)}{ticket.description?.length > 50 ? '...' : ''}
+                </td>
+                <td className={bodyStyle}>{ticket.companyName || 'N/A'}</td>
+                <td className={bodyStyle}>
+                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${ticket.status === 'OPEN'
+                    ? 'bg-green-100 text-green-800'
+                    : ticket.status === 'IN_PROGRESS'
+                      ? 'bg-yellow-100 text-yellow-800'
+                      : 'bg-gray-100 text-gray-800'
+                    }`}>
+                    {ticket.status}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Tickets</h2>
-        <Link
-          to="/tickets/create"
-          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
-        >
-          Create Ticket
-        </Link>
-      </div>
-
-      {tickets.length === 0 ? (
-        <div className="bg-white p-6 rounded-lg shadow-md text-center">
-          <p className="text-gray-600">No tickets found.</p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {tickets.map(ticket => (
-            <Link
-              key={ticket.id}
-              to={`/tickets/${ticket.id}`}
-              className="block bg-white p-5 rounded-lg shadow hover:shadow-lg transition"
-            >
-              <h3 className="text-lg font-semibold text-blue-700 hover:underline">
-                {ticket.title}
-              </h3>
-              <p className="text-sm text-gray-600 mt-1">
-                {ticket.description?.substring(0, 100)}...
-              </p>
-              <p className="text-sm text-gray-500 mt-2">
-                <strong>Company:</strong> {ticket.companyName || "N/A"}
-              </p>
-            </Link>
-          ))}
-        </div>
-      )}
-    </div>
+    <DataList
+      title="Ticket Management"
+      label="tickets"
+      error={error}
+      isLoading={isLoading}
+      onSearch={handleSearch}
+      onResultClick={handleResultClick}
+      onClearSearch={handleClearSearch}
+      totalElements={Array.isArray(filtered) ? filtered.length : 0}
+    >
+      {renderTicketItem(filtered)}
+      {
+        tickets.length > pageSize && <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={totalTickets}
+          itemsPerPage={pageSize}
+          onPageChange={(newPage) => {
+            if (newPage >= 0 && newPage < totalPages) {
+              setCurrentPage(newPage);
+            }
+          }}
+          className={"mt-8"}
+        />
+      }
+    </DataList>
   );
 };
 
