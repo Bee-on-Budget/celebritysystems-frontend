@@ -24,6 +24,7 @@ import ManageUsers from "../features/accounts/UserList";
 import CreateCompany from "../features/companies/CreateCompany";
 import CompanyList from "../features/companies/CompanyList";
 import AddUserToCompany from "../features/companies/AddUserToCompany";
+import CompanyDetails from "../features/companies/CompanyDetails";
 
 // Screen management
 import AddScreen from "../features/screen/";
@@ -105,6 +106,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
               <CreateCompany />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="companies/:id"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
+              <CompanyDetails />
             </ProtectedRoute>
           }
         />
