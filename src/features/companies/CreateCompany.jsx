@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { createCompany } from "./CompanyService";
-import { Button, Input, showToast, FormsContainer } from "../../components";
+import { Input, showToast, FormsContainer } from "../../components";
 
 const CreateCompany = () => {
   const [form, setForm] = useState({ name: "", email: "", phone: "", location: "" });
