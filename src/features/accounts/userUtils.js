@@ -1,8 +1,11 @@
 export const getUserCompany = (userId, companies) => {
+    if (!companies || !Array.isArray(companies)) {
+        return "Celebrity Systems";
+    }
     const company = companies.find(c => 
       c.userList?.some(user => user.id === userId)
     );
-    return company?.name || "No company";
+    return company?.name || "Celebrity Systems";
   };
   
   export const filterUsersByRole = (users, role) => {
