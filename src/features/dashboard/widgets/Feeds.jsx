@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaTasks, FaShoppingCart, FaClock } from 'react-icons/fa';
+import { FaTasks, FaShoppingCart, FaClock, FaPen } from 'react-icons/fa';
 import { formatRelativeTime } from '../../../utils/timeUtils';
 
 const FeedItem = ({ type, message, time }) => {
@@ -16,6 +16,10 @@ const FeedItem = ({ type, message, time }) => {
         pending: {
             icon: <FaClock />,
             bgColor: 'bg-blue-500',
+        },
+        update: {
+            icon: <FaPen />,
+            bgColor: 'bg-yellow-500',
         },
     };
 
