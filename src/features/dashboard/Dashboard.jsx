@@ -5,7 +5,7 @@ import MonthlySalesStats from './widgets/MonthlySalesStats';
 import { Loading } from '../../components';
 import { FaShoppingCart, FaCreditCard, FaUser, FaTicketAlt } from "react-icons/fa";
 import { useEffect } from "react";
-import dashboardServices from "./DashboardServices";
+import dashboardServices from "../../api/services/DashboardServices";
 
 const customFeeds = [
   {
