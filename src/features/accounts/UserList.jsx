@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { getAllUsers, updateUser, deleteUser } from "./UserService";
+import { getAllUsers, updateUser, deleteUser } from "../../api/services/UserService";
 import { getAllCompanies } from "../companies/CompanyService";
 import MultiSearchBar from "../../components/MultiSearchBar";
 import UserTable from "./UserTable";
