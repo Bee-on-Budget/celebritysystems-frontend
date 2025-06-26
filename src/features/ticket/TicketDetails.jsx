@@ -79,6 +79,31 @@ const TicketDetails = () => {
     );
   };
 
+  const getTimelineStyleForStatus = (status) => {
+    switch (status) {
+      case 'OPEN':
+        return {
+          bgColor: 'bg-green-500',
+          icon: <FiCheckCircle className="h-4 w-4 text-white" />,
+        };
+      case 'IN_PROGRESS':
+        return {
+          bgColor: 'bg-yellow-500',
+          icon: <FiAlertCircle className="h-4 w-4 text-white" />,
+        };
+      case 'CLOSED':
+        return {
+          bgColor: 'bg-blue-500',
+          icon: <FiCheckCircle className="h-4 w-4 text-white" />,
+        };
+      default:
+        return {
+          bgColor: 'bg-gray-500',
+          icon: <FiAlertCircle className="h-4 w-4 text-white" />,
+        };
+    }
+  };
+
   const handleDownloadAttachment = () => {
     if (ticket.attachmentFileName) {
       // Implement your download logic here
@@ -101,6 +126,8 @@ const TicketDetails = () => {
       <p className="text-gray-600">Ticket not found</p>
     </div>
   );
+
+  const { bgColor: statusBgColor, icon: statusIcon } = getTimelineStyleForStatus(ticket.status);
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -234,8 +261,8 @@ const TicketDetails = () => {
 
                 {/* You would map through actual timeline events here */}
                 <div className="flex items-start">
-                  <div className="flex-shrink-0 bg-yellow-500 rounded-full p-1 mt-1">
-                    <FiAlertCircle className="h-4 w-4 text-white" />
+                  <div className={`flex-shrink-0 ${statusBgColor} rounded-full p-1 mt-1`}>
+                    {statusIcon}
                   </div>
                   <div className="ml-3">
                     <p className="text-sm font-medium text-gray-900">Status changed to {ticket.status}</p>
