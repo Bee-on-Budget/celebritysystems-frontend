@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { DataList, Pagination } from '../../components';
-import { getAllCompanies, searchCompanies } from './CompanyService';
+import { getAllCompanies, searchCompanies } from '../../api/services/CompanyService';
 import { useNavigate } from 'react-router-dom';
 
 const CompanyList = () => {
@@ -66,8 +66,8 @@ const CompanyList = () => {
   const renderCompanyItem = (list) => {
     const headerStyle = "px-3 py-2 text-left text-sm font-medium text-gray-500 uppercase tracking-wider";
     const nameStyle = "px-3 py-2 text-sm text-dark font-bold";
-    const bodyStyle = "px-3 py-2 text-sm text-dark";
-    const rowStyle = "hover:bg-gray-100 transition cursor-pointer";
+    const bodyStyle = "px-3 py-2 text-sm text-dark max-w-xs whitespace-nowrap overflow-hidden text-ellipsis";
+    const rowStyle = "h-14 hover:bg-gray-100 transition cursor-pointer";
 
     return (
       <div className="overflow-x-auto">
@@ -112,8 +112,7 @@ const CompanyList = () => {
     >
       {renderCompanyItem(filtered)}
       {
-        companies.length > pageSize && 
-        <Pagination
+        companies.length > pageSize && <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           totalItems={totalCompanies}
