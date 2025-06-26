@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { deleteScreen } from '../../../api/ScreenService';
+import { deleteScreen } from '../../../api/services/ScreenService';
 import { FiArrowLeft, FiTrash2 } from 'react-icons/fi';
 import { Button, Loading, showToast } from '../../../components';
 
