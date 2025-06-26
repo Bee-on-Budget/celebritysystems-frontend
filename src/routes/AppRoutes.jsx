@@ -29,8 +29,7 @@ import CompanyDetails from "../features/companies/CompanyDetails";
 // Screen management
 import AddScreen from "../features/screen/";
 import ScreenDetails from "../features/screen/components/ScreenDetails";
-// import ScreenList from "../features/screen/components/ScreenList";
-import ScreenPage from "../features/screen/ScreenPage";
+import ScreensList from "../features/screen/ScreensList";
 
 // Test
 import TestPage from "../features/test/TestPage";
@@ -38,7 +37,8 @@ import TestPage from "../features/test/TestPage";
 // Contract management
 import CreateContract from "../features/contract/CreateContract";
 import ContractList from "../features/contract/ContractList";
-// import ContractDetails from "../features/contract/ContractDetails";
+import ContractDetails from "../features/contract/ContractDetails";
+
 // Ticket management
 import TicketList from "../features/ticket/TicketList";
 import CreateTicket from "../features/ticket/CreateTicket";
@@ -131,7 +131,7 @@ const AppRoutes = () => {
           path="screen" // ✅ updated to plural and matches Sidebar link
           element={
             <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
-              <ScreenPage />
+              <ScreensList />
             </ProtectedRoute>
           }
         />
@@ -169,14 +169,15 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-        {/* <Route
+        <Route
           path="contracts/:id"
           element={
             <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
               <ContractDetails />
             </ProtectedRoute>
           }
-        /> */}
+        />
+        
         {/*Tickets*/}
         <Route
           path="tickets"
