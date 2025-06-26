@@ -1,10 +1,9 @@
 // src/components/tickets/CreateTicket.jsx
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { createTicket, prepareTicketFormData } from "./TicketService";
+import { createTicket, prepareTicketFormData, getUsersByRole } from "../../api/services/TicketService";
 import { getAllCompanies } from "../../features/companies/CompanyService";
-import { getScreens } from "../../api/ScreenService";
-import { getUsersByRole } from "./TicketService";
+import { getScreens } from "../../api/services/ScreenService";
 import Select from 'react-select';
 import AsyncSelect from 'react-select/async';
 import debounce from 'lodash/debounce';
