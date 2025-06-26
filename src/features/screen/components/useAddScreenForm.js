@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { showToast } from "../../../components/ToastNotifier";
-import { createScreen } from "../../../api/ScreenService";
+import { createScreen } from "../../../api/services/ScreenService";
 
 const initialFormState = {
   name: "",
