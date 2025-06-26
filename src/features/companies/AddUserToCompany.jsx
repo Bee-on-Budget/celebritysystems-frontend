@@ -5,7 +5,7 @@ import Input from "../../components/Input";
 import DropdownInput from "../../components/DropdownInput";
 import { createUser } from "../../api/creation";
 import { showToast } from "../../components/ToastNotifier";
-import { searchCompanies } from "./CompanyService";
+import { searchCompanies } from "../../api/services/CompanyService";
 import MultiSearchBar from "../../components/MultiSearchBar";
 import { FormsContainer } from "../../components";
 
