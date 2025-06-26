@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DataList, Pagination } from '../../components';
-import { getAllTickets } from './TicketService';
+import { getAllTickets } from '../../api/services/TicketService';
 
 const TicketList = () => {
   const [tickets, setTickets] = useState([]);
@@ -61,8 +61,8 @@ const TicketList = () => {
   const renderTicketItem = (list) => {
     const headerStyle = "px-3 py-2 text-left text-sm font-medium text-gray-500 uppercase tracking-wider";
     const nameStyle = "px-3 py-2 text-sm text-dark font-bold";
-    const bodyStyle = "px-3 py-2 text-sm text-dark";
-    const rowStyle = "hover:bg-gray-100 transition cursor-pointer";
+    const bodyStyle = "px-3 py-2 text-sm text-dark max-w-xs whitespace-nowrap overflow-hidden text-ellipsis";
+    const rowStyle = "h-14 hover:bg-gray-100 transition cursor-pointer";
 
     return (
       <div className="overflow-x-auto">
@@ -83,8 +83,8 @@ const TicketList = () => {
                 onClick={() => navigate(`/tickets/${ticket.id}`, { state: { ticket } })}
               >
                 <td className={nameStyle}>{ticket.title}</td>
-                <td className={bodyStyle}>
-                  {ticket.description?.substring(0, 50)}{ticket.description?.length > 50 ? '...' : ''}
+                <td className={bodyStyle} title={ticket.description}>
+                  {ticket.description}
                 </td>
                 <td className={bodyStyle}>{ticket.companyName || 'N/A'}</td>
                 <td className={bodyStyle}>
