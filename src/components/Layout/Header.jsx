@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import { FaBars, FaSignOutAlt, FaBell, FaSearch } from "react-icons/fa";
+import { FaBars, FaSignOutAlt } from "react-icons/fa";
 import { useAuth } from "../../auth/useAuth";
 import { motion, AnimatePresence } from "framer-motion";
 import Button from '../Button';
 
 const Header = ({ setSidebarOpen }) => {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
 
   const handleLogout = () => {
     setShowLogoutConfirm(true);
@@ -16,6 +15,20 @@ const Header = ({ setSidebarOpen }) => {
   const confirmLogout = () => {
     logout();
     setShowLogoutConfirm(false);
+  };
+
+  // Get user's display name from various possible fields
+  const getUserDisplayName = () => {
+    if (!user) return 'User';
+    return user.username || user.fullName || user.email || user.username || 'User';
+  };
+
+  // Get current time for greeting
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 18) return 'Good afternoon';
+    return 'Good evening';
   };
 
   return (
@@ -32,26 +45,19 @@ const Header = ({ setSidebarOpen }) => {
               <FaBars />
             </button>
 
-            {/* Search bar */}
-            <div className="hidden md:flex items-center bg-gray-100 rounded-full px-4 py-2 focus-within:ring-2 ring-blue-500/50 transition-all duration-200">
-              <FaSearch className="text-gray-500 mr-2" />
-              <input
-                type="text"
-                placeholder="Search..."
-                className="bg-transparent border-none outline-none text-gray-700 placeholder-gray-500 w-40 lg:w-64"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+            {/* Welcome message */}
+            <div className="hidden md:block">
+              <h2 className="text-lg font-semibold text-gray-900">
+                {getGreeting()}, {getUserDisplayName()}!
+              </h2>
+              <p className="text-sm text-gray-600">
+                Welcome to Celebrity Systems
+              </p>
             </div>
           </div>
 
           {/* Right section */}
           <div className="flex items-center space-x-4">
-            <button className="p-2 relative text-dark rounded-full hover:bg-gray-100 transition-colors duration-200">
-              <FaBell className="text-xl" />
-              <span className="absolute top-0 right-0 h-2 w-2 bg-primary rounded-full"></span>
-            </button>
-
             <div className="relative">
               <button
                 onClick={handleLogout}
