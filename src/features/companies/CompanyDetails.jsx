@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { getCompanyById, deleteCompany } from './CompanyService';
+import { getCompanyById, deleteCompany } from '../../api/services/CompanyService';
 import { FiArrowLeft, FiTrash2, FiUsers, FiMail, FiPhone, FiMapPin, FiClock, FiCheckCircle } from 'react-icons/fi';
 import { Button, Loading, showToast } from '../../components';
 import ConfirmationModal from '../../components/ConfirmationModal';
