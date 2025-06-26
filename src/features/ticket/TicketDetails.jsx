@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { getTicketById, deleteTicket } from './TicketService';
+import { getTicketById, deleteTicket } from '../../api/services/TicketService';
 import { FiArrowLeft, FiDownload, FiCalendar, FiUser, FiCheckCircle, FiAlertCircle, FiTrash2 } from 'react-icons/fi';
 import { Button, Loading, showToast, ConfirmationModal } from '../../components';
 
