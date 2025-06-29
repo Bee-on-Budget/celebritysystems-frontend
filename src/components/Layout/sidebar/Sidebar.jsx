@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaFileContract, FaHome, FaUser, FaBars, FaUsers, FaBuilding, FaDesktop } from "react-icons/fa";
+import { FaFileContract, FaHome, FaBars, FaUsers, FaBuilding, FaDesktop } from "react-icons/fa";
 import CompanyLogo from '../../CompanyLogo';
 import NavButton from '../../NavButton';
 import SidebarDropdown from './SidebarDropdown';
