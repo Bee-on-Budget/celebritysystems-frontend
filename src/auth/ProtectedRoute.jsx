@@ -1,16 +1,17 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "./useAuth";
 import Loading from "../components/Loading";
+import { removeToken } from "../utils/token";
 
 
 const ProtectedRoute = ({ children, allowedRoles}) => {
-  const { user, loading, logout } = useAuth();
+  const { user, loading } = useAuth();
 
   if (loading) return <Loading />;
 
   // If no user, redirect to login with return location
   if (!user || !allowedRoles) {
-    logout();
+    removeToken();
     return <Navigate to="/login" replace />;
   }
 
