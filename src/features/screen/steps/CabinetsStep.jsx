@@ -42,21 +42,21 @@ const CabinetsStep = ({
           />
           <div className="grid grid-cols-2 gap-4">
             <Input
-              label="Width Quantity"
-              name={`cabinet_${index}_widthQuantity`}
-              type="number"
-              value={cabinet.widthQuantity}
-              onChange={onChange}
-              error={errors[`cabinet_${index}_widthQuantity`]}
-              required
-            />
-            <Input
               label="Height Quantity"
               name={`cabinet_${index}_heightQuantity`}
               type="number"
               value={cabinet.heightQuantity}
               onChange={onChange}
               error={errors[`cabinet_${index}_heightQuantity`]}
+              required
+            />
+            <Input
+              label="Width Quantity"
+              name={`cabinet_${index}_widthQuantity`}
+              type="number"
+              value={cabinet.widthQuantity}
+              onChange={onChange}
+              error={errors[`cabinet_${index}_widthQuantity`]}
               required
             />
           </div>
@@ -79,6 +79,10 @@ const CabinetsStep = ({
               error={errors[`cabinet_${index}_width`]}
               required
             />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <input type='checkbox'/> <span>Is Width</span>
+            <input type='checkbox'/> <span>Is Height</span>
           </div>
         </div>
       ))}
