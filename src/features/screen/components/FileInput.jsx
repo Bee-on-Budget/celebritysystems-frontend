@@ -5,7 +5,10 @@ const FileInput = ({ name, label, value, onChange, error }) => {
 
   return (
     <div className="space-y-1">
-      <label className="block text-sm font-medium text-gray-700">{label}</label>
+      <label
+        className="block text-sm font-medium capitalize text-dark">
+        {label} <span className="text-red-500">*</span>
+      </label>
       <div className="relative">
         <input
           type="file"
@@ -14,6 +17,7 @@ const FileInput = ({ name, label, value, onChange, error }) => {
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
+          required
         />
         <div className={`flex items-center justify-between px-3 py-2 border rounded-md shadow-sm bg-white ${isFocused
           ? "border-primary ring-1 ring-primary"
