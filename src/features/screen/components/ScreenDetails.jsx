@@ -115,7 +115,10 @@ const ScreenDetails = () => {
             </div>
             <div className="mt-4 sm:mt-0 text-right">
               <p className="text-lg font-semibold">
-                Resolution: {screen.resolution ? `${screen.resolution.toLocaleString()}px` : 'N/A'}
+                Resolution:
+              </p>
+              <p className="text-md font-semibold mb-2">
+              {screen.resolution ? `${screen.resolution.toLocaleString()}px` : 'N/A'}
               </p>
               {screen.location?.startsWith("http") ? (
                 <a
