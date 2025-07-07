@@ -106,11 +106,34 @@ export const checkContractExists = async (companyId, screenId) => {
     throw error.response?.data?.message || "Error checking contract existence";
   }
 };
+
+export const searchContracts = async (query) => {
+  try {
+    const response = await axios.get(`${CONTRACT_API_URL}/search`, {
+      params: { query }
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data?.message || "Error searching contracts";
+  }
+};
+
 export const getCompanyById = async (id) => {
   try {
     const response = await axios.get(`/company/id/${id}`);
     return response.data;
   } catch (error) {
     throw error.response?.data?.message || "Error fetching company";
+  }
+};
+
+export const searchContractsByCompanyName = async (companyName) => {
+  try {
+    const response = await axios.get(`/contracts/search/company`, {
+      params: { companyName }
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data?.message || "Error searching contracts by company name";
   }
 };

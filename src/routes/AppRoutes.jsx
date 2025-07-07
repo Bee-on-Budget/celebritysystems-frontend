@@ -43,6 +43,12 @@ import ContractDetails from "../features/contract/ContractDetails";
 import TicketList from "../features/ticket/TicketList";
 import CreateTicket from "../features/ticket/CreateTicket";
 import TicketDetails from "../features/ticket/TicketDetails";
+
+// Sub-Contract management
+import SubcontractList from "../features/subcontract/SubcontractList";
+import CreateSubContract from "../features/subcontract/CreateSubContract";
+import SubContractDetails from '../features/subcontract/SubContractDetails';
+
 const AppRoutes = () => {
   return (
     <Routes>
@@ -203,6 +209,33 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+
+        {/* Sub-Contract management */}
+        <Route
+          path="subcontract"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
+              <SubcontractList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="subcontract/create"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
+              <CreateSubContract />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="subcontract/:id"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
+              <SubContractDetails />
+            </ProtectedRoute>
+          }
+        />
+
         {/* Catch-all inside layout */}
         <Route path="/forbidden" element={<Forbidden />} />
         <Route path="/server-error" element={<ServerError />} />

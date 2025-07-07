@@ -97,6 +97,17 @@ const Sidebar = ({ open, setOpen }) => {
               { label: "Create Contract", href: "/contracts/create", onClick: () => setOpen(false) }
             ]}
           />
+
+          <SidebarDropdown
+            icon={FaFileContract}
+            label="Sub-Contract"
+            isOpen={openDropdowns["Sub-Contract"]}
+            onToggle={() => handleDropdownToggle("Sub-Contract")}
+            items={[
+              { label: "All Sub-Contract", href: "/subcontract", onClick: () => setOpen(false) },
+              { label: "Create Sub-Contract", href: "/subcontract/create", onClick: () => setOpen(false) }
+            ]}
+          />
         </div>
       </nav>
     </div>
