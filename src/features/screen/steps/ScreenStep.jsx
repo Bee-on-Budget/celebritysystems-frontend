@@ -91,6 +91,21 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
         required 
       />
 
+      {/* Screen Description */}
+      <div className="space-y-1">
+        <label className="block text-sm font-medium capitalize text-dark">
+          Description
+        </label>
+        <textarea
+          name="description"
+          value={form.description}
+          onChange={onChange}
+          placeholder="Enter screen description (optional)"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary resize-none"
+          rows={3}
+        />
+      </div>
+
       {/* Power Supply */}
       <SectionContainer title={"Power Supply"}>
         <Input label="Power Supply Type" name="powerSupply" value={form.powerSupply} onChange={onChange} />

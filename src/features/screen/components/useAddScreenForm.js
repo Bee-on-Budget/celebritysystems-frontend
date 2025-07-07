@@ -8,6 +8,7 @@ const initialFormState = {
   solutionTypeInScreen: "",
   location: "",
   pixelScreen: "",
+  description: "",
   powerSupply: "",
   powerSupplyQuantity: "",
   sparePowerSupplyQuantity: "",
@@ -387,6 +388,7 @@ const useAddScreenForm = () => {
         solutionTypeInScreen: form.solutionTypeInScreen,
         location: form.location,
         pixelScreen: form.pixelScreen,
+        description: form.description,
 
         // Power Supply Information
         powerSupply: form.powerSupply,
