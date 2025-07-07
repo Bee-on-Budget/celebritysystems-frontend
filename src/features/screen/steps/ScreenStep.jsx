@@ -79,11 +79,17 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
         required
       />
 
-      {/* Screen height & width */}
-      <div className="grid grid-cols-2 gap-4">
-        <Input label="Width" name="width" type="number" value={form.width} onChange={onChange} error={errors.width} required />
-        <Input label="Height" name="height" type="number" value={form.height} onChange={onChange} error={errors.height} required />
-      </div>
+      {/* Screen pixelScreen */}
+      <Input 
+        label="Pixel Screen" 
+        name="pixelScreen" 
+        type="text" 
+        placeholder="e.g., 1920x1080, 3840x2160"
+        value={form.pixelScreen} 
+        onChange={onChange} 
+        error={errors.pixelScreen} 
+        required 
+      />
 
       {/* Power Supply */}
       <SectionContainer title={"Power Supply"}>

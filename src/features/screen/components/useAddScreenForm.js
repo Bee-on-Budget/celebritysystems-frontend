@@ -7,8 +7,7 @@ const initialFormState = {
   screenType: "",
   solutionTypeInScreen: "",
   location: "",
-  height: "",
-  width: "",
+  pixelScreen: "",
   powerSupply: "",
   powerSupplyQuantity: "",
   sparePowerSupplyQuantity: "",
@@ -193,8 +192,7 @@ const useAddScreenForm = () => {
       } else if (!mapsUrlRegex.test(form.location)) {
         newErrors.location = "Please enter a valid Google Maps link";
       }
-      if (!form.height) newErrors.height = "Height is required";
-      if (!form.width) newErrors.width = "Width is required";
+      if (!form.pixelScreen) newErrors.pixelScreen = "Pixel screen is required";
       if (!form.solutionTypeInScreen)
         newErrors.solutionTypeInScreen = "Solution is required";
       if (form.solutionTypeInScreen === "CABINET_SOLUTION" && !form.fan) {
@@ -388,6 +386,7 @@ const useAddScreenForm = () => {
         screenType: form.screenType,
         solutionTypeInScreen: form.solutionTypeInScreen,
         location: form.location,
+        pixelScreen: form.pixelScreen,
 
         // Power Supply Information
         powerSupply: form.powerSupply,
