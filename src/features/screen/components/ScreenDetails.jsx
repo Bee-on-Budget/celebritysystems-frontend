@@ -117,7 +117,23 @@ const ScreenDetails = () => {
               <p className="text-lg font-semibold">
                 Resolution: {screen.resolution ? `${screen.resolution.toLocaleString()}px` : 'N/A'}
               </p>
-              <p className="text-gray-600">{screen.location}</p>
+              {screen.location?.startsWith("http") ? (
+                <a
+                  href={screen.location}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.open(screen.location, "_blank", "noopener,noreferrer");
+                  }}
+                  className="text-primary underline hover:text-primary-hover font-medium"
+                >
+                  View Location
+                </a>
+              ) : (
+                <p className="font-medium">{screen.location || 'N/A'}</p>
+              )}
             </div>
           </div>
         </div>

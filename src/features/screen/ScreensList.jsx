@@ -115,7 +115,24 @@ const ScreensList = () => {
                 </td>
                 <td className={bodyStyle}>{getScreenTypeLabel(screen.screenType)}</td>
                 <td className={bodyStyle}>{getScreenSolutionLabel(screen.solutionType)}</td>
-                <td className={bodyStyle}>{screen.location}</td>
+                <td className={bodyStyle}>
+                  {screen.location?.startsWith("http") ? (
+                    <a
+                      href={screen.location}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary underline hover:text-primary-hover"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        window.open(screen.location, "_blank", "noopener,noreferrer");
+                      }}
+                    >
+                      View Location
+                    </a>
+                  ) : (
+                    screen.location || <span className="text-gray-400">No location</span>
+                  )}</td>
               </tr>
             ))}
           </tbody>

@@ -90,7 +90,25 @@ const CompanyList = () => {
                 <td className={nameStyle}>{company.name}</td>
                 <td className={bodyStyle}>{company.email}</td>
                 <td className={bodyStyle}>{company.phone}</td>
-                <td className={bodyStyle}>{company.location}</td>
+                <td className={bodyStyle}>
+                {company.location?.startsWith("http") ? (
+                    <a
+                      href={company.location}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary underline hover:text-primary-hover"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        window.open(company.location, "_blank", "noopener,noreferrer");
+                      }}
+                    >
+                      View Location
+                    </a>
+                  ) : (
+                    company.location || <span className="text-gray-400">No location</span>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>

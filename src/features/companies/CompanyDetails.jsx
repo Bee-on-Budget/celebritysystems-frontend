@@ -132,25 +132,12 @@ const CompanyDetails = () => {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
             <div>
               <h1 className="text-2xl font-bold text-primary">{company.name}</h1>
-              {/* <div className="flex flex-wrap gap-2 mt-2">
-<LabelContainer>{getCompanyTypeLabel(company.companyType)}</LabelContainer>
-{getActivationStatus(company.activated)}
-<LabelContainer>
-Created: {new Date(company.createdAt).toLocaleDateString()}
-</LabelContainer>
-{company.updatedAt && (
-<LabelContainer>
-Updated: {new Date(company.updatedAt).toLocaleDateString()}
-</LabelContainer>
-)}
-</div> */}
             </div>
             <div className="mt-4 sm:mt-0 text-right">
               <p className="text-lg font-semibold flex items-center justify-end gap-2">
                 <FiUsers className="text-primary" />
                 {company.userList?.length || 0} Users
               </p>
-              <p className="text-gray-600">{company.location}</p>
             </div>
           </div>
         </div>
@@ -181,7 +168,23 @@ Updated: {new Date(company.updatedAt).toLocaleDateString()}
                 <h3 className="text-sm font-medium text-gray-500 mb-2 flex items-center gap-2">
                   <FiMapPin /> Location
                 </h3>
-                <p className="font-medium">{company.location || 'N/A'}</p>
+                {company.location?.startsWith("http") ? (
+                  <a
+                    href={company.location}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      window.open(company.location, "_blank", "noopener,noreferrer");
+                    }}
+                    className="text-primary underline hover:text-primary-hover"
+                  >
+                    View Location
+                  </a>
+                ) : (
+                  <p className="text-gray-600">{company.location || 'N/A'}</p>
+                )}
               </div>
 
               <div className="bg-gray-50 p-4 rounded-lg">
