@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { createCompany } from "../../api/services/CompanyService";
 import { Input, showToast, FormsContainer } from "../../components";
 
 const CreateCompany = () => {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -60,6 +62,7 @@ const CreateCompany = () => {
       await createCompany(form);
       showToast("Company created successfully", "success");
       setForm({ name: "", email: "", phone: "", location: "" });
+      setTimeout(() => navigate('/companies'), 1000);
     } catch (err) {
       const errorMessage =
         err.response?.data?.message || "Error creating company";
