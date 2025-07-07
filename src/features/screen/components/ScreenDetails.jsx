@@ -215,7 +215,7 @@ const ScreenDetails = () => {
                     <div key={idx} className="bg-white p-4 rounded-lg border border-gray-200 hover:border-primary">                      <div className="flex justify-between items-start">
                       <h3 className="text-lg font-semibold text-primary">{module.batchNumber}</h3>
                       <div className="text-sm text-gray-500">
-                        {module.width}cm × {module.height}cm
+                        {module.width}px × {module.height}px
                       </div>
                     </div>
                       {/* <div className="grid grid-cols-2 gap-4 text-sm"> */}
@@ -247,7 +247,7 @@ const ScreenDetails = () => {
                       <div className="flex justify-between items-start">
                         <h3 className="text-lg font-semibold text-primary">{cabin.cabinName}</h3>
                         <div className="text-sm text-gray-500">
-                          {cabin.width}cm × {cabin.height}cm
+                          {cabin.width}px × {cabin.height}px
                         </div>
                       </div>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-3 text-sm">
@@ -283,7 +283,7 @@ const ScreenDetails = () => {
                             </div>
                             <div>
                               <p className="text-gray-500">Dimensions</p>
-                              <p className="font-medium">{cabin.module.width}cm × {cabin.module.height}cm</p>
+                              <p className="font-medium">{cabin.module.width}px × {cabin.module.height}px</p>
                             </div>
                           </div>
                         </div>
