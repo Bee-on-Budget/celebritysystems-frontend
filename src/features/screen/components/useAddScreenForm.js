@@ -201,8 +201,8 @@ const useAddScreenForm = () => {
       }
       if (form.solutionTypeInScreen === "CABINET_SOLUTION" && !form.fanQuantity) {
         newErrors.fanQuantity = "Screen fan quantity is required for Cabinet solution";
-      } else if (form.solutionTypeInScreen === "CABINET_SOLUTION" && Number(form.fanQuantity) <= 0) {
-        newErrors.fanQuantity = "Fan quantity must be greater than 0";
+      } else if (form.solutionTypeInScreen === "CABINET_SOLUTION" && Number(form.fanQuantity) < 0) {
+        newErrors.fanQuantity = "Fan quantity must be greater or equal to 0";
       }
 
       // Power Supply validation
