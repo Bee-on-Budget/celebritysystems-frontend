@@ -183,11 +183,16 @@ const useAddScreenForm = () => {
 
   const validateStep = (currentStep) => {
     const newErrors = {};
+    const mapsUrlRegex = /^https?:\/\/(www\.)?(google\.)?maps\./i;
 
     if (currentStep === 1) {
       if (!form.name.trim()) newErrors.name = "Name is required";
       if (!form.screenType) newErrors.screenType = "Screen type is required";
-      if (!form.location.trim()) newErrors.location = "Location is required";
+      if (!form.location.trim()) {
+        newErrors.location = "Location is required";
+      } else if (!mapsUrlRegex.test(form.location)) {
+        newErrors.location = "Please enter a valid Google Maps link";
+      }
       if (!form.height) newErrors.height = "Height is required";
       if (!form.width) newErrors.width = "Width is required";
       if (!form.solutionTypeInScreen)

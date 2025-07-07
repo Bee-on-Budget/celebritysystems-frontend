@@ -68,8 +68,16 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
       </div>
 
       {/* Screen Location */}
-      <Input label="Location" name="location" value={form.location} onChange={onChange} error={errors.location} required />
-
+      <Input
+        label="Location (Google Maps Link)"
+        name="location"
+        type="url"
+        placeholder="https://www.google.com/maps/place/..."
+        value={form.location}
+        onChange={onChange}
+        error={errors.location}
+        required
+      />
 
       {/* Screen height & width */}
       <div className="grid grid-cols-2 gap-4">
@@ -92,11 +100,11 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
             disabled={!form.powerSupply}
           />
           <Input
-          label="Spare Quantity"
-          name="sparePowerSupplyQuantity"
-          type="number" value={form.sparePowerSupplyQuantity}
-          onChange={onChange}
-          disabled={!form.powerSupply}
+            label="Spare Quantity"
+            name="sparePowerSupplyQuantity"
+            type="number" value={form.sparePowerSupplyQuantity}
+            onChange={onChange}
+            disabled={!form.powerSupply}
           />
         </div>
       </SectionContainer>
