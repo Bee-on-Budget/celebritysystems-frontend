@@ -177,6 +177,32 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
         </div>
       </SectionContainer>
 
+      {/* Hub */}
+      <SectionContainer title="Hub">
+        <Input label="Hub Type" name="hub" value={form.hub} onChange={onChange} />
+        <div className="grid grid-cols-2 gap-4">
+          <Input
+            label="Quantity"
+            name="hubQuantity"
+            type="number"
+            value={form.hubQuantity}
+            onChange={onChange}
+            error={errors.hubQuantity}
+            disabled={!form.hub}
+            required={!!form.hub}
+          />
+          <Input 
+            label="Spare Quantity"
+            name="spareHubQuantity"
+            type="number" 
+            value={form.spareHubQuantity}
+            onChange={onChange}
+            error={errors.spareHubQuantity}
+            disabled={!form.hub} 
+          />
+        </div>
+      </SectionContainer>
+
       {/* Files */}
       <SectionContainer title="Files">
         <div className="grid grid-cols-3 gap-4">

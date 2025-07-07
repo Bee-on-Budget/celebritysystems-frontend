@@ -29,6 +29,9 @@ const initialFormState = {
   spareMediaQuantity: "",
   fan: "",
   fanQuantity: "",
+  hub: "",
+  hubQuantity: "",
+  spareHubQuantity: "",
   connectionFile: null,
   configFile: null,
   versionFile: null,
@@ -234,6 +237,16 @@ const useAddScreenForm = () => {
       if (form.spareMediaQuantity && Number(form.spareMediaQuantity) < 0) {
         newErrors.spareMediaQuantity = "Spare media quantity cannot be negative";
       }
+
+      // Hub validation
+      if (form.hub && !form.hubQuantity) {
+        newErrors.hubQuantity = "Quantity is required when hub type is specified";
+      } else if (form.hub && Number(form.hubQuantity) <= 0) {
+        newErrors.hubQuantity = "Hub quantity must be greater than 0";
+      }
+      if (form.spareHubQuantity && Number(form.spareHubQuantity) < 0) {
+        newErrors.spareHubQuantity = "Spare hub quantity cannot be negative";
+      }
     }
 
     if (currentStep === 2) {
@@ -423,6 +436,11 @@ const useAddScreenForm = () => {
         // Fan Information
         fan: form.fan,
         fanQuantity: Number(form.fanQuantity),
+
+        // Hub Information
+        hub: form.hub,
+        hubQuantity: Number(form.hubQuantity),
+        spareHubQuantity: Number(form.spareHubQuantity),
 
         // Files
         connectionFile: form.connectionFile,
