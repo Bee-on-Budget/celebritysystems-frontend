@@ -2,11 +2,12 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { createTicket, prepareTicketFormData, getUsersByRole } from "../../api/services/TicketService";
-import { getAllCompanies } from "../../features/companies/CompanyService";
+import { getAllCompanies } from "../../api/services/CompanyService";
 import { getScreens } from "../../api/services/ScreenService";
 import Select from 'react-select';
 import AsyncSelect from 'react-select/async';
 import debounce from 'lodash/debounce';
+import { showToast } from "../../components";
 
 const CreateTicket = () => {
   const navigate = useNavigate();
@@ -41,12 +42,12 @@ const CreateTicket = () => {
           getUsersByRole("SUPERVISOR")
         ]);
 
-        const companiesData = Array.isArray(companiesRes) ? companiesRes : companiesRes?.content || companiesRes?.data || [];
-        setCompanies(companiesData);
-
+        setCompanies(companiesRes || []);
         setWorkers(workerRes || []);
         setSupervisors(supervisorRes || []);
+
       } catch (error) {
+        showToast("Error fetching initial data", "error")
         console.error("Error fetching initial data:", error);
       } finally {
         setFetching(false);
