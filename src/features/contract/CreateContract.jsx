@@ -364,9 +364,13 @@ const CreateContract = () => {
               onChange={handleChange}
               required
             >
-              <option value="MONTHLY">Monthly</option>
-              <option value="QUARTERLY">Quarterly</option>
-              <option value="YEARLY">Yearly</option>
+    <option value="WEEKLY">Weekly</option>
+<option value="TWO_WEEKLY">Two Weekly</option>
+<option value="MONTHLY">Monthly</option>
+<option value="BIMONTHLY">Bimonthly</option>
+<option value="QUARTERLY">Quarterly</option>
+<option value="TWICE_A_YEAR">Twice a Year</option>
+
             </select>
           </div>
           
