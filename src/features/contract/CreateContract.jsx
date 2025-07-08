@@ -297,7 +297,7 @@ const CreateContract = () => {
               required
             >
               <option value="OWNER">Owner</option>
-              <option value="THIRD_PARTY">Rental</option>
+              <option value="THIRD_PARTY">Third party</option>
             </select>
           </div>
         </div>
