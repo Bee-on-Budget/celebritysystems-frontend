@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import { showToast } from '../../components/ToastNotifier';
-import { createContract } from './contractService';
+import { createContract } from '../../api/services/ContractService';
 import { getAllCompanies } from '../../api/services/CompanyService';
 import { getScreens } from '../../api/services/ScreenService';
 import Select from 'react-select';
