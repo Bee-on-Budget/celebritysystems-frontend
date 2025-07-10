@@ -55,12 +55,12 @@ const MonthlySalesStats = ({ salesData }) => {
   return (
     <div className="bg-white rounded-lg shadow p-4">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="font-semibold text-lg flex items-center gap-2">
-          <FaChartLine className="text-blue-500" />
+        <h3 className="font-semibold text-lg flex items-center gap-2 text-dark">
+          <FaChartLine className="text-primary" />
           Daily Screen Sales
         </h3>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-500 flex items-center">
+          <span className="text-sm text-dark-light flex items-center">
             <FaCalendarAlt className="mr-1" /> Last 30 Days
           </span>
         </div>
@@ -111,17 +111,17 @@ const MonthlySalesStats = ({ salesData }) => {
             <Line 
               type="monotone" 
               dataKey="screens" 
-              stroke="#3B82F6" 
+              stroke="#E83D29" 
               strokeWidth={2}
               dot={{ r: 4 }}
-              activeDot={{ r: 6, stroke: '#2563EB' }}
+              activeDot={{ r: 6, stroke: '#801a0e' }}
             />
           </LineChart>
         </ResponsiveContainer>
       </div>
 
       {/* Summary Stats */}
-      <div className="grid grid-cols-3 gap-4 mt-4 text-center">
+      <div className="grid grid-cols-3 gap-4 mt-4 text-center text-dark">
         <div className="p-2 bg-blue-50 rounded">
           <div className="text-sm text-blue-600">Current Month</div>
           <div className="text-xl font-bold">{currentMonthTotal}</div>
