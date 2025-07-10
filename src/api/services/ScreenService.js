@@ -37,12 +37,15 @@ export const createScreen = async (screenData) => {
         // 1. Add ALL regular fields (including empty ones)
         const fields = [
             'name', 'screenType', 'solutionTypeInScreen', 'location',
-            'powerSupply', 'receivingCard', 'cable', 'powerCable', 'dataCable',
-            'media', 'fan', 'powerSupplyQuantity', 'sparePowerSupplyQuantity',
-            'receivingCardQuantity', 'spareReceivingCardQuantity', 'cableQuantity',
-            'spareCableQuantity', 'powerCableQuantity', 'sparePowerCableQuantity',
-            'dataCableQuantity', 'spareDataCableQuantity', 'mediaQuantity',
-            'spareMediaQuantity', 'fanQuantity'
+            'pixelScreen', 'description',
+            'powerSupply', 'powerSupplyQuantity', 'sparePowerSupplyQuantity',
+            'receivingCard', 'receivingCardQuantity', 'spareReceivingCardQuantity',
+            'cable', 'cableQuantity', 'spareCableQuantity',
+            'powerCable', 'powerCableQuantity', 'sparePowerCableQuantity',
+            'dataCable', 'dataCableQuantity', 'spareDataCableQuantity',
+            'media', 'mediaQuantity', 'spareMediaQuantity',
+            'hub', 'hubQuantity', 'spareHubQuantity', 
+            'fan', 'fanQuantity',
         ];
 
         fields.forEach(field => {
@@ -126,3 +129,12 @@ export const deleteScreen = async (id) => {
         throw error.response?.data?.message || "Error deleting screen";
     }
 };
+
+export const getScreenWithoutContracts = async () => {
+    try {
+        const response = await api.get('without-contracts');
+        return response.data;
+    } catch (error) {
+        throw error.response?.data?.message || "Error fetching screens";
+    }
+}
