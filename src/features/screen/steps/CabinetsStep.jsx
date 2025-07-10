@@ -81,8 +81,18 @@ const CabinetsStep = ({
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <input type='checkbox'/> <span>Is Width</span>
-            <input type='checkbox'/> <span>Is Height</span>
+            <input
+            name={`cabinet_${index}_isWidth`}
+            type='checkbox'
+            checked={cabinet.isWidth}
+            onChange={onChange}
+            /> <span>Is Width</span>
+            <input
+            name={`cabinet_${index}_isHeight`}
+            type='checkbox'
+            checked={cabinet.isHeight}
+            onChange={onChange}
+            /> <span>Is Height</span>
           </div>
         </div>
       ))}
