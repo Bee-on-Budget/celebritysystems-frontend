@@ -111,6 +111,7 @@ const ScreenDetails = () => {
                 <LabelContainer>{getScreenTypeLabel(screen.screenType)}</LabelContainer>
                 <LabelContainer>{getScreenSolutionLabel(screen.solutionType)}</LabelContainer>
                 <LabelContainer>Created: {new Date(screen.createdAt).toLocaleDateString()}</LabelContainer>
+                <LabelContainer>ID: {screen.id}</LabelContainer>
               </div>
             </div>
             <div className="mt-4 sm:mt-0 text-right">
@@ -214,26 +215,45 @@ const ScreenDetails = () => {
               <div className="space-y-4">
                 {screen.moduleList?.length > 0 ? (
                   screen.moduleList.map((module, idx) => (
-                    // <div key={idx} className="bg-primary bg-opacity-5 p-4 rounded-lg border border-primary border-opacity-20">                      <div className="flex justify-between items-start">
-                    <div key={idx} className="bg-white p-4 rounded-lg border border-gray-200 hover:border-primary">                      <div className="flex justify-between items-start">
-                      <h3 className="text-lg font-semibold text-primary">{module.batchNumber}</h3>
-                      <div className="text-sm text-gray-500">
-                        {module.width}px × {module.height}px
+                    <div key={idx} className="bg-white p-4 rounded-lg border border-gray-200 hover:border-primary">
+                      <div className="flex justify-between items-start">
+                        <h3 className="text-lg font-semibold text-primary">Batch: {module.batchNumber}</h3>
+                        <div className="text-sm text-gray-500">
+                          {module.width}px × {module.height}px
+                        </div>
                       </div>
-                    </div>
-                      {/* <div className="grid grid-cols-2 gap-4 text-sm"> */}
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-3 text-sm">
                         <div>
                           <p className="text-gray-500">Batch Number</p>
                           <p className="font-medium">{module.batchNumber || 'N/A'}</p>
                         </div>
                         <div>
+                          <p className="text-gray-500">Quantity</p>
+                          <p className="font-medium">{module.quantity ?? 'N/A'}</p>
+                        </div>
+                        <div>
                           <p className="text-gray-500">Height Quantity</p>
-                          <p className="font-medium">{module.heightQuantity || 'N/A'}</p>
+                          <p className="font-medium">{module.heightQuantity ?? 'N/A'}</p>
                         </div>
                         <div>
                           <p className="text-gray-500">Width Quantity</p>
-                          <p className="font-medium">{module.widthQuantity || 'N/A'}</p>
+                          <p className="font-medium">{module.widthQuantity ?? 'N/A'}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-500">Height</p>
+                          <p className="font-medium">{module.height ?? 'N/A'}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-500">Width</p>
+                          <p className="font-medium">{module.width ?? 'N/A'}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-500">isHeight</p>
+                          <p className="font-medium">{module.isHeight ? 'Yes' : 'No'}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-500">isWidth</p>
+                          <p className="font-medium">{module.isWidth ? 'Yes' : 'No'}</p>
                         </div>
                       </div>
                     </div>
@@ -248,7 +268,7 @@ const ScreenDetails = () => {
                   screen.cabinList.map((cabin, idx) => (
                     <div key={idx} className="bg-white p-4 rounded-lg border border-gray-200 hover:border-primary">
                       <div className="flex justify-between items-start">
-                        <h3 className="text-lg font-semibold text-primary">{cabin.cabinName}</h3>
+                        <h3 className="text-lg font-semibold text-primary">Cabinet: {cabin.cabinName}</h3>
                         <div className="text-sm text-gray-500">
                           {cabin.width}px × {cabin.height}px
                         </div>
@@ -259,15 +279,34 @@ const ScreenDetails = () => {
                           <p className="font-medium">{cabin.cabinName || 'N/A'}</p>
                         </div>
                         <div>
+                          <p className="text-gray-500">Quantity</p>
+                          <p className="font-medium">{cabin.quantity ?? 'N/A'}</p>
+                        </div>
+                        <div>
                           <p className="text-gray-500">Height Quantity</p>
-                          <p className="font-medium">{cabin.heightQuantity || 'N/A'}</p>
+                          <p className="font-medium">{cabin.heightQuantity ?? 'N/A'}</p>
                         </div>
                         <div>
                           <p className="text-gray-500">Width Quantity</p>
-                          <p className="font-medium">{cabin.widthQuantity || 'N/A'}</p>
+                          <p className="font-medium">{cabin.widthQuantity ?? 'N/A'}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-500">Height</p>
+                          <p className="font-medium">{cabin.height ?? 'N/A'}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-500">Width</p>
+                          <p className="font-medium">{cabin.width ?? 'N/A'}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-500">isHeight</p>
+                          <p className="font-medium">{cabin.isHeight ? 'Yes' : 'No'}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-500">isWidth</p>
+                          <p className="font-medium">{cabin.isWidth ? 'Yes' : 'No'}</p>
                         </div>
                       </div>
-
                       {cabin.module && (
                         <div className="mt-4 pt-4 border-t border-gray-200">
                           <h4 className="text-md font-medium text-primary mb-2">Module Details</h4>
@@ -277,16 +316,24 @@ const ScreenDetails = () => {
                               <p className="font-medium">{cabin.module.batchNumber}</p>
                             </div>
                             <div>
+                              <p className="text-gray-500">Quantity</p>
+                              <p className="font-medium">{cabin.module.quantity ?? 'N/A'}</p>
+                            </div>
+                            <div>
                               <p className="text-gray-500">Height Quantity</p>
-                              <p className="font-medium">{cabin.module.heightQuantity || 'N/A'}</p>
+                              <p className="font-medium">{cabin.module.heightQuantity ?? 'N/A'}</p>
                             </div>
                             <div>
                               <p className="text-gray-500">Width Quantity</p>
-                              <p className="font-medium">{cabin.module.widthQuantity || 'N/A'}</p>
+                              <p className="font-medium">{cabin.module.widthQuantity ?? 'N/A'}</p>
                             </div>
                             <div>
-                              <p className="text-gray-500">Dimensions</p>
-                              <p className="font-medium">{cabin.module.width}px × {cabin.module.height}px</p>
+                              <p className="text-gray-500">Height</p>
+                              <p className="font-medium">{cabin.module.height ?? 'N/A'}</p>
+                            </div>
+                            <div>
+                              <p className="text-gray-500">Width</p>
+                              <p className="font-medium">{cabin.module.width ?? 'N/A'}</p>
                             </div>
                           </div>
                         </div>
