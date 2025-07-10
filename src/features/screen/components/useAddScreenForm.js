@@ -51,6 +51,8 @@ const initialFormState = {
       heightQuantity: "",
       height: "",
       width: "",
+      isHeight: false,
+      isWidth: false,
       moduleDto: {
         widthQuantity: "",
         heightQuantity: "",
@@ -79,6 +81,8 @@ const useAddScreenForm = () => {
           heightQuantity: "",
           height: "",
           width: "",
+          isHeight: false,
+          isWidth: false,
           moduleDto: {
             widthQuantity: "",
             heightQuantity: "",
@@ -133,7 +137,7 @@ const useAddScreenForm = () => {
   };
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
+    const { name, value, files, type, checked } = e.target;
 
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
@@ -147,7 +151,7 @@ const useAddScreenForm = () => {
         const updatedCabinets = [...prev.cabinets];
         updatedCabinets[cabinetIndex] = {
           ...updatedCabinets[cabinetIndex],
-          [field]: files ? files[0] : value,
+          [field]: type === 'checkbox' ? checked : (files ? files[0] : value),
         };
         return { ...prev, cabinets: updatedCabinets };
       });
@@ -382,6 +386,8 @@ const useAddScreenForm = () => {
             heightQuantity: Number(cabinet.heightQuantity),
             height: Number(cabinet.height),
             width: Number(cabinet.width),
+            isWidth: cabinet.isWidth,
+            isHeight: cabinet.isHeight,
             moduleDto: {
               moduleBatchNumber: cabinet.moduleDto.moduleBatchNumber,
               widthQuantity: Number(cabinet.moduleDto.widthQuantity),
