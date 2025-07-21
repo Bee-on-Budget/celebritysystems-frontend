@@ -51,7 +51,6 @@ const SubContractDetails = () => {
     };
 
     const formatDate = (dateString) => dateString ? new Date(dateString).toLocaleDateString() : 'N/A';
-    const formatDateTime = (dateString) => dateString ? new Date(dateString).toLocaleString() : 'N/A';
 
     if (loading) return <Loading />;
 
