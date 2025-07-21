@@ -161,7 +161,7 @@ const getTicketsStatus = async () => {
     console.log(response.data);
     const statusData = Object.entries(response.data).map((statusKey, statusValue) => ({
       name: statusKey,
-      value: statusValue
+      value: statusValue,
     }));
     
     return statusData;
