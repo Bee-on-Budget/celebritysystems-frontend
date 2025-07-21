@@ -156,23 +156,6 @@ const CreateTicket = () => {
             />
           </div>
 
-          {/* Status */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Status*</label>
-            <select
-              className="w-full border border-gray-300 px-4 py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-              required
-            >
-              <option value="OPEN">Open</option>
-              <option value="IN_PROGRESS">In Progress</option>
-              <option value="RESOLVED">Resolved</option>
-              <option value="CLOSED">Closed</option>
-            </select>
-          </div>
-
           {/* Company */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
@@ -235,9 +218,9 @@ const CreateTicket = () => {
             />
           </div>
 
-          {/* Assigned By Supervisor */}
+          {/* Assigned to Supervisor */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Assigned by Supervisor</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Assigned to Supervisor</label>
             <Select
               options={supervisors.map(supervisor => ({
                 value: supervisor.id,
