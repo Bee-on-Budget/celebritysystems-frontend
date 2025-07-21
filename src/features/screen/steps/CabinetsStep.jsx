@@ -11,6 +11,22 @@ const CabinetsStep = ({
   removeCabinet,
   loading
 }) => {
+  const handleCheckboxChange = (e, index) => {
+    const { name, checked } = e.target;
+    const fieldName = name.split('_')[2];
+    
+    const updatedCabinets = form.cabinets.map((cabinet, i) => 
+      i === index ? { ...cabinet, [fieldName]: checked } : cabinet
+    );
+    
+    onChange({
+      target: {
+        name: 'cabinets',
+        value: updatedCabinets
+      }
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -81,18 +97,26 @@ const CabinetsStep = ({
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <input
-            name={`cabinet_${index}_isWidth`}
-            type='checkbox'
-            checked={cabinet.isWidth}
-            onChange={onChange}
-            /> <span>Is Width</span>
-            <input
-            name={`cabinet_${index}_isHeight`}
-            type='checkbox'
-            checked={cabinet.isHeight}
-            onChange={onChange}
-            /> <span>Is Height</span>
+            <label className="flex items-center space-x-2 cursor-pointer">
+              <input
+                name={`cabinet_${index}_isWidth`}
+                type="checkbox"
+                checked={cabinet.isWidth || false}
+                onChange={(e) => handleCheckboxChange(e, index)}
+                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+              />
+              <span className="text-sm font-medium text-gray-700">Is Width</span>
+            </label>
+            <label className="flex items-center space-x-2 cursor-pointer">
+              <input
+                name={`cabinet_${index}_isHeight`}
+                type="checkbox"
+                checked={cabinet.isHeight || false}
+                onChange={(e) => handleCheckboxChange(e, index)}
+                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+              />
+              <span className="text-sm font-medium text-gray-700">Is Height</span>
+            </label>
           </div>
         </div>
       ))}
@@ -107,7 +131,8 @@ const CabinetsStep = ({
           {form.solutionTypeInScreen === "MODULE_SOLUTION" ? "Create Screen" : "Next: Module"}
         </Button>
       </div>
-    </div>);
+    </div>
+  );
 };
 
 export default CabinetsStep;

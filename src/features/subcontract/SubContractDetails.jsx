@@ -13,26 +13,25 @@ const SubContractDetails = () => {
     const [error, setError] = useState('');
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-    useEffect(() => {
-        const fetchSubContract = async () => {
-            setLoading(true);
-            setError('');
-      
-            // Check if subcontract data was passed from navigation
-            if (location.state?.subContract) {
-              setSubContract(location.state.subContract);
-              setLoading(false);
-              return;
-            } else {
-              navigate(-1);
-              showToast("Failed to load subcontract info, please try again!", "error");
-            }
-        };
+useEffect(() => {
+    const fetchSubContract = async () => {
+        setLoading(true);
+        setError('');
 
-        if (!subContract && id) {
-            fetchSubContract();
+        if (location.state?.subContract) {
+            setSubContract(location.state.subContract);
+            setLoading(false);
+            return;
+        } else {
+            navigate(-1);
+            showToast("Failed to load subcontract info, please try again!", "error");
         }
-    }, [id, subContract]);
+    };
+
+    if (!subContract && id) {
+        fetchSubContract();
+    }
+}, [id, subContract, location.state?.subContract, navigate]);
 
     const handleDeleteClick = () => {
         setShowDeleteModal(true);
