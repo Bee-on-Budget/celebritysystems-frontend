@@ -104,7 +104,7 @@ const Sidebar = ({ open, setOpen }) => {
             isOpen={openDropdowns["Sub-Contract"]}
             onToggle={() => handleDropdownToggle("Sub-Contract")}
             items={[
-              { label: "All Sub-Contract", href: "/subcontract", onClick: () => setOpen(false) },
+              { label: "All Sub-Contract", href: "/subcontracts", onClick: () => setOpen(false) },
               { label: "Create Sub-Contract", href: "/subcontract/create", onClick: () => setOpen(false) }
             ]}
           />
