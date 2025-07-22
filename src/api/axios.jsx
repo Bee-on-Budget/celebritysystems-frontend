@@ -45,26 +45,26 @@ api.interceptors.response.use(
       });
     }
 
-    // const errorType = classifyError(error);
+    const errorType = classifyError(error);
 
-    // switch (errorType) {
-    //   case "auth":
-    //     handleAuthError(error, navigate);
-    //     break;
-    //   case "validation":
-    //     handleValidationError(error);
-    //     break;
-    //   case "server":
-    //     // For server errors (500+), show a generic error message
-    //     if (!serverErrorNotificationShown) {
-    //       showToast('Something went wrong on our end. We\'re working to fix it.', 'error');
-    //       serverErrorNotificationShown = true;
-    //     }
-    //     break;
-    //   default:
-    //     showToast('Connection Error', 'error');
-    //     console.error("Unhandled error type:", error);
-    // }
+    switch (errorType) {
+      case "auth":
+        // handleAuthError(error, navigate);
+        break;
+      case "validation":
+        // handleValidationError(error);
+        break;
+      case "server":
+        // For server errors (500+), show a generic error message
+        if (!serverErrorNotificationShown) {
+          showToast('Something went wrong on our end. We\'re working to fix it.', 'error');
+          serverErrorNotificationShown = true;
+        }
+        break;
+      default:
+        showToast('Connection Error', 'error');
+        console.error("Unhandled error type:", error);
+    }
 
     return Promise.reject(error);
   }
