@@ -30,7 +30,9 @@ export const handleAuthError = (error, navigate) => {
     if (process.env.REACT_APP_NODE_ENV === 'development') {
       console.log(error);
     }
-    // showErrorMessage('Your unauthorized for this type of action');
+    showErrorMessage('Your session has expired. Please log in again.');
+    removeToken();
+    navigate('/login');
   }
 };
 
