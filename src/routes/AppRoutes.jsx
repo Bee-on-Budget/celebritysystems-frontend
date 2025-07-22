@@ -228,7 +228,7 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="subcontract/:id"
+          path="subcontracts/:id"
           element={
             <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
               <SubContractDetails />
