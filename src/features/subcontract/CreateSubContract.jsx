@@ -146,7 +146,7 @@ const CreateSubContract = () => {
       });
 
       showToast("Subcontract created successfully!", "success");
-      setTimeout(() => navigate('/subcontracts'), 200);
+      navigate('/subcontract');
     } catch (error) {
       showToast(error.response?.data?.message || "Failed to create subcontract", "error");
     } finally {
