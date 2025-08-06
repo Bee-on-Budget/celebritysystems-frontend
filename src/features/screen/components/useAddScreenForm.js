@@ -42,6 +42,8 @@ const initialFormState = {
       height: "",
       width: "",
       moduleBatchNumber: "",
+      isWidth: false,
+      isHeight: false,
     }
   ],
   cabinets: [
@@ -120,6 +122,8 @@ const useAddScreenForm = () => {
           height: "",
           width: "",
           moduleBatchNumber: "",
+          isWidth: false,
+          isHeight: false,
         },
       ],
     }));
@@ -165,7 +169,7 @@ const useAddScreenForm = () => {
           ...updatedCabinets[index],
           moduleDto: {
             ...updatedCabinets[index].moduleDto,
-            [field]: files ? files[0] : value,
+            [field]: type === 'checkbox' ? checked : (files ? files[0] : value),
           },
         };
         return { ...prev, cabinets: updatedCabinets };
@@ -178,7 +182,7 @@ const useAddScreenForm = () => {
         const updatedModules = [...prev.modulesDto];
         updatedModules[moduleIndex] = {
           ...updatedModules[moduleIndex],
-          [field]: files ? files[0] : value,
+          [field]: type === 'checkbox' ? checked : (files ? files[0] : value),
         };
         return { ...prev, modulesDto: updatedModules };
       });
@@ -376,7 +380,9 @@ const useAddScreenForm = () => {
           widthQuantity: Number(module.widthQuantity),
           heightQuantity: Number(module.heightQuantity),
           height: Number(module.height),
-          width: Number(module.width)
+          width: Number(module.width),
+          isWidth: !!module.isWidth,
+          isHeight: !!module.isHeight,
         }));
       } else {
         solutionData.cabinDtoListJson = JSON.stringify(

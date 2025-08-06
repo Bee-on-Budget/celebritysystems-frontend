@@ -62,6 +62,28 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
                 required
               />
             </div>
+            <div className="grid grid-cols-2 gap-4">
+              <label className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  name={`moduleDto_${index}_isWidth`}
+                  type="checkbox"
+                  checked={!!module.isWidth}
+                  onChange={onChange}
+                  className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary-focus focus:ring-2"
+                />
+                <span className="text-sm font-medium text-gray-700">Is Width</span>
+              </label>
+              <label className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  name={`moduleDto_${index}_isHeight`}
+                  type="checkbox"
+                  checked={!!module.isHeight}
+                  onChange={onChange}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                />
+                <span className="text-sm font-medium text-gray-700">Is Height</span>
+              </label>
+            </div>
             <Input
               label="Batch Number"
               name={`moduleDto_${index}_moduleBatchNumber`}

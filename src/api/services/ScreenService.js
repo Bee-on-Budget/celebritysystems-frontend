@@ -64,7 +64,9 @@ export const createScreen = async (screenData) => {
                     widthQuantity: Number(m.widthQuantity),
                     heightQuantity: Number(m.heightQuantity),
                     width: Number(m.width),
-                    height: Number(m.height)
+                    height: Number(m.height),
+                    isWidth: m.isWidth,
+                    isHeight: m.isHeight
                 })))
             );
         } else if (screenData.solutionTypeInScreen === 'CABINET_SOLUTION') {
