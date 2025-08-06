@@ -12,6 +12,8 @@ const ScreensList = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [totalScreens, setTotalScreens] = useState(0);
   const [pageSize, setPageSize] = useState(10);
+  const [hasNext, setHasNext] = useState(false);
+  const [hasPrevious, setHasPrevious] = useState(false);
   const navigate = useNavigate();
 
 
@@ -19,12 +21,15 @@ const ScreensList = () => {
     setIsLoading(true);
     try {
       const data = await getScreens({ page, size: pageSize });
+      console.log(data.hasNext, data.hasPrevious, data.pageNumber, data.pageSize, data.totalPages, data.totalElements);
+      setHasNext(data.hasNext);
+      setHasPrevious(data.hasPrevious);
       setScreens(data.content || []);
       setFiltered(data.content || []);
       setTotalPages(data.totalPages);
       setTotalScreens(data.totalElements);
       setCurrentPage(data.pageNumber);
-      setPageSize(data.pageSize)
+      setPageSize(data.pageSize);
     } catch (e) {
       setError("Failed to load screens");
     } finally {
@@ -155,11 +160,13 @@ const ScreensList = () => {
       {renderScreenItem(filtered)}
 
       {
-        screens.length > pageSize && <Pagination
+        totalPages > 1 && <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           totalItems={totalScreens}
           itemsPerPage={pageSize}
+          hasNext={hasNext}
+          hasPrevious={hasPrevious}
           onPageChange={(newPage) => {
             if (newPage >= 0 && newPage < totalPages) {
               setCurrentPage(newPage);
