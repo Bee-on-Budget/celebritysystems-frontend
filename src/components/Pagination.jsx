@@ -6,6 +6,8 @@ const Pagination = ({
     totalPages,
     totalItems,
     itemsPerPage,
+    hasNext,
+    hasPrevious,
     onPageChange,
     className,
 }) => {
@@ -18,13 +20,13 @@ const Pagination = ({
                 Showing {startItem}-{endItem} of {totalItems} items
             </div>
             <div className="flex items-center space-x-2">
-                <Button variant='outline' size='sm' onClick={() => onPageChange(currentPage - 1)}>
+                <Button variant='outline' size='sm' onClick={() => onPageChange(currentPage - 1)} isDisabled={!hasPrevious}>
                     Previous
                 </Button>
                 <span className="px-4 py-2 text-primary rounded">
                     Page {currentPage + 1} of {totalPages}
                 </span>
-                <Button variant='outline' size='sm' onClick={() => onPageChange(currentPage + 1)}>
+                <Button variant='outline' size='sm' onClick={() => onPageChange(currentPage + 1)} isDisabled={!hasNext}>
                     Next
                 </Button>
             </div>
