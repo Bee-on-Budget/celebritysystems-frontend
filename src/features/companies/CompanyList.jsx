@@ -11,20 +11,23 @@ const CompanyList = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [totalCompanies, setTotalCompanies] = useState(0);
-  const [pageSize, setPageSize] = useState(4);
+  const [hasNext, setHasNext] = useState(false);
+  const [hasPrevious, setHasPrevious] = useState(false);
   const navigate = useNavigate();
+
+  const pageSize = 10;
 
   const fetchCompanies = useCallback(async (page = 0) => {
     setIsLoading(true);
     try {
       const data = await getAllCompanies({ page, size: pageSize });
-      setCompanies(data || []);
-      console.log(data[0]);
-      setFiltered(data || []);
-      setTotalPages(data.totalPages);
-      setTotalCompanies(data.totalElements);
-      setCurrentPage(data.pageNumber);
-      setPageSize(data.pageSize);
+      setCompanies(data.content ?? []);
+      setFiltered(data.content ?? []);
+      setTotalPages(data.totalPages ?? 0);
+      setTotalCompanies(data.totalElements ?? 0);
+      setCurrentPage(data.number ?? 0);
+      setHasNext(!data.last);
+      setHasPrevious(!data.first);
     } catch (e) {
       setError("Failed to load companies");
     } finally {
@@ -130,11 +133,13 @@ const CompanyList = () => {
     >
       {renderCompanyItem(filtered)}
       {
-        companies.length > pageSize && <Pagination
+        totalPages > 1 && <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           totalItems={totalCompanies}
           itemsPerPage={pageSize}
+          hasNext={hasNext}
+          hasPrevious={hasPrevious}
           onPageChange={(newPage) => {
             if (newPage >= 0 && newPage < totalPages) {
               setCurrentPage(newPage);

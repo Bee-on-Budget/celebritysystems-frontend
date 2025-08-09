@@ -18,11 +18,11 @@ const ContractList = () => {
     setIsLoading(true);
     try {
       const data = await getAllContracts({ page, size: pageSize });
-      setContracts(data || []);
-      setFiltered(data || []);
+      setContracts(data.content || []);
+      setFiltered(data.content || []);
       setTotalPages(data.totalPages);
       setTotalContracts(data.totalElements);
-      setCurrentPage(data.pageNumber);
+      setCurrentPage(data.number);
       setPageSize(data.pageSize);
     } catch (e) {
       setError("Failed to load contracts");
@@ -72,7 +72,7 @@ const ContractList = () => {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className={`${headerStyle} w-72`}>Company</th>
+              <th className={`${headerStyle} w-72`}>Contract Name</th>
               <th className={`${headerStyle} w-52`}>Account</th>
               <th className={`${headerStyle} w-32`}>Value</th>
               <th className={`${headerStyle} w-32`}>Expiry Date</th>
@@ -85,7 +85,7 @@ const ContractList = () => {
                 className={rowStyle}
                 onClick={() => navigate(`/contracts/${contract.id}`, { state: { contract } })}
               >
-                <td className={nameStyle}>{contract.companyName || 'Untitled Contract'}</td>
+                <td className={nameStyle}>{contract.info || 'Untitled Contract'}</td>
                 <td className={bodyStyle}>{contract.accountName}</td>
                 <td className={bodyStyle}>{formatCurrency(contract.contractValue)}</td>
                 <td className={bodyStyle}>{formatDate(contract.expiredAt)}</td>

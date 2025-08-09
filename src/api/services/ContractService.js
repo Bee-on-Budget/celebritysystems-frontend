@@ -17,14 +17,9 @@ export const createContract = async (contractData) => {
   }
 };
 
-export const getAllContracts = async () => {
+export const getAllContracts = async (params = {}) => {
   try {
-    const response = await axios.get(`${CONTRACT_API_URL}/with-names`, {
-      params: {
-        includeCompany: true,
-        includeScreens: true
-      }
-    });
+    const response = await axios.get(`${CONTRACT_API_URL}/paginated`, params);
     return response.data;
   } catch (error) {
     throw error.response?.data?.message || "Error fetching contracts";
