@@ -109,7 +109,7 @@ const ContractDetails = () => {
                 <div className="bg-primary bg-opacity-10 p-6 border-b border-gray-100">
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
                         <div>
-                            <h1 className="text-2xl font-bold text-primary">{contract.companyName || 'Untitled Contract'}</h1>
+                            <h1 className="text-2xl font-bold text-primary">{contract.info || 'Untitled Contract'}</h1>
                             <div className="flex flex-wrap gap-2 mt-2">
                                 <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full flex items-center">
                                     <FiFileText className="mr-1" />
