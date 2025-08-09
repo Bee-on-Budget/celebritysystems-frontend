@@ -85,16 +85,6 @@ const Login = () => {
               required
             />
 
-            <div className="flex justify-between items-center text-sm">
-              <label className="flex items-center gap-2 text-gray-600">
-                <input type="checkbox" className="form-checkbox" />
-                Remember me
-              </label>
-              <a href="\#" className="text-primary font-semibold hover:underline">
-                Forgot password?
-              </a>
-            </div>
-
             <Button className="w-full py-3 text-white font-semibold bg-primary hover:bg-primary-hover rounded-xl transition-all shadow-lg backdrop-blur-sm">
               Log in
             </Button>
