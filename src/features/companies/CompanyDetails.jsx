@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { getCompanyById, deleteCompany } from '../../api/services/CompanyService';
-import { FiArrowLeft, FiTrash2, FiUsers, FiMail, FiPhone, FiMapPin, FiClock, FiCheckCircle } from 'react-icons/fi';
+import { FiArrowLeft, FiTrash2, FiUsers, FiMail, FiPhone, FiMapPin, FiClock, FiCheckCircle, FiEdit2 } from 'react-icons/fi';
 import { Button, Loading, showToast } from '../../components';
 import ConfirmationModal from '../../components/ConfirmationModal';
 
@@ -46,6 +46,10 @@ const CompanyDetails = () => {
     } finally {
       setShowDeleteModal(false);
     }
+  };
+
+  const handleEditClick = () => {
+    navigate(`/companies/${id}/edit`, { state: { company } });
   };
 
   // const handleDelete = async () => {
@@ -117,13 +121,22 @@ const CompanyDetails = () => {
         >
           Back to Companies
         </Button>
-        <Button
-          onClick={handleDeleteClick}
-          variant='danger'
-          icon={<FiTrash2 />}
-        >
-          Delete
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={handleEditClick}
+            variant='outline'
+            icon={<FiEdit2 />}
+          >
+            Edit
+          </Button>
+          <Button
+            onClick={handleDeleteClick}
+            variant='danger'
+            icon={<FiTrash2 />}
+          >
+            Delete
+          </Button>
+        </div>
       </div>
 
       <div className="bg-white rounded-lg shadow-md overflow-hidden">

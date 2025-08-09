@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { getContractById, deleteContract } from '../../api/services/ContractService';
-import { FiArrowLeft, FiCalendar, FiDollarSign, FiFileText, FiTrash2, FiBriefcase } from 'react-icons/fi';
+import { FiArrowLeft, FiCalendar, FiDollarSign, FiFileText, FiTrash2, FiBriefcase, FiEdit2 } from 'react-icons/fi';
 import { Button, Loading, showToast, ConfirmationModal } from '../../components';
 
 const ContractDetails = () => {
@@ -79,20 +79,29 @@ const ContractDetails = () => {
 
             <div className="mb-6 flex items-center justify-between">
                 <Button
-                    onClick={() => navigate(-1)}
+                    onClick={() => navigate("/contracts")}
                     variant='text'
                     icon={<FiArrowLeft />}
                     size='sm'
                 >
                     Back to Contracts
                 </Button>
-                <Button
-                    onClick={handleDeleteClick}
-                    variant='danger'
-                    icon={<FiTrash2 />}
-                >
-                    Delete
-                </Button>
+                <div className="flex items-center gap-2">
+                    <Button
+                        onClick={() => navigate(`/contracts/${id}/edit`, { state: { contract } })}
+                        variant='primary'
+                        icon={<FiEdit2 />}
+                    >
+                        Edit
+                    </Button>
+                    <Button
+                        onClick={handleDeleteClick}
+                        variant='danger'
+                        icon={<FiTrash2 />}
+                    >
+                        Delete
+                    </Button>
+                </div>
             </div>
 
             <div className="bg-white rounded-lg shadow-md overflow-hidden">

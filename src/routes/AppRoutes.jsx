@@ -22,6 +22,7 @@ import ManageUsers from "../features/accounts/UserList";
 
 // Company management
 import CreateCompany from "../features/companies/CreateCompany";
+import EditCompany from "../features/companies/EditCompany";
 import CompanyList from "../features/companies/CompanyList";
 import AddUserToCompany from "../features/companies/AddUserToCompany";
 import CompanyDetails from "../features/companies/CompanyDetails";
@@ -38,6 +39,7 @@ import TestPage from "../features/test/TestPage";
 import CreateContract from "../features/contract/CreateContract";
 import ContractList from "../features/contract/ContractList";
 import ContractDetails from "../features/contract/ContractDetails";
+import EditContract from "../features/contract/EditContract";
 
 // Ticket management
 import TicketList from "../features/ticket/TicketList";
@@ -124,6 +126,14 @@ const AppRoutes = () => {
           }
         />
         <Route
+          path="companies/:id/edit"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
+              <EditCompany />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="companies/add-user"
           element={
             <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
@@ -180,6 +190,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
               <ContractDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="contracts/:id/edit"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
+              <EditContract />
             </ProtectedRoute>
           }
         />
