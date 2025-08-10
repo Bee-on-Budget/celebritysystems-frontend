@@ -93,14 +93,14 @@ const ContractDetails = () => {
                         icon={<FiEdit2 />}
                     >
                         Edit
-                    </Button>
-                    <Button
-                        onClick={handleDeleteClick}
-                        variant='danger'
-                        icon={<FiTrash2 />}
-                    >
-                        Delete
-                    </Button>
+                </Button>
+                <Button
+                    onClick={handleDeleteClick}
+                    variant='danger'
+                    icon={<FiTrash2 />}
+                >
+                    Delete
+                </Button>
                 </div>
             </div>
 
