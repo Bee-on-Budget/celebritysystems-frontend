@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { createTicket, prepareTicketFormData, getUsersByRole } from "../../api/services/TicketService";
-import { getAllCompanies } from "../../api/services/CompanyService";
+import { getCompaniesFoo } from "../../api/services/CompanyService";
 import { getScreens } from "../../api/services/ScreenService";
 import Select from 'react-select';
 import AsyncSelect from 'react-select/async';
@@ -37,7 +37,7 @@ const CreateTicket = () => {
     const fetchInitialData = async () => {
       try {
         const [companiesRes, workerRes, supervisorRes] = await Promise.all([
-          getAllCompanies(),
+          getCompaniesFoo(),
           getUsersByRole("CELEBRITY_SYSTEM_WORKER"),
           getUsersByRole("SUPERVISOR")
         ]);

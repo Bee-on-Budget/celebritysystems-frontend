@@ -5,14 +5,22 @@ export const createCompany = (data) => api.post("/company", data);
 // GET endpoints
 export const getAllCompanies = async (params = {}) => {
     try {
-        console.log(params);
         const response = await api.get('/company/paginated', { params });
-        // const response = await api.get('company/paginated?page=0&size=1');
         return response.data;
     } catch (error) {
-        throw error.response?.data?.message || "Error fetching company";
+        throw error.response?.data?.message || "Error fetching companies";
     }
 };
+
+export const getCompaniesFoo = async () => {
+    try {
+        const response = await api.get('/company');
+        return response.data;
+    } catch (error) {
+        throw error.response?.data?.message || "Error fetching companies";
+    }
+};
+
 export const deleteCompany = (id) => api.delete(`/company/${id}`);
 
 // Ensure we return the response data for details views
