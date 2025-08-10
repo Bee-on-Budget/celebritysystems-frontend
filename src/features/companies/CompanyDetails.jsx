@@ -52,19 +52,6 @@ const CompanyDetails = () => {
     navigate(`/companies/${id}/edit`, { state: { company } });
   };
 
-  // const handleDelete = async () => {
-  //     if (window.confirm('Are you sure you want to delete this company? This action cannot be undone.')) {
-  //         try {
-  //             await deleteCompany(id);
-  //             showToast('Company deleted successfully.', 'success');
-  //             navigate('/companies');
-  //         } catch (err) {
-  //             showToast(err.message || 'Failed to delete company. Please try again.', 'error');
-  //             console.error('Error deleting company:', err);
-  //         }
-  //     }
-  // };
-
   if (loading) return <Loading />;
 
   if (error) return (
@@ -78,21 +65,6 @@ const CompanyDetails = () => {
       <p className="text-gray-600">Company not found</p>
     </div>
   );
-
-  //   const LabelContainer = ({ children }) => (
-  //     <span className="px-3 py-1 bg-primary bg-opacity-20 text-primary text-sm rounded-full">
-  //       {children}
-  //     </span>
-  //   );
-
-  //   const getCompanyTypeLabel = (type) => {
-  //     switch (type) {
-  //       case 'MANUFACTURER': return "Manufacturer";
-  //       case 'DISTRIBUTOR': return "Distributor";
-  //       case 'CLIENT': return "Client";
-  //       default: return "N/A";
-  //     }
-  //   };
 
   const getActivationStatus = (activated) => (
     <span className={`px-3 py-1 rounded-full text-sm ${activated ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
@@ -114,7 +86,7 @@ const CompanyDetails = () => {
       />
       <div className="mb-6 flex items-center justify-between">
         <Button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/companies')}
           variant='text'
           icon={<FiArrowLeft />}
           size='sm'
@@ -124,7 +96,6 @@ const CompanyDetails = () => {
         <div className="flex gap-2">
           <Button
             onClick={handleEditClick}
-            variant='outline'
             icon={<FiEdit2 />}
           >
             Edit
