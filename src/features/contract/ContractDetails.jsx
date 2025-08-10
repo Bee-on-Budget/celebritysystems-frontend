@@ -93,14 +93,14 @@ const ContractDetails = () => {
                         icon={<FiEdit2 />}
                     >
                         Edit
-                </Button>
-                <Button
-                    onClick={handleDeleteClick}
-                    variant='danger'
-                    icon={<FiTrash2 />}
-                >
-                    Delete
-                </Button>
+                    </Button>
+                    <Button
+                        onClick={handleDeleteClick}
+                        variant='danger'
+                        icon={<FiTrash2 />}
+                    >
+                        Delete
+                    </Button>
                 </div>
             </div>
 
@@ -199,8 +199,8 @@ const ContractDetails = () => {
                                         <div className="flex justify-between">
                                             <span className="text-xs text-dark-light">Days Remaining:</span>
                                             <span className={`text-xs font-medium ${contract.expiredAt && new Date(contract.expiredAt) < new Date()
-                                                    ? 'text-red-600'
-                                                    : 'text-green-600'
+                                                ? 'text-red-600'
+                                                : 'text-green-600'
                                                 }`}>
                                                 {contract.expiredAt
                                                     ? Math.ceil((new Date(contract.expiredAt) - new Date()) / (1000 * 60 * 60 * 24))
@@ -250,8 +250,8 @@ const ContractDetails = () => {
                                         <div className="flex justify-between">
                                             <span className="text-xs text-dark-light">Status:</span>
                                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${contract.status === 'ACTIVE' ? 'bg-green-100 text-green-800' :
-                                                    contract.status === 'EXPIRED' ? 'bg-red-100 text-red-800' :
-                                                        'bg-gray-100 text-gray-800'
+                                                contract.status === 'EXPIRED' ? 'bg-red-100 text-red-800' :
+                                                    'bg-gray-100 text-gray-800'
                                                 }`}>
                                                 {contract.status || 'UNKNOWN'}
                                             </span>
