@@ -205,14 +205,10 @@ const useAddScreenForm = () => {
         newErrors.location = "Please enter a valid Google Maps link";
       }
       if (!form.pixelScreen) newErrors.pixelScreen = "Pixel screen is required";
-      if (!form.solutionTypeInScreen)
-        newErrors.solutionTypeInScreen = "Solution is required";
-      if (form.solutionTypeInScreen === "CABINET_SOLUTION" && !form.fan) {
-        newErrors.fan = "Screen fan is required for Cabinet solution";
-      }
-      if (form.solutionTypeInScreen === "CABINET_SOLUTION" && !form.fanQuantity) {
-        newErrors.fanQuantity = "Screen fan quantity is required for Cabinet solution";
-      } else if (form.solutionTypeInScreen === "CABINET_SOLUTION" && Number(form.fanQuantity) < 0) {
+      if (!form.solutionTypeInScreen) newErrors.solutionTypeInScreen = "Solution is required";
+      if (form.fan && !form.fanQuantity) {
+        newErrors.fanQuantity = "Fan quantity is required when fan is specified";
+      } else if (form.fan && Number(form.fanQuantity) < 0) {
         newErrors.fanQuantity = "Fan quantity must be greater or equal to 0";
       }
 
@@ -255,6 +251,11 @@ const useAddScreenForm = () => {
       if (form.spareHubQuantity && Number(form.spareHubQuantity) < 0) {
         newErrors.spareHubQuantity = "Spare hub quantity cannot be negative";
       }
+
+      // Files validation
+      if(!form.connectionFile) newErrors.connectionFile = "Connection File is required";
+      if(!form.configFile) newErrors.configFile = "Configuration File is required";
+      if(!form.versionFile) newErrors.versionFile = "Version File is required";
     }
 
     if (currentStep === 2) {

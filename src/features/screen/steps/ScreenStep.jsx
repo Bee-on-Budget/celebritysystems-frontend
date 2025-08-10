@@ -52,8 +52,6 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
           value={form.fan}
           onChange={onChange}
           error={errors.fan}
-          required={form.solutionTypeInScreen === "CABINET_SOLUTION"}
-          disabled={form.solutionTypeInScreen === "MODULE_SOLUTION"}
         />
 
         <Input
@@ -62,8 +60,8 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
           value={form.fanQuantity}
           onChange={onChange}
           error={errors.fanQuantity}
-          required={form.solutionTypeInScreen === "CABINET_SOLUTION"}
-          disabled={form.solutionTypeInScreen === "MODULE_SOLUTION"}
+          disabled={!form.fan}
+          required={!!form.fan}
         />
       </div>
 
