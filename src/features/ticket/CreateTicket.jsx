@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { createTicket, prepareTicketFormData, getUsersByRole } from "../../api/services/TicketService";
-import { getCompaniesFoo } from "../../api/services/CompanyService";
+import { searchCompanies } from "../../api/services/CompanyService";
 import { getScreens } from "../../api/services/ScreenService";
 import Select from 'react-select';
 import AsyncSelect from 'react-select/async';
@@ -32,17 +32,40 @@ const CreateTicket = () => {
   const MAX_FILE_SIZE_MB = 10;
   const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'application/pdf'];
 
+  const customStyles = {
+    control: (provided, state) => ({
+      ...provided,
+      borderColor: state.isFocused ? "#E83D29" : provided.borderColor,
+      boxShadow: state.isFocused ? "0 0 0 1px #E83D29" : provided.boxShadow,
+      "&:hover": { borderColor: "#E83D29" },
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isFocused ? "#E83D29" : provided.backgroundColor,
+      color: state.isFocused ? "#fff" : provided.color,
+      "&:active": {
+        backgroundColor: "#E83D29",
+        color: "#fff",
+      },
+    }),
+    singleValue: (provided) => ({
+      ...provided,
+      color: "#717274FF",
+    }),
+  }
+
   // Fetch initial data
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const [companiesRes, workerRes, supervisorRes] = await Promise.all([
-          getCompaniesFoo(),
+        // const [companiesRes, workerRes, supervisorRes] = await Promise.all([
+        const [workerRes, supervisorRes] = await Promise.all([
+          // getCompaniesFoo(),
           getUsersByRole("CELEBRITY_SYSTEM_WORKER"),
           getUsersByRole("SUPERVISOR")
         ]);
 
-        setCompanies(companiesRes || []);
+        // setCompanies(companiesRes || []);
         setWorkers(workerRes || []);
         setSupervisors(supervisorRes || []);
 
@@ -57,6 +80,32 @@ const CreateTicket = () => {
     fetchInitialData();
   }, []);
 
+  // Load companies with search
+  const loadCompanies = async (search = '') => {
+    if (search.length > 2) {
+      try {
+        const res = await searchCompanies(search);
+        const companiesData = Array.isArray(res) ? res : res?.content || res?.data || [];
+        setCompanies(companiesData);
+        return companiesData.map(company => ({
+          value: company.id,
+          label: company.name
+        }));
+      } catch (error) {
+        console.error("Error loading companies:", error);
+        return [];
+      }
+    }
+  };
+
+  // Debounced companies search
+  const debouncedLoadCompanies = useMemo(
+    () => debounce((inputValue, callback) => {
+      loadCompanies(inputValue).then(options => callback(options));
+    }, 500),
+    []
+  );
+
   // Load screens with search
   const loadScreens = async (search = '') => {
     try {
@@ -66,7 +115,7 @@ const CreateTicket = () => {
       setScreens(screensData);
       return screensData.map(screen => ({
         value: screen.id,
-        label: `${screen.name} (${screen.location})`
+        label: screen.name
       }));
     } catch (error) {
       console.error("Error loading screens:", error);
@@ -159,20 +208,21 @@ const CreateTicket = () => {
           {/* Company */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
-            <Select
-              options={companies.map(company => ({
-                value: company.id,
-                label: company.name
-              }))}
+            <AsyncSelect
+              cacheOptions
+              defaultOptions
+              loadOptions={debouncedLoadCompanies}
               value={companies.find(c => c.id === formData.companyId) ? {
                 value: formData.companyId,
                 label: companies.find(c => c.id === formData.companyId).name
               } : null}
               onChange={(option) => handleSelectChange('companyId', option)}
               isClearable
-              placeholder="Select company"
-              className="react-select-container"
-              classNamePrefix="react-select"
+              placeholder="Search companies..."
+              noOptionsMessage={({ inputValue }) =>
+                inputValue ? 'No companies found' : 'Start typing to search companies'
+              }
+              styles={customStyles}
             />
           </div>
 
@@ -185,7 +235,7 @@ const CreateTicket = () => {
               loadOptions={debouncedLoadScreens}
               value={screens.find(s => s.id === formData.screenId) ? {
                 value: formData.screenId,
-                label: `${screens.find(s => s.id === formData.screenId).name} (${screens.find(s => s.id === formData.screenId).location})`
+                label: screens.find(s => s.id === formData.screenId).name
               } : null}
               onChange={(option) => handleSelectChange('screenId', option)}
               isClearable
