@@ -10,7 +10,8 @@ const UserTable = ({
   handleEditClick,
   handleSaveEdit,
   handleCancelEdit,
-  handleDelete
+  handleDelete,
+  handleResetPassword
 }) => {
   return (
     <div className="overflow-x-auto">
@@ -39,6 +40,7 @@ const UserTable = ({
               handleSaveEdit={handleSaveEdit}
               handleCancelEdit={handleCancelEdit}
               handleDelete={handleDelete}
+              handleResetPassword={handleResetPassword}
             />
           ))}
         </tbody>
