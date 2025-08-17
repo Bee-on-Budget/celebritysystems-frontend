@@ -40,7 +40,6 @@ const Sidebar = ({ open, setOpen }) => {
       <nav className="flex-1 overflow-y-auto mt-1 flex flex-col space-y-2 pr-[calc(1.5rem-8px)] pl-4 pb-4 pt-1 scrollbar-gutter-stable">
         <div className="pr-2">
           <NavButton to={"/dashboard"} icon={<FaHome />} label="Home" onClick={() => setOpen(false)} />
-          {/* <NavButton to={"/profile"} icon={<FaUser />} label="Profile" onClick={() => setOpen(false)} /> */}
 
           {user?.role === "ADMIN" && (
             <SidebarDropdown
@@ -79,11 +78,11 @@ const Sidebar = ({ open, setOpen }) => {
             icon={FaFileContract}
             label="Tickets"
             isOpen={openDropdowns["Tickets"]}
-
             onToggle={() => handleDropdownToggle("Tickets")}
             items={[
-              { label: "All Tickets", href: "/tickets" },
-              { label: "Create Ticket", href: "/tickets/create" }
+              { label: "All Tickets", href: "/tickets", onClick: () => setOpen(false) },
+              { label: "Create Ticket", href: "/tickets/create", onClick: () => setOpen(false) },
+              { label: "Pending Tickets", href: "/tickets/pending", onClick: () => setOpen(false) }
             ]}
           />
 
@@ -108,6 +107,8 @@ const Sidebar = ({ open, setOpen }) => {
               { label: "Create Sub-Contract", href: "/subcontract/create", onClick: () => setOpen(false) }
             ]}
           />
+
+          <NavButton to={"/reports"} icon={<FaFileContract />} label="Reports" onClick={() => setOpen(false)} />
         </div>
       </nav>
     </div>

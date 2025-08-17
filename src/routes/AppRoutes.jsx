@@ -45,6 +45,12 @@ import EditContract from "../features/contract/EditContract";
 import TicketList from "../features/ticket/TicketList";
 import CreateTicket from "../features/ticket/CreateTicket";
 import TicketDetails from "../features/ticket/TicketDetails";
+import PendingTicketsList from "../features/ticket/PendingTicketsList";
+import PendingTicketDetails from "../features/ticket/PendingTicketDetails";
+
+// Report management
+import ReportList from "../features/report/ReportList";
+import ReportDetails from "../features/report/ReportDetails";
 
 // Sub-Contract management
 import SubcontractList from "../features/subcontract/SubcontractList";
@@ -224,6 +230,40 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
               <TicketDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="tickets/pending"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
+              <PendingTicketsList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="tickets/pending/:id"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
+              <PendingTicketDetails />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Report management */}
+        <Route
+          path="reports"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
+              <ReportList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="reports/:id"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
+              <ReportDetails />
             </ProtectedRoute>
           }
         />
