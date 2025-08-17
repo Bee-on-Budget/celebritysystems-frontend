@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { getAllUsers, updateUser, deleteUser } from "../../api/services/UserService";
+import { getAllUsers, updateUser, deleteUser, resetUserPassword } from "../../api/services/UserService";
 import { getAllCompanies } from "../../api/services/CompanyService";
 import MultiSearchBar from "../../components/MultiSearchBar";
 import UserTable from "./UserTable";
 import { roleOptions } from "./constants";
 import { filterUsersByRole, searchUsers } from "./userUtils";
+import { showToast } from "../../components/ToastNotifier";
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
@@ -44,8 +45,24 @@ const UserList = () => {
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
-      await deleteUser(id);
-      fetchData();
+      try {
+        await deleteUser(id);
+        fetchData();
+        showToast("User deleted successfully!", "success");
+      } catch (error) {
+        console.error("Error deleting user:", error);
+        showToast("Error deleting user: " + (error || "Unknown error"), "error");
+      }
+    }
+  };
+
+  const handleResetPassword = async (id, newPassword) => {
+    try {
+      await resetUserPassword(id, newPassword);
+      // Success toast is handled in UserRow component
+    } catch (error) {
+      console.error("Error resetting password:", error);
+      throw error; // Re-throw to let UserRow handle the error toast
     }
   };
 
@@ -77,8 +94,10 @@ const UserList = () => {
       await updateUser(userId, editFormData);
       setEditingUserId(null);
       fetchData();
+      showToast("User updated successfully!", "success");
     } catch (error) {
       console.error("Error updating user:", error);
+      showToast("Error updating user: " + (error || "Unknown error"), "error");
     }
   };
 
@@ -149,6 +168,7 @@ const UserList = () => {
             handleSaveEdit={handleSaveEdit}
             handleCancelEdit={handleCancelEdit}
             handleDelete={handleDelete}
+            handleResetPassword={handleResetPassword}
           />
         )}
       </div>

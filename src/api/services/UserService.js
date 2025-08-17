@@ -28,3 +28,14 @@ export const deleteUser = async (id) => {
         throw error.response?.data?.message || "Error deleting user";
     }
 };
+
+export const resetUserPassword = async (id, newPassword) => {
+    try {
+        const response = await axios.put(`${API_URL}/id/${id}/reset-password`, {
+            newPassword: newPassword
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || error.response?.data?.message || "Error resetting password";
+    }
+};
