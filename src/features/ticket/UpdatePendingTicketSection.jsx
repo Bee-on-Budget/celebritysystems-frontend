@@ -34,15 +34,6 @@ const UpdatePendingTicketSection = ({
     { value: "CLOSED", label: "Closed" },
   ];
 
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.status) newErrors.status = "Status is required";
-    if (!formData.assignedToWorkerId) newErrors.assignedToWorkerId = "Worker assignment is required";
-    if (!formData.assignedBySupervisorId) newErrors.assignedBySupervisorId = "Supervisor assignment is required";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
   const handleStatusChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -59,11 +50,6 @@ const UpdatePendingTicketSection = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!validateForm()) {
-      showToast("Please fix the form errors", "error");
-      return;
-    }
 
     setIsSubmitting(true);
     try {
@@ -89,8 +75,6 @@ const UpdatePendingTicketSection = ({
             value={formData.status}
             options={statusOptions}
             onChange={handleStatusChange}
-            error={errors.status}
-            required
           />
           
           <CustomSelect
@@ -103,8 +87,6 @@ const UpdatePendingTicketSection = ({
             value={supervisors.find(s => s.id === formData.assignedBySupervisorId) || null}
             onChange={(option) => handleSelectChange('assignedBySupervisorId', option)}
             placeholder="Select supervisor"
-            error={errors.assignedBySupervisorId}
-            required
           />
           
           <CustomSelect
@@ -117,8 +99,6 @@ const UpdatePendingTicketSection = ({
             value={workers.find(w => w.id === formData.assignedToWorkerId) || null}
             onChange={(option) => handleSelectChange('assignedToWorkerId', option)}
             placeholder="Select worker"
-            error={errors.assignedToWorkerId}
-            required
           />
         </div>
         
