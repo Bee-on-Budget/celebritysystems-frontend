@@ -18,8 +18,9 @@ const ReportList = () => {
     setIsLoading(true);
     try {
       const data = await getAllTickets({ page, size: pageSize });
-      setTickets(data || []);
-      setFiltered(data || []);
+      const resolvedTickets = data.filter(ticket => ticket.status === "RESOLVED");
+      setTickets(resolvedTickets || []);
+      setFiltered(resolvedTickets || []);
       setTotalPages(data.totalPages);
       setTotalTickets(data.totalElements);
       setCurrentPage(data.pageNumber);
@@ -107,7 +108,7 @@ const ReportList = () => {
 
   return (
     <DataList
-      title="Ticket Management"
+      title="Reports"
       label="tickets"
       error={error}
       isLoading={isLoading}
