@@ -79,31 +79,6 @@ const TicketDetails = () => {
     );
   };
 
-  const getTimelineStyleForStatus = (status) => {
-    switch (status) {
-      case 'OPEN':
-        return {
-          bgColor: 'bg-green-500',
-          icon: <FiCheckCircle className="h-4 w-4 text-white" />,
-        };
-      case 'IN_PROGRESS':
-        return {
-          bgColor: 'bg-yellow-500',
-          icon: <FiAlertCircle className="h-4 w-4 text-white" />,
-        };
-      case 'CLOSED':
-        return {
-          bgColor: 'bg-blue-500',
-          icon: <FiCheckCircle className="h-4 w-4 text-white" />,
-        };
-      default:
-        return {
-          bgColor: 'bg-gray-500',
-          icon: <FiAlertCircle className="h-4 w-4 text-white" />,
-        };
-    }
-  };
-
   const handleDownloadAttachment = () => {
     if (ticket.attachmentFileName) {
       // Implement your download logic here
@@ -126,8 +101,6 @@ const TicketDetails = () => {
       <p className="text-gray-600">Ticket not found</p>
     </div>
   );
-
-  const { bgColor: statusBgColor, icon: statusIcon } = getTimelineStyleForStatus(ticket.status);
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -247,30 +220,63 @@ const TicketDetails = () => {
             </h2>
             <div className="bg-gray-50 p-4 rounded-lg">
               <div className="space-y-4">
-                <div className="flex items-start">
-                  <div className="flex-shrink-0 bg-primary rounded-full p-1 mt-1">
-                    <FiCheckCircle className="h-4 w-4 text-white" />
-                  </div>
-                  <div className="ml-3">
-                    <p className="text-sm font-medium text-gray-900">Ticket created</p>
-                    <p className="text-sm text-gray-500">
-                      {new Date(ticket.createdAt).toLocaleString()}
-                    </p>
-                  </div>
-                </div>
 
-                {/* You would map through actual timeline events here */}
-                <div className="flex items-start">
-                  <div className={`flex-shrink-0 ${statusBgColor} rounded-full p-1 mt-1`}>
-                    {statusIcon}
+                {ticket.openedAt && (
+                  <div className="flex items-start">
+                    <div className="flex-shrink-0 bg-green-500 rounded-full p-1 mt-1">
+                      <FiCheckCircle className="h-4 w-4 text-white" />
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-gray-900">Ticket Opened</p>
+                      <p className="text-sm text-gray-500">
+                        {new Date(ticket.openedAt).toLocaleString()}
+                      </p>
+                    </div>
                   </div>
-                  <div className="ml-3">
-                    <p className="text-sm font-medium text-gray-900">Status changed to {ticket.status}</p>
-                    <p className="text-sm text-gray-500">
-                      {new Date(ticket.createdAt).toLocaleString()}
-                    </p>
+                )}
+
+                {ticket.inProgressAt && (
+                  <div className="flex items-start">
+                    <div className="flex-shrink-0 bg-yellow-500 rounded-full p-1 mt-1">
+                      <FiAlertCircle className="h-4 w-4 text-white" />
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-gray-900">In Progress</p>
+                      <p className="text-sm text-gray-500">
+                        {new Date(ticket.inProgressAt).toLocaleString()}
+                      </p>
+                    </div>
                   </div>
-                </div>
+                )}
+
+                {ticket.resolvedAt && (
+                  <div className="flex items-start">
+                    <div className="flex-shrink-0 bg-blue-500 rounded-full p-1 mt-1">
+                      <FiCheckCircle className="h-4 w-4 text-white" />
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-gray-900">Resolved</p>
+                      <p className="text-sm text-gray-500">
+                        {new Date(ticket.resolvedAt).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {ticket.closedAt && (
+                  <div className="flex items-start">
+                    <div className="flex-shrink-0 bg-gray-500 rounded-full p-1 mt-1">
+                      <FiCheckCircle className="h-4 w-4 text-white" />
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-gray-900">Closed</p>
+                      <p className="text-sm text-gray-500">
+                        {new Date(ticket.closedAt).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
               </div>
             </div>
           </div>
