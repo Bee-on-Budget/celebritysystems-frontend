@@ -48,7 +48,7 @@ export const createTicket = async (ticketData) => {
 
 export const updateTicket = async (id, ticketData) => {
   try {
-    const response = await axios.put(`${TICKET_API_URL}/${id}`, ticketData);
+    const response = await axios.patch(`${TICKET_API_URL}/${id}`, ticketData);
     showToast("Ticket updated successfully", "success");
     return response.data;
   } catch (error) {
@@ -128,3 +128,48 @@ export const getUsersByRole = async (role) => {
     return response.data;
   };
   
+// Pending tickets endpoints
+export const getPendingTickets = async () => {
+  try {
+    const response = await axios.get('tickets/pending');
+    return response.data;
+  } catch (error) {
+    throw error.response?.data?.message || "Faild to load pending tickets";
+  }
+}
+
+export const getPendingTicketById = async (id) => {
+  try {
+    const response = await axios.get(`tickets/pending/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data?.message || "Faild to load pending tickets";
+  }
+}
+
+export const getReportById = async (id) => {
+  try {
+      const response = await axios.get(`tickets/${id}/worker-report`);
+      return response.data;
+  } catch (error) {
+    throw error.response?.data?.message || "Faild to load report";
+  }
+}
+
+export const updateReportById = async (id, data) => {
+  try {
+    const response = await axios.put(`tickets/${id}/worker-report`, data);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data?.message || "Faild to update the report";
+  }
+}
+
+export const deleteReport = async (id) => {
+  try {
+    const response = await axios.delete(`tickets/${id}/worker-report`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data?.message || "Faild to update the report";
+  }
+}
