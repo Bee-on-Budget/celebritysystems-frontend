@@ -197,7 +197,7 @@ const PendingTicketDetails = () => {
           isLoading={loading}
           supervisors={supervisors}
           workers={workers}
-          // onUpdateSuccess={setIsEditing(false)}
+        // onUpdateSuccess={setIsEditing(false)}
         />
       )}
 
@@ -231,7 +231,7 @@ const PendingTicketDetails = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               <div className="bg-gray-50 p-3 md:p-4 rounded-lg">
                 <h3 className="text-sm font-medium text-gray-500 mb-2">Description</h3>
-                <p className="break-words">{ticket.description || 'No description provided'}</p>
+                <p className="break-words break-all">{ticket.description || 'No description provided'}</p>
               </div>
               <div className="space-y-3 md:space-y-4">
                 <div className="bg-gray-50 p-3 md:p-4 rounded-lg">
