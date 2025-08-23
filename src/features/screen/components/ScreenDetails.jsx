@@ -82,7 +82,7 @@ const ScreenDetails = () => {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="py-6 px-2 max-w-7xl mx-auto">
       <div className="mb-6 flex items-center justify-between">
         <Button
           onClick={() => navigate(-1)}
