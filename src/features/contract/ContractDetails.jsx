@@ -1,23 +1,46 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { getContractById, deleteContract } from '../../api/services/ContractService';
-import { FiArrowLeft, FiCalendar, FiDollarSign, FiFileText, FiTrash2, FiBriefcase, FiEdit2 } from 'react-icons/fi';
+import { useParams, useNavigate } from 'react-router-dom';
+import { getContractById, deleteContract, getCompanyById } from '../../api/services/ContractService';
+import { FiArrowLeft, FiCalendar, FiDollarSign, FiFileText, FiTrash2, FiBriefcase, FiEdit2, FiMoreVertical, FiMonitor } from 'react-icons/fi';
 import { Button, Loading, showToast, ConfirmationModal } from '../../components';
+import { getScreenById } from '../../api/services/ScreenService';
 
 const ContractDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const location = useLocation();
-    const [contract, setContract] = useState(location.state?.contract || null);
-    const [loading, setLoading] = useState(!contract);
+    const [contract, setContract] = useState(null);
+    const [companyName, setCompanyName] = useState(null);
+    const [screens, setScreens] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [screenLoading, setScreenLoading] = useState(false);
     const [error, setError] = useState('');
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showMobileMenu, setShowMobileMenu] = useState(false);
 
     useEffect(() => {
         const fetchContract = async () => {
             try {
+                setLoading(true);
                 const data = await getContractById(id);
+                const company = await getCompanyById(data.companyId);
+                
                 setContract(data);
+                setCompanyName(company.name);
+                
+                // Fetch screen details if screenIds exist
+                if (data.screenIds && data.screenIds.length > 0) {
+                    setScreenLoading(true);
+                    const screenPromises = data.screenIds.map(screenId => 
+                        getScreenById(screenId).catch(err => {
+                            console.error(`Error fetching screen ${screenId}:`, err);
+                            return null;
+                        })
+                    );
+                    
+                    const screenResults = await Promise.all(screenPromises);
+                    setScreens(screenResults.filter(screen => screen !== null));
+                    setScreenLoading(false);
+                }
             } catch (err) {
                 setError(err.message || 'Failed to load contract details');
             } finally {
@@ -25,13 +48,14 @@ const ContractDetails = () => {
             }
         };
 
-        if (!contract && id) {
+        if (id) {
             fetchContract();
         }
-    }, [id, contract]);
+    }, [id]);
 
     const handleDeleteClick = () => {
         setShowDeleteModal(true);
+        setShowMobileMenu(false);
     };
 
     const handleDeleteConfirm = async () => {
@@ -65,7 +89,7 @@ const ContractDetails = () => {
     );
 
     return (
-        <div className="p-6 max-w-7xl mx-auto">
+        <div className="p-4 md:p-6 max-w-7xl mx-auto">
             {/* Delete Confirmation Modal */}
             <ConfirmationModal
                 isOpen={showDeleteModal}
@@ -77,39 +101,82 @@ const ContractDetails = () => {
                 danger={true}
             />
 
-            <div className="mb-6 flex items-center justify-between">
-                <Button
-                    onClick={() => navigate("/contracts")}
-                    variant='text'
-                    icon={<FiArrowLeft />}
-                    size='sm'
-                >
-                    Back to Contracts
-                </Button>
-                <div className="flex items-center gap-2">
+            {/* Header with Mobile Menu */}
+            <div className="mb-4 md:mb-6">
+                <div className="flex items-center justify-between">
+                    {/* Back Button */}
                     <Button
-                        onClick={() => navigate(`/contracts/${id}/edit`, { state: { contract } })}
-                        variant='primary'
-                        icon={<FiEdit2 />}
+                        onClick={() => navigate("/contracts")}
+                        variant='text'
+                        icon={<FiArrowLeft />}
+                        size='sm'
+                        className="flex-shrink-0"
                     >
-                        Edit
+                        <span className="hidden sm:inline">Back to Contracts</span>
+                        <span className="sm:hidden">Back</span>
                     </Button>
-                    <Button
-                        onClick={handleDeleteClick}
-                        variant='danger'
-                        icon={<FiTrash2 />}
-                    >
-                        Delete
-                    </Button>
+
+                    {/* Desktop Action Buttons */}
+                    <div className="hidden sm:flex items-center gap-2">
+                        <Button
+                            onClick={() => navigate(`/contracts/${id}/edit`, { state: { contract } })}
+                            variant='primary'
+                            icon={<FiEdit2 />}
+                            size="sm"
+                        >
+                            Edit
+                        </Button>
+                        <Button
+                            onClick={handleDeleteClick}
+                            variant='danger'
+                            icon={<FiTrash2 />}
+                            size="sm"
+                        >
+                            Delete
+                        </Button>
+                    </div>
+
+                    {/* Mobile Menu Button */}
+                    <div className="relative sm:hidden">
+                        <button
+                            onClick={() => setShowMobileMenu(!showMobileMenu)}
+                            className="p-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors"
+                        >
+                            <FiMoreVertical className="text-lg" />
+                        </button>
+
+                        {/* Mobile Dropdown Menu */}
+                        {showMobileMenu && (
+                            <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                                <button
+                                    onClick={() => {
+                                        navigate(`/contracts/${id}/edit`, { state: { contract } });
+                                        setShowMobileMenu(false);
+                                    }}
+                                    className="w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 border-b border-gray-100"
+                                >
+                                    <FiEdit2 />
+                                    Edit Contract
+                                </button>
+                                <button
+                                    onClick={handleDeleteClick}
+                                    className="w-full px-4 py-3 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                                >
+                                    <FiTrash2 />
+                                    Delete Contract
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
 
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
                 {/* Header Section */}
-                <div className="bg-primary bg-opacity-10 p-6 border-b border-gray-100">
+                <div className="bg-primary bg-opacity-10 p-4 md:p-6 border-b border-gray-100">
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
                         <div>
-                            <h1 className="text-2xl font-bold text-primary">{contract.info || 'Untitled Contract'}</h1>
+                            <h1 className="text-xl md:text-2xl font-bold text-primary break-words">{contract.info || 'Untitled Contract'}</h1>
                             <div className="flex flex-wrap gap-2 mt-2">
                                 <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full flex items-center">
                                     <FiFileText className="mr-1" />
@@ -129,54 +196,43 @@ const ContractDetails = () => {
                 </div>
 
                 {/* Main Content */}
-                <div className="p-6">
-                    {/* Basic Information Section */}
-                    {/* Contract Information Section - Enhanced */}
-                    <div className="mb-8">
-                        <h2 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-100">
+                <div className="p-4 md:p-6">
+                    {/* Contract Information Section */}
+                    <div className="mb-6 md:mb-8">
+                        <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-3 md:mb-4 pb-2 border-b border-gray-100">
                             Contract Information
                         </h2>
 
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
                             {/* Company & Basic Info Card */}
-                            <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
-                                <div className="flex items-center mb-4">
+                            <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 md:p-5">
+                                <div className="flex items-center mb-3 md:mb-4">
                                     <div className="p-2 bg-blue-100 rounded-lg mr-3">
-                                        <FiBriefcase className="text-blue-600 text-xl" />
+                                        <FiBriefcase className="text-blue-600 text-lg md:text-xl" />
                                     </div>
                                     <h3 className="text-base font-semibold text-dark">Company & Account</h3>
                                 </div>
-                                <div className="space-y-3">
+                                <div className="space-y-2 md:space-y-3">
                                     <div className="flex justify-between">
                                         <span className="text-sm text-dark-light">Company Name:</span>
-                                        <span className="text-sm font-medium text-dark">{contract.companyName || 'N/A'}</span>
+                                        <span className="text-sm font-medium text-dark break-words text-right max-w-[50%]">{companyName || 'N/A'}</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-sm text-dark-light">Account Name:</span>
-                                        <span className="text-sm font-medium text-dark">{contract.accountName || 'N/A'}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-sm text-dark-light">Contract ID:</span>
-                                        <span className="text-sm font-mono font-medium text-dark">{contract.id}</span>
-                                    </div>
-                                    <div className="pt-3 border-t border-gray-100">
-                                        <p className="text-xs text-dark-light mb-1">Additional Info:</p>
-                                        <p className="text-xs text-dark bg-gray-50 p-2 rounded">
-                                            {contract.info || 'No additional information provided'}
-                                        </p>
+                                        <span className="text-sm font-medium text-dark break-words text-right max-w-[50%]">{contract.accountName || 'N/A'}</span>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Financial & Dates Card */}
-                            <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
-                                <div className="flex items-center mb-4">
+                            <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 md:p-5">
+                                <div className="flex items-center mb-3 md:mb-4">
                                     <div className="p-2 bg-green-100 rounded-lg mr-3">
-                                        <FiDollarSign className="text-green-600 text-xl" />
+                                        <FiDollarSign className="text-green-600 text-lg md:text-xl" />
                                     </div>
                                     <h3 className="text-base font-semibold text-dark">Financial & Dates</h3>
                                 </div>
-                                <div className="space-y-3">
+                                <div className="space-y-2 md:space-y-3">
                                     <div className="flex justify-between">
                                         <span className="text-sm text-dark-light">Contract Value:</span>
                                         <span className="text-sm font-medium text-dark">
@@ -195,7 +251,7 @@ const ContractDetails = () => {
                                             {formatDate(contract.expiredAt)}
                                         </span>
                                     </div>
-                                    <div className="pt-3 border-t border-gray-100">
+                                    <div className="pt-2 md:pt-3 border-t border-gray-100">
                                         <div className="flex justify-between">
                                             <span className="text-xs text-dark-light">Days Remaining:</span>
                                             <span className={`text-xs font-medium ${contract.expiredAt && new Date(contract.expiredAt) < new Date()
@@ -212,29 +268,29 @@ const ContractDetails = () => {
                             </div>
 
                             {/* Contract Types & Metadata Card */}
-                            <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
-                                <div className="flex items-center mb-4">
+                            <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 md:p-5">
+                                <div className="flex items-center mb-3 md:mb-4">
                                     <div className="p-2 bg-purple-100 rounded-lg mr-3">
-                                        <FiFileText className="text-purple-600 text-xl" />
+                                        <FiFileText className="text-purple-600 text-lg md:text-xl" />
                                     </div>
                                     <h3 className="text-base font-semibold text-dark">Contract Details</h3>
                                 </div>
-                                <div className="space-y-3">
-                                    <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2 md:space-y-3">
+                                    <div className="grid grid-cols-2 gap-3 md:gap-4">
                                         <div>
-                                            <p className="text-sm text-dark-light">Duration Type</p>
-                                            <p className="text-sm font-medium text-dark">{contract.durationType || 'N/A'}</p>
+                                            <p className="text-xs md:text-sm text-dark-light">Duration Type</p>
+                                            <p className="text-xs md:text-sm font-medium text-dark">{contract.durationType || 'N/A'}</p>
                                         </div>
                                         <div>
-                                            <p className="text-sm text-dark-light">Operator Type</p>
-                                            <p className="text-sm font-medium text-dark">{contract.operatorType || 'N/A'}</p>
+                                            <p className="text-xs md:text-sm text-dark-light">Operator Type</p>
+                                            <p className="text-xs md:text-sm font-medium text-dark">{contract.operatorType || 'N/A'}</p>
                                         </div>
                                         <div>
-                                            <p className="text-sm text-dark-light">Supply Type</p>
-                                            <p className="text-sm font-medium text-dark">{contract.supplyType || 'N/A'}</p>
+                                            <p className="text-xs md:text-sm text-dark-light">Supply Type</p>
+                                            <p className="text-xs md:text-sm font-medium text-dark">{contract.supplyType || 'N/A'}</p>
                                         </div>
                                     </div>
-                                    <div className="pt-3 border-t border-gray-100 space-y-2">
+                                    <div className="pt-2 md:pt-3 border-t border-gray-100 space-y-1 md:space-y-2">
                                         <div className="flex justify-between">
                                             <span className="text-xs text-dark-light">Created:</span>
                                             <span className="text-xs font-medium text-dark">
@@ -247,15 +303,6 @@ const ContractDetails = () => {
                                                 {formatDateTime(contract.updatedAt)}
                                             </span>
                                         </div>
-                                        <div className="flex justify-between">
-                                            <span className="text-xs text-dark-light">Status:</span>
-                                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${contract.status === 'ACTIVE' ? 'bg-green-100 text-green-800' :
-                                                contract.status === 'EXPIRED' ? 'bg-red-100 text-red-800' :
-                                                    'bg-gray-100 text-gray-800'
-                                                }`}>
-                                                {contract.status || 'UNKNOWN'}
-                                            </span>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -263,20 +310,48 @@ const ContractDetails = () => {
                     </div>
 
                     {/* Screens Section */}
-                    <div className="mb-8">
-                        <h2 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-100">
-                            Screens ({contract.screenNames?.length || 0})
+                    <div className="mb-6 md:mb-8">
+                        <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-3 md:mb-4 pb-2 border-b border-gray-100">
+                            Screens ({screens.length || 0})
                         </h2>
-                        {contract.screenNames?.length > 0 ? (
-                            <div className="flex flex-wrap gap-2">
-                                {contract.screenNames.map((name, index) => (
-                                    <span
-                                        key={index}
-                                        className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
-                                    >
-                                        {name}
-                                    </span>
-                                ))}
+                        
+                        {screenLoading ? (
+                            <div className="bg-gray-50 p-4 rounded-lg text-center">
+                                <p className="text-gray-500">Loading screen details...</p>
+                            </div>
+                        ) : screens.length > 0 ? (
+                            <div className="overflow-x-auto">
+                                <table className="min-w-full divide-y divide-gray-200">
+                                    <thead className="bg-gray-50">
+                                        <tr>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Screen Type</th>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Solution Type</th>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Resolution</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="bg-white divide-y divide-gray-200">
+                                        {screens.map((screen, index) => (
+                                            <tr key={index}>
+                                                <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                    <div className="flex items-center">
+                                                        <FiMonitor className="mr-2 text-blue-500" />
+                                                        {screen.name || 'N/A'}
+                                                    </div>
+                                                </td>
+                                                <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {screen.screenType || 'N/A'}
+                                                </td>
+                                                <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {screen.solutionType || 'N/A'}
+                                                </td>
+                                                <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {screen.resolution || 'N/A'}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
                             </div>
                         ) : (
                             <div className="bg-gray-50 p-4 rounded-lg text-center">
@@ -287,7 +362,7 @@ const ContractDetails = () => {
 
                     {/* Permissions Section */}
                     <div>
-                        <h2 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-100">
+                        <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-3 md:mb-4 pb-2 border-b border-gray-100">
                             Account Permissions ({contract.accountPermissions?.length || 0})
                         </h2>
                         {contract.accountPermissions?.length > 0 ? (
@@ -295,24 +370,24 @@ const ContractDetails = () => {
                                 <table className="min-w-full divide-y divide-gray-200">
                                     <thead className="bg-gray-50">
                                         <tr>
-                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Can Read</th>
-                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Can Edit</th>
+                                            <th className="px-3 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                            <th className="px-3 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Can Read</th>
+                                            <th className="px-3 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Can Edit</th>
                                         </tr>
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200">
                                         {contract.accountPermissions.map((permission, index) => (
                                             <tr key={index}>
-                                                <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                <td className="px-3 py-2 md:px-4 md:py-3 whitespace-nowrap text-xs md:text-sm font-medium text-gray-900 break-words max-w-[120px] md:max-w-none">
                                                     {permission.name || 'N/A'}
                                                 </td>
-                                                <td className="px-4 py-3 whitespace-nowrap">
+                                                <td className="px-3 py-2 md:px-4 md:py-3 whitespace-nowrap">
                                                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${permission.canRead ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                                                         }`}>
                                                         {permission.canRead ? 'Yes' : 'No'}
                                                     </span>
                                                 </td>
-                                                <td className="px-4 py-3 whitespace-nowrap">
+                                                <td className="px-3 py-2 md:px-4 md:py-3 whitespace-nowrap">
                                                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${permission.canEdit ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                                                         }`}>
                                                         {permission.canEdit ? 'Yes' : 'No'}
