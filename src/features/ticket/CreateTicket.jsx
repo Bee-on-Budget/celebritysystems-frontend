@@ -38,6 +38,7 @@ const CreateTicket = () => {
       borderColor: state.isFocused ? "#E83D29" : provided.borderColor,
       boxShadow: state.isFocused ? "0 0 0 1px #E83D29" : provided.boxShadow,
       "&:hover": { borderColor: "#E83D29" },
+      minHeight: '44px',
     }),
     option: (provided, state) => ({
       ...provided,
@@ -58,14 +59,11 @@ const CreateTicket = () => {
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        // const [companiesRes, workerRes, supervisorRes] = await Promise.all([
         const [workerRes, supervisorRes] = await Promise.all([
-          // getCompaniesFoo(),
           getUsersByRole("CELEBRITY_SYSTEM_WORKER"),
           getUsersByRole("SUPERVISOR")
         ]);
 
-        // setCompanies(companiesRes || []);
         setWorkers(workerRes || []);
         setSupervisors(supervisorRes || []);
 
@@ -172,19 +170,19 @@ const CreateTicket = () => {
   };
 
   if (fetching) {
-    return <div className="p-6 max-w-4xl mx-auto">Loading initial data...</div>;
+    return <div className="p-4 md:p-6 max-w-7xl mx-auto">Loading initial data...</div>;
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Create New Ticket</h2>
-      <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg shadow-md">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="p-4 md:p-6 max-w-7xl mx-auto">
+      <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-gray-800">Create New Ticket</h2>
+      <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6 bg-white p-4 md:p-6 rounded-lg shadow-md">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           {/* Title */}
           <div className="col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-1">Title*</label>
             <input
-              className="w-full border border-gray-300 px-4 py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full border border-gray-300 px-3 py-2 md:px-4 md:py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               name="title"
               value={formData.title}
               onChange={handleChange}
@@ -196,17 +194,17 @@ const CreateTicket = () => {
           <div className="col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-1">Description*</label>
             <textarea
-              className="w-full border border-gray-300 px-4 py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full border border-gray-300 px-3 py-2 md:px-4 md:py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               name="description"
               value={formData.description}
               onChange={handleChange}
-              rows={5}
+              rows={4}
               required
             />
           </div>
 
           {/* Company */}
-          <div>
+          <div className="col-span-2 md:col-span-1">
             <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
             <AsyncSelect
               cacheOptions
@@ -223,11 +221,12 @@ const CreateTicket = () => {
                 inputValue ? 'No companies found' : 'Start typing to search companies'
               }
               styles={customStyles}
+              className="text-sm"
             />
           </div>
 
           {/* Screen */}
-          <div>
+          <div className="col-span-2 md:col-span-1">
             <label className="block text-sm font-medium text-gray-700 mb-1">Screen</label>
             <AsyncSelect
               cacheOptions
@@ -243,13 +242,14 @@ const CreateTicket = () => {
               noOptionsMessage={({ inputValue }) =>
                 inputValue ? 'No screens found' : 'Start typing to search screens'
               }
-              className="react-select-container"
+              className="react-select-container text-sm"
               classNamePrefix="react-select"
+              styles={customStyles}
             />
           </div>
 
           {/* Assigned To Worker */}
-          <div>
+          <div className="col-span-2 md:col-span-1">
             <label className="block text-sm font-medium text-gray-700 mb-1">Assigned to Worker</label>
             <Select
               options={workers.map(worker => ({
@@ -263,13 +263,14 @@ const CreateTicket = () => {
               onChange={(option) => handleSelectChange('assignedToWorkerId', option)}
               isClearable
               placeholder="Select worker"
-              className="react-select-container"
+              className="react-select-container text-sm"
               classNamePrefix="react-select"
+              styles={customStyles}
             />
           </div>
 
           {/* Assigned to Supervisor */}
-          <div>
+          <div className="col-span-2 md:col-span-1">
             <label className="block text-sm font-medium text-gray-700 mb-1">Assigned to Supervisor</label>
             <Select
               options={supervisors.map(supervisor => ({
@@ -283,8 +284,9 @@ const CreateTicket = () => {
               onChange={(option) => handleSelectChange('assignedBySupervisorId', option)}
               isClearable
               placeholder="Select supervisor"
-              className="react-select-container"
+              className="react-select-container text-sm"
               classNamePrefix="react-select"
+              styles={customStyles}
             />
           </div>
         </div>
@@ -292,10 +294,13 @@ const CreateTicket = () => {
         {/* Attachments */}
         <div className="col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-1">Attachments</label>
-          <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+          <div className="mt-1 flex justify-center px-4 pt-4 pb-5 border-2 border-gray-300 border-dashed rounded-md">
             <div className="space-y-1 text-center">
-              <div className="flex text-sm text-gray-600">
-                <label className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none">
+              <svg className="mx-auto h-10 w-10 text-gray-400 hidden sm:block" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <div className="flex flex-col sm:flex-row text-sm text-gray-600 justify-center items-center">
+                <label className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500">
                   <span>Upload files</span>
                   <input
                     type="file"
@@ -315,7 +320,7 @@ const CreateTicket = () => {
                   <p className="text-sm font-medium">Selected files:</p>
                   <ul className="text-sm text-gray-500">
                     {files.map((file, index) => (
-                      <li key={index}>{file.name}</li>
+                      <li key={index} className="truncate max-w-xs">{file.name}</li>
                     ))}
                   </ul>
                 </div>
@@ -325,11 +330,11 @@ const CreateTicket = () => {
         </div>
 
         {/* Buttons */}
-        <div className="flex justify-end space-x-3">
+        <div className="flex flex-col-reverse sm:flex-row justify-end space-y-3 space-y-reverse sm:space-y-0 sm:space-x-3 pt-4">
           <button
             type="button"
             onClick={() => navigate("/tickets")}
-            className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="mt-3 sm:mt-0 px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             Cancel
           </button>
@@ -346,11 +351,20 @@ const CreateTicket = () => {
       <style jsx global>{`
         .react-select-container .react-select__control {
           border: 1px solid #d1d5db;
-          min-height: 42px;
+          min-height: 44px;
+          font-size: 16px; /* Prevents zoom on iOS */
         }
         .react-select-container .react-select__control--is-focused {
           border-color: #3b82f6;
           box-shadow: 0 0 0 1px #3b82f6;
+        }
+        @media (max-width: 768px) {
+          .react-select-container .react-select__control {
+            min-height: 48px; /* Larger touch target on mobile */
+          }
+          .react-select-container .react-select__menu {
+            font-size: 16px; /* Prevents zoom on iOS */
+          }
         }
       `}</style>
     </div>
