@@ -2,8 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { DataList, Pagination } from '../../components';
 import { getAllCompanies, searchCompanies } from '../../api/services/CompanyService';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const CompanyList = () => {
+  const { t } = useTranslation();
   const [companies, setCompanies] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -67,7 +69,7 @@ const CompanyList = () => {
   };
 
   const renderCompanyItem = (list) => {
-    const headerStyle = "px-3 py-2 text-left text-sm font-medium text-gray-500 uppercase tracking-wider";
+    const headerStyle = "px-3 py-2 text-start text-sm font-medium text-gray-500 uppercase tracking-wider";
     const nameStyle = "px-3 py-2 text-sm text-dark font-bold";
     const bodyStyle = "px-3 py-2 text-sm text-dark max-w-xs whitespace-nowrap overflow-hidden text-ellipsis";
     const rowStyle = "h-14 hover:bg-gray-100 transition cursor-pointer";
@@ -77,10 +79,10 @@ const CompanyList = () => {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className={`${headerStyle} w-72`}>Name</th>
-              <th className={`${headerStyle} w-32`}>Email</th>
-              <th className={`${headerStyle} w-32`}>Phone</th>
-              <th className={headerStyle}>Location</th>
+              <th className={`${headerStyle} w-72`}>{t('companies.companyForm.name')}</th>
+              <th className={`${headerStyle} w-32`}>{t('companies.companyForm.email')}</th>
+              <th className={`${headerStyle} w-32`}>{t('companies.companyForm.phone')}</th>
+              <th className={headerStyle}>{t('companies.companyForm.address')}</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -122,7 +124,7 @@ const CompanyList = () => {
 
   return (
     <DataList
-      title="Company Management"
+      title={t('companies.title')}
       label="companies"
       error={error}
       isLoading={isLoading}
