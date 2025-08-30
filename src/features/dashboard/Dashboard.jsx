@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import StatsCard from './widgets/StatsCard';
 import Feeds from './widgets/Feeds';
 import MonthlySalesStats from './widgets/MonthlySalesStats';
@@ -27,6 +28,7 @@ const customFeeds = [
 ];
 
 const Dashboard = () => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [customersCount, setCustomersCount] = useState(0);
   const [screensCount, setScreensCount] = useState(0);
@@ -76,35 +78,35 @@ const Dashboard = () => {
         {/* Header Section - Responsive */}
         <div className="mb-6 sm:mb-8">
           <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-gray-800 mb-2">
-            Dashboard
+            {t('dashboard.title')}
           </h2>
           <p className="text-sm sm:text-base text-gray-500">
-            Here's a quick overview of your business metrics.
+            {t('dashboard.welcome')}
           </p>
         </div>
 
         {/* Stats Cards Grid - Responsive breakpoints */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
           <StatsCard 
-            label="Customers" 
+            label={t('dashboard.stats.totalCompanies')} 
             value={customersCount} 
             color="orange" 
             icon={<FaUser />} 
           />
           <StatsCard 
-            label="Screens" 
+            label={t('dashboard.stats.totalScreens')} 
             value={screensCount} 
             color="green" 
             icon={<FaCreditCard />} 
           />
           <StatsCard 
-            label="Tickets" 
+            label={t('dashboard.stats.totalTickets')} 
             value={ticketsCount} 
             color="red" 
             icon={<FaTicketAlt />} 
           />
           <StatsCard 
-            label="Orders" 
+            label={t('dashboard.stats.totalContracts')} 
             value={`AED ${revenue}`} 
             color="blue" 
             icon={<FaShoppingCart />} 
