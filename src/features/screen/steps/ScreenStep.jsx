@@ -1,20 +1,22 @@
 import { useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Input, Button, DropdownInput } from "../../../components";
 import { FileInput, SectionContainer } from '../components';
 
 const ScreenStep = ({ form, errors, onChange, onNext }) => {
+  const { t } = useTranslation();
   const connectionFileRef = useRef(null);
   const configFileRef = useRef(null);
   const versionFileRef = useRef(null);
 
   const screenTypeOptions = [
-    { value: "IN_DOOR", label: "Indoor" },
-    { value: "OUT_DOOR", label: "Outdoor" }
+    { value: "IN_DOOR", label: t('screens.options.indoor') },
+    { value: "OUT_DOOR", label: t('screens.options.outdoor') }
   ];
 
   const solutionOptions = [
-    { value: "CABINET_SOLUTION", label: "Cabinet" },
-    { value: "MODULE_SOLUTION", label: "Module" }
+    { value: "CABINET_SOLUTION", label: t('screens.options.cabinet') },
+    { value: "MODULE_SOLUTION", label: t('screens.options.module') }
   ];
 
   return (
@@ -22,7 +24,7 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
       {/* Screen name */}
       <div className="space-y-2">
         <Input 
-          label="Name" 
+          label={t('screens.screenForm.name')} 
           name="name" 
           value={form.name} 
           onChange={onChange} 
@@ -38,7 +40,7 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
           value={form.screenType}
           options={screenTypeOptions}
           onChange={onChange}
-          label="Screen Type"
+          label={t('screens.screenForm.screenType')}
           error={errors.screenType}
           required
         />
@@ -47,7 +49,7 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
           value={form.solutionTypeInScreen}
           options={solutionOptions}
           onChange={onChange}
-          label="Solution"
+          label={t('screens.screenForm.solution')}
           error={errors.solutionTypeInScreen}
           required
         />
@@ -56,14 +58,14 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
       {/* Screen fan */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
         <Input
-          label="Screen Fan"
+          label={t('screens.screenForm.screenFan')}
           name="fan"
           value={form.fan}
           onChange={onChange}
           error={errors.fan}
         />
         <Input
-          label="Screen Fan Quantity"
+          label={t('screens.screenForm.screenFanQuantity')}
           name="fanQuantity"
           type="number"
           value={form.fanQuantity}
@@ -77,7 +79,7 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
       {/* Screen Location */}
       <div className="space-y-2">
         <Input
-          label="Location (Google Maps Link)"
+          label={t('screens.screenForm.location')}
           name="location"
           type="url"
           placeholder="https://www.google.com/maps/place/..."
@@ -91,10 +93,10 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
       {/* Screen pixelScreen */}
       <div className="space-y-2">
         <Input 
-          label="Pixel Screen" 
+          label={t('screens.screenForm.pixelScreen')} 
           name="pixelScreen" 
           type="text" 
-          placeholder="e.g., 1920x1080, 3840x2160"
+          placeholder={t('screens.screenForm.pixelScreenPlaceholder')}
           value={form.pixelScreen} 
           onChange={onChange} 
           error={errors.pixelScreen} 
@@ -105,30 +107,30 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
       {/* Screen Description */}
       <div className="space-y-2">
         <label className="block text-sm font-medium capitalize text-dark">
-          Description
+          {t('screens.screenForm.description')}
         </label>
         <textarea
           name="description"
           value={form.description}
           onChange={onChange}
-          placeholder="Enter screen description (optional)"
+          placeholder={t('screens.screenForm.descriptionPlaceholder')}
           className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary resize-none transition-colors"
           rows={3}
         />
       </div>
 
       {/* Power Supply */}
-      <SectionContainer title="Power Supply">
+      <SectionContainer title={t('screens.screenForm.powerSupply')}>
         <div className="space-y-3 sm:space-y-4">
           <Input 
-            label="Power Supply Type" 
+            label={t('screens.screenForm.powerSupplyType')} 
             name="powerSupply" 
             value={form.powerSupply} 
             onChange={onChange} 
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <Input
-              label="Quantity"
+              label={t('screens.screenForm.quantity')}
               name="powerSupplyQuantity"
               type="number"
               value={form.powerSupplyQuantity}
@@ -138,7 +140,7 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
               disabled={!form.powerSupply}
             />
             <Input
-              label="Spare Quantity"
+              label={t('screens.screenForm.spareQuantity')}
               name="sparePowerSupplyQuantity"
               type="number" 
               value={form.sparePowerSupplyQuantity}
@@ -150,17 +152,17 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
       </SectionContainer>
 
       {/* Receiving card */}
-      <SectionContainer title="Receiving Card">
+      <SectionContainer title={t('screens.screenForm.receivingCard')}>
         <div className="space-y-3 sm:space-y-4">
           <Input 
-            label="Receiving Card Type" 
+            label={t('screens.screenForm.receivingCardType')} 
             name="receivingCard" 
             value={form.receivingCard} 
             onChange={onChange} 
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <Input
-              label="Quantity"
+              label={t('screens.screenForm.quantity')}
               name="receivingCardQuantity"
               type="number"
               value={form.receivingCardQuantity}
@@ -170,7 +172,7 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
               required={!!form.receivingCard}
             />
             <Input
-              label="Spare Quantity"
+              label={t('screens.screenForm.spareQuantity')}
               name="spareReceivingCardQuantity"
               type="number" 
               value={form.spareReceivingCardQuantity}
@@ -182,17 +184,17 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
       </SectionContainer>
 
       {/* Media */}
-      <SectionContainer title="Media">
+      <SectionContainer title={t('screens.screenForm.media')}>
         <div className="space-y-3 sm:space-y-4">
           <Input 
-            label="Media Type" 
+            label={t('screens.screenForm.mediaType')} 
             name="media" 
             value={form.media} 
             onChange={onChange} 
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <Input
-              label="Quantity"
+              label={t('screens.screenForm.quantity')}
               name="mediaQuantity"
               type="number"
               value={form.mediaQuantity}
@@ -202,7 +204,7 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
               required={!!form.media}
             />
             <Input 
-              label="Spare Media Quantity"
+              label={t('screens.screenForm.spareMediaQuantity')}
               name="spareMediaQuantity"
               type="number"
               value={form.spareMediaQuantity}
@@ -214,17 +216,17 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
       </SectionContainer>
 
       {/* Hub */}
-      <SectionContainer title="Hub">
+      <SectionContainer title={t('screens.screenForm.hub')}>
         <div className="space-y-3 sm:space-y-4">
           <Input 
-            label="Hub Type" 
+            label={t('screens.screenForm.hubType')} 
             name="hub" 
             value={form.hub} 
             onChange={onChange} 
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <Input
-              label="Quantity"
+              label={t('screens.screenForm.quantity')}
               name="hubQuantity"
               type="number"
               value={form.hubQuantity}
@@ -234,7 +236,7 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
               required={!!form.hub}
             />
             <Input 
-              label="Spare Quantity"
+              label={t('screens.screenForm.spareHubQuantity')}
               name="spareHubQuantity"
               type="number" 
               value={form.spareHubQuantity}
@@ -247,12 +249,12 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
       </SectionContainer>
 
       {/* Files */}
-      <SectionContainer title="Files">
+      <SectionContainer title={t('screens.screenForm.files')}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
           <FileInput
             ref={connectionFileRef}
             name="connectionFile"
-            label="Connection File"
+            label={t('screens.screenForm.connectionFile')}
             value={form.connectionFile}
             onChange={onChange}
             error={errors.connectionFile}
@@ -260,7 +262,7 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
           <FileInput
             ref={configFileRef}
             name="configFile"
-            label="Config File"
+            label={t('screens.screenForm.configFile')}
             value={form.configFile}
             onChange={onChange}
             error={errors.configFile}
@@ -269,7 +271,7 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
             <FileInput
               ref={versionFileRef}
               name="versionFile"
-              label="Version File"
+              label={t('screens.screenForm.versionFile')}
               value={form.versionFile}
               onChange={onChange}
               error={errors.versionFile}
@@ -285,7 +287,7 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
           onClick={onNext}
           className="w-full sm:w-auto min-w-[120px]"
         >
-          Next: Cables
+          {t('screens.screenForm.nextCables')}
         </Button>
       </div>
     </div>
