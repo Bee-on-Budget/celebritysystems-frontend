@@ -1,5 +1,6 @@
 import React from "react";
 import UserRow from "./UserRow";
+import { useTranslation } from "react-i18next";
 
 const UserTable = ({
   users,
@@ -13,18 +14,20 @@ const UserTable = ({
   handleDelete,
   handleResetPassword
 }) => {
+  const { t } = useTranslation();
+  const headerStyle = "px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase tracking-wider";
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Permissions</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            <th className={headerStyle}>{t('table.name')}</th>
+            <th className={headerStyle}>{t('table.username')}</th>
+            <th className={headerStyle}>{t('table.email')}</th>
+            <th className={headerStyle}>{t('table.company')}</th>
+            <th className={headerStyle}>{t('table.role')}</th>
+            <th className={headerStyle}>{t('table.permissions')}</th>
+            <th className={headerStyle}>{t('table.actions')}</th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
