@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { login } from "../../api/auth";
 import { useAuth } from "../../auth/useAuth";
 import Button from "../../components/Button";
@@ -7,6 +8,7 @@ import Input from "../../components/Input";
 import Logo from "../../assets/logo.png";
 
 const Login = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -21,7 +23,7 @@ const Login = () => {
       authLogin(response.data.token);
       navigate("/dashboard");
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      setError(err.response?.data?.message || t('auth.messages.loginFailed'));
     }
   };
 
@@ -32,9 +34,9 @@ const Login = () => {
         <div className="p-10 flex flex-col justify-center backdrop-blur-2xl bg-white/60 border border-white/30 shadow-inner shadow-white/10">
           <div className="mb-8">
             <img src={Logo} alt="Logo" className="w-32 mb-4" />
-            <h1 className="text-3xl font-bold text-gray-900">Welcome back</h1>
+            <h1 className="text-3xl font-bold text-gray-900">{t('auth.login')}</h1>
             <p className="text-sm text-gray-600 mt-1">
-              Please enter your credentials to sign in.
+              {t('auth.loginForm.usernamePlaceholder')}
             </p>
           </div>
 
@@ -46,9 +48,9 @@ const Login = () => {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <Input
-              label="Email"
+              label={t('auth.loginForm.username')}
               type="email"
-              placeholder="name@example.com"
+              placeholder={t('auth.loginForm.usernamePlaceholder')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               trainling={
@@ -67,9 +69,9 @@ const Login = () => {
             />
 
             <Input
-              label="Password"
+              label={t('auth.loginForm.password')}
               type={showPassword ? "text" : "password"}
-              placeholder="••••••••"
+              placeholder={t('auth.loginForm.passwordPlaceholder')}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               trainling={
@@ -86,7 +88,7 @@ const Login = () => {
             />
 
             <Button className="w-full py-3 text-white font-semibold bg-primary hover:bg-primary-hover rounded-xl transition-all shadow-lg backdrop-blur-sm">
-              Log in
+              {t('auth.loginForm.submit')}
             </Button>
           </form>
         </div>
