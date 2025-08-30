@@ -20,15 +20,17 @@ const ConfirmationModal = ({
                     <h3 className="text-lg font-medium text-gray-900 mb-2">{title}</h3>
                     <p className="text-gray-600 mb-6">{message}</p>
 
-                    <div className="flex justify-end space-x-3">
+                    <div className="flex justify-end space-x-3 gap-3">
                         <Button
                             onClick={onClose}
                             variant='outline'
+                            size='sm'
                         >
                             {cancelText}
                         </Button>
                         <Button
                             onClick={onConfirm}
+                            size='sm'
                         >
                             {confirmText}
                         </Button>
