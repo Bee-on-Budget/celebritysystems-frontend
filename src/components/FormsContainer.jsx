@@ -1,6 +1,13 @@
-import { Button } from "./";
+import { Button, Loading } from "./";
 
-const FormsContainer = ({ title, actionTitle, isLoading, onSubmit, children }) => {
+const FormsContainer = ({ title, actionTitle, error, isLoading, onSubmit, children }) => {
+    if (error) return (
+        <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded">
+            <p>{error}</p>
+        </div>
+    );
+
+    if (isLoading) return <Loading />;
     return (
         <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8 border border-gray-100 mt-8">
             <h1 className="text-2xl font-semibold mb-8">{title}</h1>
