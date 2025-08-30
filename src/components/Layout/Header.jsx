@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import { FaBars, FaSignOutAlt } from "react-icons/fa";
 import { useAuth } from "../../auth/useAuth";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import Button from '../Button';
+import LanguageSwitcher from '../LanguageSwitcher';
 
 const Header = ({ setSidebarOpen }) => {
   const { logout, user } = useAuth();
+  const { t, i18n } = useTranslation();
+  const isRtl = i18n.dir() === "rtl";
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
 
   const handleLogout = () => {
     setShowLogoutConfirm(true);
@@ -51,24 +56,24 @@ const Header = ({ setSidebarOpen }) => {
                 {getGreeting()}, {getUserDisplayName()}!
               </h2>
               <p className="text-sm text-gray-600">
-                Welcome to Celebrity Systems
+                {t('dashboard.welcome')}
               </p>
             </div>
           </div>
 
           {/* Right section */}
-          <div className="flex items-center space-x-4">
-            <div className="relative">
-              <button
-                onClick={handleLogout}
-                className="flex items-center space-x-2 text-gray-600 hover:text-red-600 p-2 rounded-full hover:bg-gray-100 transition-colors duration-200 group"
-                aria-label="Logout"
-              >
-                <FaSignOutAlt className="text-xl group-hover:rotate-180 transition-transform duration-300" />
-                <span className="hidden lg:inline-block">Logout</span>
-              </button>
+          <div className="flex items-center space-x-4 gap-4">
+            {/* Language Switcher */}
+            <LanguageSwitcher />
 
-              {/* Logout confirmation */}
+            <div className="relative">
+              <Button
+                icon={<FaSignOutAlt />}
+                size='sm'
+                className={"mx-2"}
+                variant='ghost'
+                onClick={handleLogout}
+              >{t('auth.logout')}</Button>
               <AnimatePresence>
                 {showLogoutConfirm && (
                   <motion.div
@@ -76,23 +81,23 @@ const Header = ({ setSidebarOpen }) => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg overflow-hidden z-50 border border-gray-200"
+                    className={`absolute ${isRtl ? "left" : "right"}-0 top-full mt-2 w-52 bg-white rounded-md shadow-lg overflow-hidden z-50 border border-gray-200`}
                   >
                     <div className="p-4">
-                      <p className="mb-3 font-medium text-dark">Confirm logout?</p>
-                      <div className="flex justify-end space-x-2">
+                      <p className="mb-3 font-medium text-dark">{t('auth.logoutMessage')}</p>
+                      <div className="flex justify-start space-x-2">
                         <Button
                           onClick={() => setShowLogoutConfirm(false)}
                           size='sm'
                           variant='ghost'
                         >
-                          Cancel
+                          {t('common.cancel')}
                         </Button>
                         <Button
                           onClick={confirmLogout}
                           size='sm'
                         >
-                          Logout
+                          {t('auth.ok')}
                         </Button>
                       </div>
                     </div>
