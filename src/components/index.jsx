@@ -13,6 +13,8 @@ import Loading from "./Loading";
 import DataList from "./DataList";
 import Pagination from "./Pagination";
 import ConfirmationModal from "./ConfirmationModal";
+import CustomCheckbox from "./CustomCheckbox";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 export {
   Button,
@@ -30,4 +32,6 @@ export {
   DataList,
   Pagination,
   ConfirmationModal,
+  CustomCheckbox,
+  LanguageSwitcher,
 };
