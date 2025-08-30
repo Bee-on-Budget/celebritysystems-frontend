@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createCompany } from "../../api/services/CompanyService";
 import { Input, showToast, FormsContainer } from "../../components";
+import { useTranslation } from "react-i18next";
 
 const CreateCompany = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [form, setForm] = useState({
     name: "",
@@ -29,24 +31,24 @@ const CreateCompany = () => {
     const phoneRegex = /^\+?[0-9\s\-()]{8,}$/;
     const mapsUrlRegex = /^https?:\/\/(www\.)?(google\.)?maps\./i;
 
-    if (!form.name.trim()) newErrors.name = "Company name is required";
+    if (!form.name.trim()) newErrors.name = t("companies.validationMessages.companyNameRequired");
 
     if (!form.email.trim()) {
-      newErrors.email = "Email is required";
+      newErrors.email = t("companies.validationMessages.emailRequired");
     } else if (!emailRegex.test(form.email)) {
-      newErrors.email = "Please enter a valid email address";
+      newErrors.email = t("companies.validationMessages.errorValidEmail");
     }
 
     if (!form.phone.trim()) {
-      newErrors.phone = "Phone number is required";
+      newErrors.phone = t("companies.validationMessages.phoneRequired");
     } else if (!phoneRegex.test(form.phone)) {
-      newErrors.phone = "Please enter a valid phone number";
+      newErrors.phone = t("companies.validationMessages.errorValidPhone");
     }
 
     if (!form.location.trim()) {
-      newErrors.location = "Location is required";
+      newErrors.location = t("companies.validationMessages.locationRequired");
     } else if (!mapsUrlRegex.test(form.location)) {
-      newErrors.location = "Please enter a valid Google Maps link";
+      newErrors.location = t("companies.validationMessages.errorValidLocation");
     }
 
     setErrors(newErrors);
@@ -60,13 +62,11 @@ const CreateCompany = () => {
     setLoading(true);
     try {
       await createCompany(form);
-      showToast("Company created successfully", "success");
+      showToast(t('companies.message.companyCreated'), "success");
       setForm({ name: "", email: "", phone: "", location: "" });
       setTimeout(() => navigate('/companies'), 1000);
     } catch (err) {
-      const errorMessage =
-        err.response?.data?.message || "Error creating company";
-      showToast(errorMessage, "error");
+      showToast(t('companies.message.errorCreatingCompany'), "error");
     } finally {
       setLoading(false);
     }
@@ -74,13 +74,13 @@ const CreateCompany = () => {
 
   return (
     <FormsContainer
-      title="Create New Company"
+      title={t('companies.createTitle')}
       onSubmit={handleSubmit}
-      actionTitle="Create Company"
+      actionTitle={t('companies.actions.create')}
       isLoading={loading}
     >
       <Input
-        label="Name"
+        label={t('companies.companyForm.name')}
         name="name"
         value={form.name}
         onChange={handleChange}
@@ -88,7 +88,7 @@ const CreateCompany = () => {
         required
       />
       <Input
-        label="Email"
+        label={t('companies.companyForm.email')}
         name="email"
         type="email"
         value={form.email}
@@ -97,7 +97,7 @@ const CreateCompany = () => {
         required
       />
       <Input
-        label="Phone"
+        label={t('companies.companyForm.phone')}
         name="phone"
         value={form.phone}
         onChange={handleChange}
@@ -105,7 +105,7 @@ const CreateCompany = () => {
         required
       />
       <Input
-        label="Location (Google Maps Link)"
+        label={t('companies.companyForm.location')}
         name="location"
         type="url"
         placeholder="https://www.google.com/maps/place/..."
