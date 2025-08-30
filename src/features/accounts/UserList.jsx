@@ -3,11 +3,12 @@ import { getAllUsers, updateUser, deleteUser, resetUserPassword } from "../../ap
 import { getAllCompanies } from "../../api/services/CompanyService";
 import MultiSearchBar from "../../components/MultiSearchBar";
 import UserTable from "./UserTable";
-import { roleOptions } from "./constants";
 import { filterUsersByRole, searchUsers } from "./userUtils";
 import { showToast } from "../../components/ToastNotifier";
+import { useTranslation } from "react-i18next";
 
 const UserList = () => {
+  const { t } = useTranslation();
   const [users, setUsers] = useState([]);
   const [companies, setCompanies] = useState([]);
   const [filtered, setFiltered] = useState([]);
@@ -21,13 +22,20 @@ const UserList = () => {
     canEdit: false
   });
 
+  const roleOptions = [
+    { value: "COMPANY", label: t("accounts.roles.COMPANY_USER") },
+    { value: "CELEBRITY_SYSTEM_WORKER", label: t("accounts.roles.CELEBRITY_SYSTEM_WORKER") },
+    { value: "ADMIN", label: t("accounts.roles.ADMIN") },
+    { value: "SUPERVISOR", label: t("accounts.roles.SUPERVISOR") },
+  ];
+
   const fetchData = useCallback(async () => {
     try {
       const [usersRes, companiesRes] = await Promise.all([
         getAllUsers(),
         getAllCompanies()
       ]);
-      
+
       setUsers(usersRes);
       setCompanies(companiesRes.data);
       setFiltered(filterUsersByRole(usersRes, selectedRoleFilter));
@@ -38,7 +46,7 @@ const UserList = () => {
       setCompanies([]);
     }
   }, [selectedRoleFilter]);
-  
+
   useEffect(() => {
     fetchData();
   }, [fetchData]);
@@ -108,7 +116,7 @@ const UserList = () => {
     },
     [users]
   );
-  
+
   const handleResultClick = (query) => {
     let result = searchUsers(users, query);
     result = filterUsersByRole(result, selectedRoleFilter);
@@ -128,7 +136,7 @@ const UserList = () => {
   return (
     <div className="my-2">
       <div className="flex items-center justify-between gap-4 flex-wrap">
-        <h1 className="text-2xl font-semibold">Users</h1>
+        <h1 className="text-2xl font-semibold">{t('navigation.users')}</h1>
         <div className="flex gap-4 w-full sm:w-auto">
           <div className="w-full sm:w-64">
             <MultiSearchBar
@@ -143,7 +151,7 @@ const UserList = () => {
               onChange={handleRoleFilterChange}
               className="border rounded px-3 py-2 w-full text-sm"
             >
-              <option value="ALL">All Types</option>
+              <option value="ALL">{t('accounts.allTypes')}</option>
               {roleOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
