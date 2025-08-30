@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FaFileContract, FaHome, FaBars, FaUsers, FaBuilding, FaDesktop } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 import CompanyLogo from '../../CompanyLogo';
 import NavButton from '../../NavButton';
 import SidebarDropdown from './SidebarDropdown';
@@ -8,6 +9,7 @@ import { useAuth } from '../../../auth/useAuth';
 const Sidebar = ({ open, setOpen }) => {
   const [openDropdowns, setOpenDropdowns] = useState({});
   const {user} = useAuth();
+  const { t } = useTranslation();
 
   const handleDropdownToggle = (label) => {
     setOpenDropdowns((prev) => ({
@@ -39,76 +41,77 @@ const Sidebar = ({ open, setOpen }) => {
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto mt-1 flex flex-col space-y-2 pr-[calc(1.5rem-8px)] pl-4 pb-4 pt-1 scrollbar-gutter-stable">
         <div className="pr-2">
-          <NavButton to={"/dashboard"} icon={<FaHome />} label="Home" onClick={() => setOpen(false)} />
+          <NavButton to={"/dashboard"} icon={<FaHome />} label={t('sidebar.home')} onClick={() => setOpen(false)} />
 
           {user?.role === "ADMIN" && (
             <SidebarDropdown
               icon={FaUsers}
-              label="Accounts"
+              label={t('sidebar.accounts')}
               isOpen={openDropdowns["Accounts"]}
               onToggle={() => handleDropdownToggle("Accounts")}
               items={[
-                { label: "Create User", href: "/create-user", onClick: () => setOpen(false) },
-                { label: "Manage Users", href: "/manage-users", onClick: () => setOpen(false) },
+                { label: t('sidebar.createUser'), href: "/create-user", onClick: () => setOpen(false) },
+                { label: t('sidebar.manageUsers'), href: "/manage-users", onClick: () => setOpen(false) },
               ]}
             />
            )}
           <SidebarDropdown
             icon={FaBuilding}
-            label="Companies"
+            label={t('sidebar.allCompanies')}
             isOpen={openDropdowns["Companies"]}
             onToggle={() => handleDropdownToggle("Companies")}
             items={[
-              { label: "All Companies", href: "/companies", onClick: () => setOpen(false) },
-              { label: "Create Company", href: "/companies/create", onClick: () => setOpen(false) },
-              { label: "Add User", href: "/companies/add-user", onClick: () => setOpen(false) }
+              { label: t('sidebar.allCompanies'), href: "/companies", onClick: () => setOpen(false) },
+              { label: t('sidebar.createCompany'), href: "/companies/create", onClick: () => setOpen(false) },
+              { label: t('sidebar.addUser'), href: "/companies/add-user", onClick: () => setOpen(false) }
             ]}
           />
           <SidebarDropdown
             icon={FaDesktop}
-            label="Screens"
+            label={t('sidebar.allScreens')}
             isOpen={openDropdowns["Screens"]}
             onToggle={() => handleDropdownToggle("Screens")}
             items={[
-              { label: "All Screens", href: "/screen", onClick: () => setOpen(false) },
-              { label: "Create Screen", href: "/screen/AddScreen", onClick: () => setOpen(false) }
+              { label: t('sidebar.allScreens'), href: "/screen", onClick: () => setOpen(false) },
+              { label: t('sidebar.createScreen'), href: "/screen/AddScreen", onClick: () => setOpen(false) }
             ]}
           />
           <SidebarDropdown
             icon={FaFileContract}
-            label="Tickets"
+            label={t('sidebar.allTickets')}
             isOpen={openDropdowns["Tickets"]}
             onToggle={() => handleDropdownToggle("Tickets")}
             items={[
-              { label: "All Tickets", href: "/tickets", onClick: () => setOpen(false) },
-              { label: "Create Ticket", href: "/tickets/create", onClick: () => setOpen(false) },
-              { label: "Pending Tickets", href: "/tickets/pending", onClick: () => setOpen(false) }
+              { label: t('sidebar.allTickets'), href: "/tickets", onClick: () => setOpen(false) },
+              { label: t('sidebar.createTicket'), href: "/tickets/create", onClick: () => setOpen(false) },
+              { label: t('sidebar.pendingTickets'), href: "/tickets/pending", onClick: () => setOpen(false) }
             ]}
           />
 
           <SidebarDropdown
             icon={FaFileContract}
-            label="Contracts"
+            label={t('sidebar.allContracts')}
             isOpen={openDropdowns["Contracts"]}
             onToggle={() => handleDropdownToggle("Contracts")}
             items={[
-              { label: "All Contracts", href: "/contracts", onClick: () => setOpen(false) },
-              { label: "Create Contract", href: "/contracts/create", onClick: () => setOpen(false) }
+              { label: t('sidebar.allContracts'), href: "/contracts", onClick: () => setOpen(false) },
+              { label: t('sidebar.createContract'), href: "/contracts/create", onClick: () => setOpen(false) }
             ]}
           />
 
           <SidebarDropdown
             icon={FaFileContract}
-            label="Sub-Contract"
+            label={t('sidebar.allSubcontracts')}
             isOpen={openDropdowns["Sub-Contract"]}
             onToggle={() => handleDropdownToggle("Sub-Contract")}
             items={[
-              { label: "All Sub-Contract", href: "/subcontract", onClick: () => setOpen(false) },
-              { label: "Create Sub-Contract", href: "/subcontract/create", onClick: () => setOpen(false) }
+              { label: t('sidebar.allSubcontracts'), href: "/subcontract", onClick: () => setOpen(false) },
+              { label: t('sidebar.createSubcontract'), href: "/subcontract/create", onClick: () => setOpen(false) }
             ]}
           />
 
-          <NavButton to={"/reports"} icon={<FaFileContract />} label="Reports" onClick={() => setOpen(false)} />
+          <NavButton to={"/reports"} icon={<FaFileContract />} label={t('reports.title')} onClick={() => setOpen(false)} />
+          {/* <NavButton to={"/language-demo"} icon={<FaHome />} label="Language Demo" onClick={() => setOpen(false)} /> */}
         </div>
       </nav>
     </div>
