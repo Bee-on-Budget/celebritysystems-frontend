@@ -46,6 +46,20 @@ export const createTicket = async (ticketData) => {
   }
 };
 
+// api/services/TicketService.js
+export const createReport = async (ticketId, formData) => {
+  try {
+    const response = await axios.post(`/api/tickets/${ticketId}/worker-report`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data?.message || "Failed to create a report";
+  }
+};
+
 export const updateTicket = async (id, ticketData) => {
   try {
     const response = await axios.patch(`${TICKET_API_URL}/${id}`, ticketData);
