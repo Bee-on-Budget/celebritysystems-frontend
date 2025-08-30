@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAddScreenForm } from './components/useAddScreenForm';
 import StepIndicator from './components/StepIndicator';
 import ScreenStep from './steps/ScreenStep';
@@ -7,6 +8,7 @@ import CabinetsStep from './steps/CabinetsStep';
 import ModulesStep from './steps/ModulesStep';
 
 const AddScreen = () => {
+  const { t } = useTranslation();
   const {
     step,
     form,
@@ -22,17 +24,28 @@ const AddScreen = () => {
     removeModule,
   } = useAddScreenForm();
 
+  const { i18n } = useTranslation();
+  const isRtl = i18n.dir() === "rtl";
+
+
   return (
     <div className="max-w-3xl mx-auto mt-10">
       <div className="flex items-center justify-between mb-10 px-4 md:px-12">
-        <StepIndicator stepNumber={1} title="Screen" currentStep={step} />
-        <StepIndicator stepNumber={2} title="Cables" currentStep={step} />
+        <StepIndicator stepNumber={1} title={t('screens.steps.screen')} currentStep={step} isRtl={isRtl} />
+        <StepIndicator stepNumber={2} title={t('screens.steps.cables')} currentStep={step} isRtl={isRtl} />
         <StepIndicator
           stepNumber={3}
-          title="Cabinets"
+          title={t('screens.steps.cabinets')}
           currentStep={step}
-          visible={form.solutionTypeInScreen === "CABINET_SOLUTION"} />
-        <StepIndicator stepNumber={form.solutionTypeInScreen === "CABINET_SOLUTION" ? 4 : 3} title="Modules" currentStep={step} />
+          visible={form.solutionTypeInScreen === "CABINET_SOLUTION"}
+          isRtl={isRtl}
+        />
+        <StepIndicator
+          stepNumber={form.solutionTypeInScreen === "CABINET_SOLUTION" ? 4 : 3}
+          title={t('screens.steps.modules')}
+          currentStep={step}
+          isRtl={isRtl}
+        />
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl shadow-xl space-y-6 border border-gray-100">
