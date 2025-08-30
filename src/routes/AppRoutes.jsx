@@ -34,6 +34,7 @@ import ScreensList from "../features/screen/ScreensList";
 
 // Test
 import TestPage from "../features/test/TestPage";
+import LanguageDemo from "../features/demo/LanguageDemo";
 
 // Contract management
 import CreateContract from "../features/contract/CreateContract";
@@ -51,6 +52,7 @@ import PendingTicketDetails from "../features/ticket/PendingTicketDetails";
 // Report management
 import ReportList from "../features/report/ReportList";
 import ReportDetails from "../features/report/ReportDetails";
+import CreateReport from "../features/report/CreateReport";
 
 // Sub-Contract management
 import SubcontractList from "../features/subcontract/SubcontractList";
@@ -87,6 +89,7 @@ const AppRoutes = () => {
         <Route path="profile" element={<Profile />} />
         <Route path="add-system" element={<AddSystem />} />
         <Route path="test" element={<TestPage />} />
+        <Route path="language-demo" element={<LanguageDemo />} />
 
         {/* User management */}
         <Route
@@ -246,6 +249,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
               <PendingTicketDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="tickets/pending/:id/create-report"
+          element={
+            <ProtectedRoute allowedRoles={["SUPERVISOR"]}>
+              <CreateReport />
             </ProtectedRoute>
           }
         />
