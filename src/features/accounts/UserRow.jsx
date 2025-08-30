@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { FaTrash, FaEdit, FaSave, FaTimes, FaKey } from "react-icons/fa";
 import Button from "../../components/Button";
-import { roleOptions, roleColors } from "./constants";
+import { roleColors } from "./constants";
 import { getUserCompany } from "./userUtils";
 import { showToast } from "../../components/ToastNotifier";
+import { useTranslation } from "react-i18next";
 
 const UserRow = ({
   user,
@@ -17,10 +18,19 @@ const UserRow = ({
   handleDelete,
   handleResetPassword
 }) => {
+  const { t } = useTranslation();
   const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [resetPasswordLoading, setResetPasswordLoading] = useState(false);
+
+  const roleOptions = [
+    { value: "COMPANY", label: t("accounts.roles.COMPANY_USER") },
+    { value: "CELEBRITY_SYSTEM_WORKER", label: t("accounts.roles.CELEBRITY_SYSTEM_WORKER") },
+    { value: "ADMIN", label: t("accounts.roles.ADMIN") },
+    { value: "SUPERVISOR", label: t("accounts.roles.SUPERVISOR") },
+  ];
+
 
   const isEditing = editingUserId === user.id;
 
