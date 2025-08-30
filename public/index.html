@@ -25,6 +25,21 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>React App</title>
+    <script>
+      // Set initial language and direction from localStorage before React loads
+      (function() {
+        try {
+          const savedLanguage = localStorage.getItem('i18nextLng');
+          if (savedLanguage) {
+            document.documentElement.lang = savedLanguage;
+            document.documentElement.dir = savedLanguage === 'ar' ? 'rtl' : 'ltr';
+          }
+        } catch (e) {
+          // Fallback to default if localStorage is not available
+          console.warn('Could not access localStorage for language settings');
+        }
+      })();
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

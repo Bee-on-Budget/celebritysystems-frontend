@@ -45,3 +45,50 @@
   background-color: #b32413;
   border-radius: 4px;
 }
+
+/* RTL Support */
+[dir="rtl"] {
+  direction: rtl;
+}
+
+[dir="rtl"] .rtl\:space-x-reverse > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 1;
+}
+
+[dir="rtl"] .rtl\:text-right {
+  text-align: right;
+}
+
+[dir="rtl"] .rtl\:float-right {
+  float: right;
+}
+
+[dir="rtl"] .rtl\:border-r {
+  border-right-width: 0px;
+  border-left-width: 1px;
+}
+
+[dir="rtl"] .rtl\:border-l {
+  border-left-width: 0px;
+  border-right-width: 1px;
+}
+
+[dir="rtl"] .rtl\:pr-2 {
+  padding-right: 0px;
+  padding-left: 0.5rem;
+}
+
+[dir="rtl"] .rtl\:pl-2 {
+  padding-left: 0px;
+  padding-right: 0.5rem;
+}
+
+[dir="rtl"] .rtl\:mr-2 {
+  margin-right: 0px;
+  margin-left: 0.5rem;
+}
+
+[dir="rtl"] .rtl\:ml-2 {
+  margin-left: 0px;
+  margin-right: 0.5rem;
+}
