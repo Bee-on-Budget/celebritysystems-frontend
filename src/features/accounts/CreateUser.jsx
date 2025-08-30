@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../auth/useAuth';
 import { createUser } from '../../api/creation';
 import { showToast } from '../../components/ToastNotifier';
@@ -8,6 +9,7 @@ import { FaEnvelope, FaIdCard, FaLock, FaUser, FaUserShield, FaUserTie } from 'r
 
 const CreateUser = () => {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -26,10 +28,10 @@ const CreateUser = () => {
     setIsLoading(true);
     try {
       await createUser(formData);
-      showToast("User created successfully!", "success");
+      showToast(t('accounts.messages.userCreated'), "success");
       navigate('/manage-users');
     } catch (error) {
-      showToast(error.response?.data?.message || "Failed to create user", "error");
+      showToast(error.response?.data?.message || t('accounts.messages.errorCreatingUser'), "error");
     } finally {
       setIsLoading(false);
     }
@@ -55,31 +57,31 @@ const CreateUser = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!formData.fullName.trim()) {
-      newErrors.fullName = 'Full name is required';
+      newErrors.fullName = t('accounts.userForm.fullName') + ' ' + t('common.required');
     } else if (formData.fullName.length < 2) {
-      newErrors.fullName = 'Name must be at least 2 characters';
+      newErrors.fullName = t('accounts.userForm.fullName') + ' must be at least 2 characters';
     }
 
     if (!formData.username.trim()) {
-      newErrors.username = 'Username is required';
+      newErrors.username = t('accounts.userForm.username') + ' ' + t('common.required');
     } else if (formData.username.length < 3) {
-      newErrors.username = 'Username must be at least 3 characters';
+      newErrors.username = t('accounts.userForm.username') + ' must be at least 3 characters';
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = t('accounts.userForm.email') + ' ' + t('common.required');
     } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email';
+      newErrors.email = t('accounts.userForm.email') + ' must be valid';
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = t('accounts.userForm.password') + ' ' + t('common.required');
     } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
+      newErrors.password = t('accounts.userForm.password') + ' must be at least 8 characters';
     }
 
     if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = t('accounts.userForm.confirmPassword') + ' do not match';
     }
 
     setErrors(newErrors);
@@ -88,13 +90,13 @@ const CreateUser = () => {
 
   return (
     <FormsContainer
-      title={"Create New User Account"}
-      actionTitle={"Create User Account"}
+      title={t('accounts.createUser')}
+      actionTitle={t('accounts.createUser')}
       onSubmit={handleSubmit}
       isLoading={isLoading}
     >
       <Input
-        label="Full Name"
+        label={t('accounts.userForm.fullName')}
         name="fullName"
         type="text"
         icon={<FaIdCard className="text-gray-400" />}
@@ -107,7 +109,7 @@ const CreateUser = () => {
       />
 
       <Input
-        label="Username"
+        label={t('accounts.userForm.username')}
         name="username"
         type="text"
         icon={<FaUser className="text-gray-400" />}
@@ -119,7 +121,7 @@ const CreateUser = () => {
       />
 
       <Input
-        label="Email Address"
+        label={t('accounts.userForm.email')}
         name="email"
         type="email"
         icon={<FaEnvelope className="text-gray-400" />}
@@ -131,7 +133,7 @@ const CreateUser = () => {
       />
 
       <DropdownInput
-        label="User Role"
+        label={t('accounts.userForm.role')}
         name="role"
         value={formData.role}
         onChange={handleChange}
@@ -145,17 +147,17 @@ const CreateUser = () => {
           )
         }
         options={[
-          { value: "CELEBRITY_SYSTEM_WORKER", label: "Worker" },
-          { value: "SUPERVISOR", label: "Supervisor" },
+          { value: "CELEBRITY_SYSTEM_WORKER", label: t('accounts.roles.CELEBRITY_SYSTEM_WORKER') },
+          { value: "SUPERVISOR", label: t('accounts.roles.SUPERVISOR') },
           ...(user.role === "ADMIN"
-            ? [{ value: "ADMIN", label: "Administrator" }]
+            ? [{ value: "ADMIN", label: t('accounts.roles.ADMIN') }]
             : []),
         ]}
         error={errors.role}
       />
 
       <Input
-        label="Password"
+        label={t('accounts.userForm.password')}
         name="password"
         type="password"
         icon={<FaLock className="text-gray-400" />}
@@ -167,7 +169,7 @@ const CreateUser = () => {
       />
 
       <Input
-        label="Confirm Password"
+        label={t('accounts.userForm.confirmPassword')}
         name="confirmPassword"
         type="password"
         icon={<FaLock className="text-gray-400" />}
