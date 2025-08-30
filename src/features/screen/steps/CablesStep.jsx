@@ -1,24 +1,26 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Input, Button } from '../../../components';
 import { SectionContainer } from '../components';
 
 const CablesStep = ({ form, errors, onChange, onNext, onBack }) => {
+  const { t } = useTranslation();
   return (
     <div className="space-y-4 sm:space-y-6 max-w-4xl mx-auto">
-      <SectionContainer title="Cable Information">
+      <SectionContainer title={t('screens.screenForm.cableInformation')}>
         <div className="space-y-4 sm:space-y-6">
           {/* Main Cables */}
-          <SectionContainer title="Main Cables">
+          <SectionContainer title={t('screens.screenForm.mainCables')}>
             <div className="space-y-3 sm:space-y-4">
               <Input 
-                label="Main Cable Type" 
+                label={t('screens.screenForm.mainCableType')} 
                 name="cable" 
                 value={form.cable} 
                 onChange={onChange} 
               />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <Input
-                  label="Quantity"
+                  label={t('screens.screenForm.quantity')}
                   name="cableQuantity"
                   type="number"
                   value={form.cableQuantity}
@@ -28,7 +30,7 @@ const CablesStep = ({ form, errors, onChange, onNext, onBack }) => {
                   disabled={!form.cable}
                 />
                 <Input
-                  label="Spare Quantity"
+                  label={t('screens.screenForm.spareQuantity')}
                   name="spareCableQuantity"
                   type="number"
                   value={form.spareCableQuantity}
@@ -40,17 +42,17 @@ const CablesStep = ({ form, errors, onChange, onNext, onBack }) => {
           </SectionContainer>
 
           {/* Power Cables */}
-          <SectionContainer title="Power Cables">
+          <SectionContainer title={t('screens.screenForm.powerCables')}>
             <div className="space-y-3 sm:space-y-4">
               <Input 
-                label="Power Cable Type" 
+                label={t('screens.screenForm.powerCableType')} 
                 name="powerCable" 
                 value={form.powerCable} 
                 onChange={onChange} 
               />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <Input
-                  label="Quantity"
+                  label={t('screens.screenForm.quantity')}
                   name="powerCableQuantity"
                   type="number"
                   value={form.powerCableQuantity}
@@ -60,7 +62,7 @@ const CablesStep = ({ form, errors, onChange, onNext, onBack }) => {
                   disabled={!form.powerCable}
                 />
                 <Input
-                  label="Spare Quantity"
+                  label={t('screens.screenForm.spareQuantity')}
                   name="sparePowerCableQuantity"
                   type="number"
                   value={form.sparePowerCableQuantity}
@@ -72,17 +74,17 @@ const CablesStep = ({ form, errors, onChange, onNext, onBack }) => {
           </SectionContainer>
 
           {/* Data Cables */}
-          <SectionContainer title="Data Cables">
+          <SectionContainer title={t('screens.screenForm.dataCables')}>
             <div className="space-y-3 sm:space-y-4">
               <Input 
-                label="Data Cable Type" 
+                label={t('screens.screenForm.dataCableType')} 
                 name="dataCable" 
                 value={form.dataCable} 
                 onChange={onChange} 
               />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <Input
-                  label="Quantity"
+                  label={t('screens.screenForm.quantity')}
                   name="dataCableQuantity"
                   type="number"
                   value={form.dataCableQuantity}
@@ -92,7 +94,7 @@ const CablesStep = ({ form, errors, onChange, onNext, onBack }) => {
                   disabled={!form.dataCable}
                 />
                 <Input
-                  label="Spare Quantity"
+                  label={t('screens.screenForm.spareQuantity')}
                   name="spareDataCableQuantity"
                   type="number"
                   value={form.spareDataCableQuantity}
