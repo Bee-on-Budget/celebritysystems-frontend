@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { getTicketById, deleteTicket } from '../../api/services/TicketService';
-import { FiArrowLeft, FiCalendar, FiUser, FiCheckCircle, FiAlertCircle, FiTrash2, FiEdit3, FiX, FiMoreVertical } from 'react-icons/fi';
+import { FiArrowLeft, FiCalendar, FiUser, FiCheckCircle, FiAlertCircle, FiTrash2, FiEdit3, FiX, FiMoreVertical, FiFile } from 'react-icons/fi';
 import { Button, Loading, showToast, ConfirmationModal } from '../../components';
 import { getUsersByRole } from '../../api/services/TicketService';
 import UpdatePendingTicketSection from './UpdatePendingTicketSection';
@@ -146,6 +146,14 @@ const PendingTicketDetails = () => {
               {isEditing ? 'Cancel' : 'Update Ticket'}
             </Button>
             <Button
+              onClick={() => navigate(`create-report`, {ticketId: ticket.id})}
+              variant="primary"
+              icon={<FiFile />}
+              size="sm"
+            >
+              Add Report
+            </Button>
+            <Button
               onClick={handleDeleteClick}
               variant="danger"
               icon={<FiTrash2 />}
@@ -167,6 +175,16 @@ const PendingTicketDetails = () => {
             {/* Mobile Dropdown Menu */}
             {showMobileMenu && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                <button
+                  onClick={() => {
+                    navigate(`create-report`, {ticketId: ticket.id});
+                    setShowMobileMenu(false);
+                  }}
+                  className="w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 border-b border-gray-100"
+                >
+                  {<FiFile />}
+                  Add Report
+                </button>
                 <button
                   onClick={() => {
                     setIsEditing(!isEditing);
