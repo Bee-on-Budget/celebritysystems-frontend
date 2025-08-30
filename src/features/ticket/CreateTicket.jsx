@@ -1,18 +1,21 @@
 // src/components/tickets/CreateTicket.jsx
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { createTicket, prepareTicketFormData, getUsersByRole } from "../../api/services/TicketService";
 import { searchCompanies } from "../../api/services/CompanyService";
 import { getScreens } from "../../api/services/ScreenService";
 import Select from 'react-select';
 import AsyncSelect from 'react-select/async';
 import debounce from 'lodash/debounce';
-import { showToast } from "../../components";
+import { DropdownInput, Input, showToast } from "../../components";
 
 const CreateTicket = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     title: "",
+    serviceType: "",
     description: "",
     status: "OPEN",
     companyId: "",
@@ -31,6 +34,14 @@ const CreateTicket = () => {
 
   const MAX_FILE_SIZE_MB = 10;
   const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'application/pdf'];
+
+  const serviceTypes = [
+    { value: "REGULAR_SERVICE", label: t('tickets.serviceTypes.REGULAR_SERVICE') },
+    { value: "EMERGENCY_SERVICE", label: t('tickets.serviceTypes.EMERGENCY_SERVICE') },
+    { value: "PREVENTIVE_MAINTENANCE", label: t('tickets.serviceTypes.PREVENTIVE_MAINTENANCE') },
+    { value: "CALL_BACK_SERVICE", label: t('tickets.serviceTypes.CALL_BACK_SERVICE') },
+  ];
+  
 
   const customStyles = {
     control: (provided, state) => ({
@@ -68,7 +79,7 @@ const CreateTicket = () => {
         setSupervisors(supervisorRes || []);
 
       } catch (error) {
-        showToast("Error fetching initial data", "error")
+        showToast(t('tickets.messages.errorFetchingData'), "error")
         console.error("Error fetching initial data:", error);
       } finally {
         setFetching(false);
@@ -76,7 +87,7 @@ const CreateTicket = () => {
     };
 
     fetchInitialData();
-  }, []);
+  }, [t]);
 
   // Load companies with search
   const loadCompanies = async (search = '') => {
@@ -170,29 +181,37 @@ const CreateTicket = () => {
   };
 
   if (fetching) {
-    return <div className="p-4 md:p-6 max-w-7xl mx-auto">Loading initial data...</div>;
+    return <div className="p-4 md:p-6 max-w-7xl mx-auto">{t('tickets.messages.loadingTicket')}</div>;
   }
 
   return (
     <div className="p-4 md:p-6 max-w-7xl mx-auto">
-      <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-gray-800">Create New Ticket</h2>
+      <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-gray-800">{t('tickets.createTicket')}</h2>
       <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6 bg-white p-4 md:p-6 rounded-lg shadow-md">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-          {/* Title */}
-          <div className="col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Title*</label>
-            <input
-              className="w-full border border-gray-300 px-3 py-2 md:px-4 md:py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              name="title"
-              value={formData.title}
+          {/* Title & Service Type */}
+          <div className="col-span-2 md:col-span-1">
+            <Input
+            label={t('tickets.ticketForm.title')}
+            name={"title"}
+            value={formData.title}
+            onChange={handleChange}
+            required
+            />
+            <DropdownInput
+              name="serviceType"
+              value={formData.serviceType}
+              options={serviceTypes}
               onChange={handleChange}
+              label={t('tickets.ticketForm.serviceType')}
+              // error={errors.serviceType}
               required
             />
           </div>
 
           {/* Description */}
           <div className="col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description*</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('tickets.ticketForm.description')}*</label>
             <textarea
               className="w-full border border-gray-300 px-3 py-2 md:px-4 md:py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               name="description"
@@ -205,7 +224,7 @@ const CreateTicket = () => {
 
           {/* Company */}
           <div className="col-span-2 md:col-span-1">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('tickets.ticketForm.company')}</label>
             <AsyncSelect
               cacheOptions
               defaultOptions
@@ -216,9 +235,9 @@ const CreateTicket = () => {
               } : null}
               onChange={(option) => handleSelectChange('companyId', option)}
               isClearable
-              placeholder="Search companies..."
+              placeholder={t('tickets.ticketForm.companyPlaceholder')}
               noOptionsMessage={({ inputValue }) =>
-                inputValue ? 'No companies found' : 'Start typing to search companies'
+                inputValue ? t('tickets.messages.noCompaniesFound') : t('tickets.placeholders.searchCompanies')
               }
               styles={customStyles}
               className="text-sm"
@@ -227,7 +246,7 @@ const CreateTicket = () => {
 
           {/* Screen */}
           <div className="col-span-2 md:col-span-1">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Screen</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('tickets.ticketForm.screen')}</label>
             <AsyncSelect
               cacheOptions
               defaultOptions
@@ -238,9 +257,9 @@ const CreateTicket = () => {
               } : null}
               onChange={(option) => handleSelectChange('screenId', option)}
               isClearable
-              placeholder="Search screens..."
+              placeholder={t('tickets.ticketForm.screenPlaceholder')}
               noOptionsMessage={({ inputValue }) =>
-                inputValue ? 'No screens found' : 'Start typing to search screens'
+                inputValue ? t('tickets.messages.noScreensFound') : t('tickets.placeholders.searchScreens')
               }
               className="react-select-container text-sm"
               classNamePrefix="react-select"
@@ -250,7 +269,7 @@ const CreateTicket = () => {
 
           {/* Assigned To Worker */}
           <div className="col-span-2 md:col-span-1">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Assigned to Worker</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('tickets.ticketForm.assignedToWorker')}</label>
             <Select
               options={workers.map(worker => ({
                 value: worker.id,
@@ -262,7 +281,7 @@ const CreateTicket = () => {
               } : null}
               onChange={(option) => handleSelectChange('assignedToWorkerId', option)}
               isClearable
-              placeholder="Select worker"
+              placeholder={t('tickets.placeholders.selectWorker')}
               className="react-select-container text-sm"
               classNamePrefix="react-select"
               styles={customStyles}
@@ -271,7 +290,7 @@ const CreateTicket = () => {
 
           {/* Assigned to Supervisor */}
           <div className="col-span-2 md:col-span-1">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Assigned to Supervisor</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('tickets.ticketForm.assignedBySupervisor')}</label>
             <Select
               options={supervisors.map(supervisor => ({
                 value: supervisor.id,
@@ -283,7 +302,7 @@ const CreateTicket = () => {
               } : null}
               onChange={(option) => handleSelectChange('assignedBySupervisorId', option)}
               isClearable
-              placeholder="Select supervisor"
+              placeholder={t('tickets.placeholders.selectSupervisor')}
               className="react-select-container text-sm"
               classNamePrefix="react-select"
               styles={customStyles}
@@ -293,7 +312,7 @@ const CreateTicket = () => {
 
         {/* Attachments */}
         <div className="col-span-2">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Attachments</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t('tickets.ticketForm.attachments')}</label>
           <div className="mt-1 flex justify-center px-4 pt-4 pb-5 border-2 border-gray-300 border-dashed rounded-md">
             <div className="space-y-1 text-center">
               <svg className="mx-auto h-10 w-10 text-gray-400 hidden sm:block" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
@@ -301,7 +320,7 @@ const CreateTicket = () => {
               </svg>
               <div className="flex flex-col sm:flex-row text-sm text-gray-600 justify-center items-center">
                 <label className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500">
-                  <span>Upload files</span>
+                  <span>{t('tickets.ticketForm.uploadFiles')}</span>
                   <input
                     type="file"
                     multiple
@@ -310,21 +329,21 @@ const CreateTicket = () => {
                     accept=".png,.jpg,.jpeg,.pdf"
                   />
                 </label>
-                <p className="pl-1">or drag and drop</p>
+                <p className="pl-1">{t('tickets.ticketForm.dragAndDrop')}</p>
               </div>
               <p className="text-xs text-gray-500">
-                PNG, JPG, PDF up to 10MB
+                {t('tickets.ticketForm.fileTypes')}
               </p>
-              {files.length > 0 && (
-                <div className="mt-2">
-                  <p className="text-sm font-medium">Selected files:</p>
-                  <ul className="text-sm text-gray-500">
-                    {files.map((file, index) => (
-                      <li key={index} className="truncate max-w-xs">{file.name}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+                              {files.length > 0 && (
+                  <div className="mt-2">
+                    <p className="text-sm font-medium">{t('tickets.ticketForm.selectedFiles')}</p>
+                    <ul className="text-sm text-gray-500">
+                      {files.map((file, index) => (
+                        <li key={index} className="truncate max-w-xs">{file.name}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
             </div>
           </div>
         </div>
@@ -336,14 +355,14 @@ const CreateTicket = () => {
             onClick={() => navigate("/tickets")}
             className="mt-3 sm:mt-0 px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
-            Cancel
+            {t('common.cancel')}
           </button>
           <button
             type="submit"
             disabled={isSubmitting}
             className={`px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${isSubmitting ? "opacity-70 cursor-not-allowed" : ""}`}
           >
-            {isSubmitting ? "Creating..." : "Create Ticket"}
+            {isSubmitting ? t('tickets.messages.creatingTicket') : t('tickets.createTicket')}
           </button>
         </div>
       </form>
