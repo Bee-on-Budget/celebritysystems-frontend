@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const MultiSearchBar = ({ onSearch, onSelectResult, onClear }) => {
+  const { t } = useTranslation();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
@@ -46,7 +48,7 @@ const MultiSearchBar = ({ onSearch, onSelectResult, onClear }) => {
       <div className="relative">
         <input
           type="text"
-          placeholder="Search..."
+          placeholder={t('common.search')}
           className="w-full px-4 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
