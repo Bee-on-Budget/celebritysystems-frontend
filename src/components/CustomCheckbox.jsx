@@ -76,8 +76,9 @@ const CustomCheckbox = forwardRef(({
         <label
           htmlFor={id}
           className={`
-            ml-3
+            mx-3
             text-dark
+            text-sm
             cursor-pointer
             select-none
             ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
