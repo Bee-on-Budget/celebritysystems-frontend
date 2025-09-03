@@ -215,6 +215,7 @@
   },
   "companies": {
     "title": "الشركات",
+    "company": "الشركة",
     "createTitle": "إنشاء شركة جديدة",
     "users": "المستخدمون",
     "createCompany": "إنشاء شركة",
@@ -226,6 +227,24 @@
     "viewOnMaps": "عرض على الخرائط",
     "created": "تم الانشاء",
     "lastUpdate": "آخر تعديل",
+    "addUserToCompanyTitle": "إضافة مستحدم لشركة",
+    "userForm": {
+      "fullName": "الاسم الكامل",
+      "fullNamePlaceholder": "أدخل الاسم الكامل",
+      "username": "اسم المستخدم",
+      "usernamePlaceholder": "ادخل اسم المستخدم",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "user@company.xyz",
+      "password": "كلمة المرور",
+      "passwordPlaceholder": "********",
+      "role": "دور المستخدم",
+      "permissions": "الأذونات",
+      "canRead": "يمكن القراءة",
+      "canEdit": "يمكن التعديل",
+      "roles": {
+        "COMPANY": "مسخدم الشركة"
+      }
+    },
     "companyForm": {
       "name": "اسم الشركة",
       "namePlaceholder": "أدخل اسم الشركة",
@@ -254,7 +273,8 @@
       "editCompany": "تعديل الشركة",
       "cancel": "إلغاء",
       "back": "رجوع",
-      "backToCompanies": "الرجوع إلى الشركات"
+      "backToCompanies": "الرجوع إلى الشركات",
+      "addUser": "إضافة مستخدم"
     },
     "deleteDialog": {
       "title": "حذف الشركة",
@@ -265,19 +285,31 @@
       "companyCreated": "تم إنشاء الشركة بنجاح",
       "companyUpdated": "تم تحديث الشركة بنجاح",
       "companyDeleted": "تم حذف الشركة بنجاح",
+      "creatingCompany": "جاري إنشاء الشركة",
+      "updatingCompany": "حاري تعديل الشركة",
+      "deletingCompany": "جاري حذف الشركة",
+      "userCreated": "تم إنشاء المستخدم بنجاح",
       "errorLoadingCompanies": "حطأ في تحميل الشركات",
       "errorCreatingCompany": "خطأ في إنشاء الشركة",
       "errorUpdatingCompany": "خطأ في تحديث الشركة",
       "errorDeletingCompany": "خطأ في حذف الشركة",
+      "errorSearchingCompanies": "فشل في البحث عن الشركات",
+      "errorCreatingUser": "خطأ في إنشاء المستخدم",
       "confirmDelete": "هل أنت متأكد من حذف هذه الشركة؟"
     },
     "validationMessages": {
+      "companyRequired": "الرجاء اختيار شركة",
+      "fullNameRequired": "الاسم الكامل مكلوب",
+      "usernameRequired": "اسم المستخدم مطلوب",
       "companyNameRequired": "اسم الشركة مطلوب",
+      "passwordRequired": "كلمة المرور مطلوبة",
+      "roleRequired": "الدور مطلوب",
       "emailRequired": "البريد الإلكتروني مطلوب",
       "phoneRequired": "رقم الجوال مطلوب",
       "locationRequired": "الموقع مطلوب",
       "errorValidEmail": "الرجاء إدخال بريد إلكتروني صحيح",
       "errorValidPhone": "الرجاء إدخال رقم حوال صحيح",
+      "errorValidPassword": "كلمة المرور يجب أن تتكون من ثمانية محارف على الأقل",
       "errorValidLocation": "الرجاء إدخال رابط خرائط غوغل صحيح"
     }
   },

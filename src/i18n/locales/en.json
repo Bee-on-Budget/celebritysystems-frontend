@@ -215,6 +215,7 @@
   },
   "companies": {
     "title": "Companies",
+    "company": "Company",
     "createTitle": "Create new company",
     "users": "Users",
     "createCompany": "Create Company",
@@ -226,6 +227,24 @@
     "viewOnMaps": "View on Maps",
     "created": "Created",
     "lastUpdate": "Last Update",
+    "addUserToCompanyTitle": "Add User to a Company",
+    "userForm": {
+      "fullName": "Full Name",
+      "fullNamePlaceholder": "Enter user's full name",
+      "username": "Username",
+      "usernamePlaceholder": "Enter username",
+      "email": "Email",
+      "emailPlaceholder": "user@company.xyz",
+      "password": "Password",
+      "passwordPlaceholder": "********",
+      "role": "User Role",
+      "permissions": "Permissions",
+      "canRead": "Can Read",
+      "canEdit": "Can Edit",
+      "roles": {
+        "COMPANY": "Company User"
+      }
+    },
     "companyForm": {
       "name": "Company Name",
       "namePlaceholder": "Enter company name",
@@ -254,7 +273,8 @@
       "editCompany": "Edit Company",
       "cancel": "Cancel",
       "back": "Back",
-      "backToCompanies": "Back to companies"
+      "backToCompanies": "Back to companies",
+      "addUser": "Add User"
     },
     "deleteDialog": {
       "title": "Delete company",
@@ -268,19 +288,28 @@
       "creatingCompany": "Creating Company",
       "updatingCompany": "Updating Company",
       "deletingCompany": "Deleting Company",
+      "userCreated": "User created successfully",
       "errorLoadingCompanies": "Error loading companies",
       "errorCreatingCompany": "Error creating company",
       "errorUpdatingCompany": "Error updating company",
       "errorDeletingCompany": "Error deleting company",
+      "errorCreatingUser": "Faild to create user",
+      "errorSearchingCompanies": "Failed to search for companies",
       "confirmDelete": "Are you sure you want to delete this company?"
     },
     "validationMessages": {
+      "companyRequired": "Please select a company",
+      "fullNameRequired": "Full name is required",
+      "usernameRequired": "Username is required",
       "companyNameRequired": "Company name is required",
+      "passwordRequired": "Passowrd is required",
+      "roleRequired": "Role is required",
       "emailRequired": "Email is required",
       "phoneRequired": "Phone number is required",
       "locationRequired": "Location is required",
       "errorValidEmail": "Please enter a valid email address",
       "errorValidPhone": "Please enter a valid phone number",
+      "errorValidPassword": "Password must be at least 8 characters",
       "errorValidLocation": "Please enter a valid Google Maps link"
     }
   },
