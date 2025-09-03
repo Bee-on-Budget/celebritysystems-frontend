@@ -115,14 +115,14 @@ const CablesStep = ({ form, errors, onChange, onNext, onBack }) => {
           onClick={onBack}
           className="w-full sm:w-auto min-w-[100px] order-2 sm:order-1"
         >
-          Back
+          {t('screens.actions.back')}
         </Button>
         <Button 
           type="button" 
           onClick={onNext}
           className="w-full sm:w-auto min-w-[140px] order-1 sm:order-2"
         >
-          Next: Cabinets
+          {t('screens.actions.nextCabinets')}
         </Button>
       </div>
     </div>

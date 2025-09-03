@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { showToast } from "../../../components/ToastNotifier";
 import { createScreen } from "../../../api/services/ScreenService";
 
@@ -67,6 +68,7 @@ const initialFormState = {
 };
 
 const useAddScreenForm = () => {
+  const { t } = useTranslation();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -99,7 +101,7 @@ const useAddScreenForm = () => {
 
   const removeCabinet = (index) => {
     if (form.cabinets.length <= 1) {
-      showToast("You must have at least one cabinet", "warning");
+      showToast(t('screens.validation.mustHaveOneCabinet'), "warning");
       return;
     }
 
@@ -131,7 +133,7 @@ const useAddScreenForm = () => {
 
   const removeModule = (index) => {
     if (form.modulesDto.length <= 1) {
-      showToast("You must have at least one module", "warning");
+      showToast(t('screens.validation.mustHaveOneModule'), "warning");
       return;
     }
     setForm((prev) => ({
@@ -197,96 +199,96 @@ const useAddScreenForm = () => {
     const mapsUrlRegex = /^https?:\/\/(www\.)?(google\.)?maps\./i;
 
     if (currentStep === 1) {
-      if (!form.name.trim()) newErrors.name = "Name is required";
-      if (!form.screenType) newErrors.screenType = "Screen type is required";
+      if (!form.name.trim()) newErrors.name = t('screens.validation.nameRequired');
+      if (!form.screenType) newErrors.screenType = t('screens.validation.screenTypeRequired');
       if (!form.location.trim()) {
-        newErrors.location = "Location is required";
+        newErrors.location = t('screens.validation.locationRequired');
       } else if (!mapsUrlRegex.test(form.location)) {
-        newErrors.location = "Please enter a valid Google Maps link";
+        newErrors.location = t('screens.validation.validMapsLink');
       }
-      if (!form.pixelScreen) newErrors.pixelScreen = "Pixel screen is required";
-      if (!form.solutionTypeInScreen) newErrors.solutionTypeInScreen = "Solution is required";
+      if (!form.pixelScreen) newErrors.pixelScreen = t('screens.validation.pixelScreenRequired');
+      if (!form.solutionTypeInScreen) newErrors.solutionTypeInScreen = t('screens.validation.solutionRequired');
       if (form.fan && !form.fanQuantity) {
-        newErrors.fanQuantity = "Fan quantity is required when fan is specified";
+        newErrors.fanQuantity = t('screens.validation.fanQuantityRequired');
       } else if (form.fan && Number(form.fanQuantity) < 0) {
-        newErrors.fanQuantity = "Fan quantity must be greater or equal to 0";
+        newErrors.fanQuantity = t('screens.validation.fanQuantityNonNegative');
       }
 
       // Power Supply validation
       if (form.powerSupply && !form.powerSupplyQuantity) {
-        newErrors.powerSupplyQuantity = "Quantity is required when power supply type is specified";
+        newErrors.powerSupplyQuantity = t('screens.validation.powerSupplyQuantityRequired');
       } else if (form.powerSupply && Number(form.powerSupplyQuantity) <= 0) {
-        newErrors.powerSupplyQuantity = "Power supply quantity must be greater than 0";
+        newErrors.powerSupplyQuantity = t('screens.validation.powerSupplyQuantityPositive');
       }
       if (form.sparePowerSupplyQuantity && Number(form.sparePowerSupplyQuantity) < 0) {
-        newErrors.sparePowerSupplyQuantity = "Spare power supply quantity cannot be negative";
+        newErrors.sparePowerSupplyQuantity = t('screens.validation.sparePowerSupplyQuantityNonNegative');
       }
 
       // Receiving Card validation
       if (form.receivingCard && !form.receivingCardQuantity) {
-        newErrors.receivingCardQuantity = "Quantity is required when receiving card type is specified";
+        newErrors.receivingCardQuantity = t('screens.validation.receivingCardQuantityRequired');
       } else if (form.receivingCard && Number(form.receivingCardQuantity) <= 0) {
-        newErrors.receivingCardQuantity = "Receiving card quantity must be greater than 0";
+        newErrors.receivingCardQuantity = t('screens.validation.receivingCardQuantityPositive');
       }
       if (form.spareReceivingCardQuantity && Number(form.spareReceivingCardQuantity) < 0) {
-        newErrors.spareReceivingCardQuantity = "Spare receiving card quantity cannot be negative";
+        newErrors.spareReceivingCardQuantity = t('screens.validation.spareReceivingCardQuantityNonNegative');
       }
 
       // Media validation
       if (form.media && !form.mediaQuantity) {
-        newErrors.mediaQuantity = "Quantity is required when media type is specified";
+        newErrors.mediaQuantity = t('screens.validation.mediaQuantityRequired');
       } else if (form.media && Number(form.mediaQuantity) <= 0) {
-        newErrors.mediaQuantity = "Media quantity must be greater than 0";
+        newErrors.mediaQuantity = t('screens.validation.mediaQuantityPositive');
       }
       if (form.spareMediaQuantity && Number(form.spareMediaQuantity) < 0) {
-        newErrors.spareMediaQuantity = "Spare media quantity cannot be negative";
+        newErrors.spareMediaQuantity = t('screens.validation.spareMediaQuantityNonNegative');
       }
 
       // Hub validation
       if (form.hub && !form.hubQuantity) {
-        newErrors.hubQuantity = "Quantity is required when hub type is specified";
+        newErrors.hubQuantity = t('screens.validation.hubQuantityRequired');
       } else if (form.hub && Number(form.hubQuantity) <= 0) {
-        newErrors.hubQuantity = "Hub quantity must be greater than 0";
+        newErrors.hubQuantity = t('screens.validation.hubQuantityPositive');
       }
       if (form.spareHubQuantity && Number(form.spareHubQuantity) < 0) {
-        newErrors.spareHubQuantity = "Spare hub quantity cannot be negative";
+        newErrors.spareHubQuantity = t('screens.validation.spareHubQuantityNonNegative');
       }
 
       // Files validation
-      if(!form.connectionFile) newErrors.connectionFile = "Connection File is required";
-      if(!form.configFile) newErrors.configFile = "Configuration File is required";
-      if(!form.versionFile) newErrors.versionFile = "Version File is required";
+      if(!form.connectionFile) newErrors.connectionFile = t('screens.validation.connectionFileRequired');
+      if(!form.configFile) newErrors.configFile = t('screens.validation.configFileRequired');
+      if(!form.versionFile) newErrors.versionFile = t('screens.validation.versionFileRequired');
     }
 
     if (currentStep === 2) {
       // Cable validation
       if (form.cable && !form.cableQuantity) {
-        newErrors.cableQuantity = "Main cable quantity is required";
+        newErrors.cableQuantity = t('screens.validation.cableQuantityRequired');
       } else if (form.cable && Number(form.cableQuantity) <= 0) {
-        newErrors.cableQuantity = "Cable quantity must be greater than 0";
+        newErrors.cableQuantity = t('screens.validation.cableQuantityPositive');
       }
       if (form.spareCableQuantity && Number(form.spareCableQuantity) < 0) {
-        newErrors.spareCableQuantity = "Spare cable quantity cannot be negative";
+        newErrors.spareCableQuantity = t('screens.validation.spareCableQuantityNonNegative');
       }
 
       // Power Cable validation
       if (form.powerCable && !form.powerCableQuantity) {
-        newErrors.powerCableQuantity = "Power cable quantity is required";
+        newErrors.powerCableQuantity = t('screens.validation.powerCableQuantityRequired');
       } else if (form.powerCable && Number(form.powerCableQuantity) <= 0) {
-        newErrors.powerCableQuantity = "Power cable quantity must be greater than 0";
+        newErrors.powerCableQuantity = t('screens.validation.powerCableQuantityPositive');
       }
       if (form.sparePowerCableQuantity && Number(form.sparePowerCableQuantity) < 0) {
-        newErrors.sparePowerCableQuantity = "Spare power cable quantity cannot be negative";
+        newErrors.sparePowerCableQuantity = t('screens.validation.sparePowerCableQuantityNonNegative');
       }
 
       // Data Cable validation
       if (form.dataCable && !form.dataCableQuantity) {
-        newErrors.dataCableQuantity = "Data cable quantity is required";
+        newErrors.dataCableQuantity = t('screens.validation.dataCableQuantityRequired');
       } else if (form.dataCable && Number(form.dataCableQuantity) <= 0) {
-        newErrors.dataCableQuantity = "Data cable quantity must be greater than 0";
+        newErrors.dataCableQuantity = t('screens.validation.dataCableQuantityPositive');
       }
       if (form.spareDataCableQuantity && Number(form.spareDataCableQuantity) < 0) {
-        newErrors.spareDataCableQuantity = "Spare data cable quantity cannot be negative";
+        newErrors.spareDataCableQuantity = t('screens.validation.spareDataCableQuantityNonNegative');
       }
     }
 
@@ -294,38 +296,38 @@ const useAddScreenForm = () => {
       if (form.solutionTypeInScreen === "CABINET_SOLUTION") {
         form.cabinets.forEach((cabinet, index) => {
           if (!cabinet.cabinetName)
-            newErrors[`cabinet_${index}_cabinetName`] = "Cabinet name is required";
+            newErrors[`cabinet_${index}_cabinetName`] = t('screens.validation.cabinetNameRequired');
           if (!cabinet.widthQuantity)
-            newErrors[`cabinet_${index}_widthQuantity`] = "Width quantity is required";
+            newErrors[`cabinet_${index}_widthQuantity`] = t('screens.validation.widthQuantityRequired');
           else if (Number(cabinet.widthQuantity) <= 0)
-            newErrors[`cabinet_${index}_widthQuantity`] = "Width quantity must be greater than 0";
+            newErrors[`cabinet_${index}_widthQuantity`] = t('screens.validation.widthQuantityPositive');
           if (!cabinet.heightQuantity)
-            newErrors[`cabinet_${index}_heightQuantity`] = "Height quantity is required";
+            newErrors[`cabinet_${index}_heightQuantity`] = t('screens.validation.heightQuantityRequired');
           else if (Number(cabinet.heightQuantity) <= 0)
-            newErrors[`cabinet_${index}_heightQuantity`] = "Height quantity must be greater than 0";
+            newErrors[`cabinet_${index}_heightQuantity`] = t('screens.validation.heightQuantityPositive');
           if (!cabinet.height)
-            newErrors[`cabinet_${index}_height`] = "Height is required";
+            newErrors[`cabinet_${index}_height`] = t('screens.validation.heightRequired');
           if (!cabinet.width)
-            newErrors[`cabinet_${index}_width`] = "Width is required";
+            newErrors[`cabinet_${index}_width`] = t('screens.validation.widthRequired');
         });
       }
 
       if (form.solutionTypeInScreen === "MODULE_SOLUTION") {
         form.modulesDto.forEach((module, index) => {
           if (!module.widthQuantity)
-            newErrors[`moduleDto_${index}_widthQuantity`] = "Quantity is required";
+            newErrors[`moduleDto_${index}_widthQuantity`] = t('screens.validation.quantityRequired');
           else if (Number(module.widthQuantity) <= 0)
-            newErrors[`moduleDto_${index}_widthQuantity`] = "Quantity must be greater than 0";
+            newErrors[`moduleDto_${index}_widthQuantity`] = t('screens.validation.quantityPositive');
           if (!module.heightQuantity)
-            newErrors[`moduleDto_${index}_heightQuantity`] = "Height quantity is required";
+            newErrors[`moduleDto_${index}_heightQuantity`] = t('screens.validation.heightQuantityRequired');
           else if (Number(module.heightQuantity) <= 0)
-            newErrors[`moduleDto_${index}_heightQuantity`] = "Height quantity must be greater than 0";
+            newErrors[`moduleDto_${index}_heightQuantity`] = t('screens.validation.heightQuantityPositive');
           if (!module.height)
-            newErrors[`moduleDto_${index}_height`] = "Height is required";
+            newErrors[`moduleDto_${index}_height`] = t('screens.validation.heightRequired');
           if (!module.width)
-            newErrors[`moduleDto_${index}_width`] = "Width is required";
+            newErrors[`moduleDto_${index}_width`] = t('screens.validation.widthRequired');
           if (!module.moduleBatchNumber)
-            newErrors[`moduleDto_${index}_moduleBatchNumber`] = "Batch number is required";
+            newErrors[`moduleDto_${index}_moduleBatchNumber`] = t('screens.validation.batchNumberRequired');
         });
       }
     }
@@ -333,19 +335,19 @@ const useAddScreenForm = () => {
     if (currentStep === 4) {
       form.cabinets.forEach((cabinet, index) => {
         if (!cabinet.moduleDto.widthQuantity)
-          newErrors[`moduleDto_${index}_widthQuantity`] = "Width quantity is required";
+          newErrors[`moduleDto_${index}_widthQuantity`] = t('screens.validation.widthQuantityRequired');
         else if (Number(cabinet.moduleDto.widthQuantity) <= 0)
-          newErrors[`moduleDto_${index}_widthQuantity`] = "Width quantity must be greater than 0";
+          newErrors[`moduleDto_${index}_widthQuantity`] = t('screens.validation.widthQuantityPositive');
         if (!cabinet.moduleDto.heightQuantity)
-          newErrors[`moduleDto_${index}_heightQuantity`] = "Height quantity is required";
+          newErrors[`moduleDto_${index}_heightQuantity`] = t('screens.validation.heightQuantityRequired');
         else if (Number(cabinet.moduleDto.heightQuantity) <= 0)
-          newErrors[`moduleDto_${index}_heightQuantity`] = "Height quantity must be greater than 0";
+          newErrors[`moduleDto_${index}_heightQuantity`] = t('screens.validation.heightQuantityPositive');
         if (!cabinet.moduleDto.height)
-          newErrors[`moduleDto_${index}_height`] = "Height is required";
+          newErrors[`moduleDto_${index}_height`] = t('screens.validation.heightRequired');
         if (!cabinet.moduleDto.width)
-          newErrors[`moduleDto_${index}_width`] = "Width is required";
+          newErrors[`moduleDto_${index}_width`] = t('screens.validation.widthRequired');
         if (!cabinet.moduleDto.moduleBatchNumber)
-          newErrors[`moduleDto_${index}_moduleBatchNumber`] = "Batch number is required";
+          newErrors[`moduleDto_${index}_moduleBatchNumber`] = t('screens.validation.batchNumberRequired');
       });
     }
 
@@ -355,7 +357,7 @@ const useAddScreenForm = () => {
 
   const nextStep = () => {
     if (!validateStep(step)) {
-      showToast("Please fill all required fields correctly", "error");
+      showToast(t('screens.validation.fillRequiredFields'), "error");
       return;
     }
     setStep((prev) => prev + 1);
@@ -367,7 +369,7 @@ const useAddScreenForm = () => {
     e.preventDefault();
 
     if (!validateStep(step)) {
-      showToast("Please fill all required fields correctly", "error");
+      showToast(t('screens.validation.fillRequiredFields'), "error");
       return;
     }
 
@@ -467,13 +469,13 @@ const useAddScreenForm = () => {
       console.log("Submitting form data:", formData);
       await createScreen(formData);
 
-      showToast("Screen created successfully");
+      showToast(t('screens.messages.screenCreated'));
       setForm(initialFormState);
       setStep(1);
     } catch (err) {
       console.error("Error creating screen:", err);
       showToast(
-        "Error creating screen: " + (err.message || "Unknown error"),
+        t('screens.messages.errorCreatingScreen') + ": " + (err.message || t('common.unknownError')),
         "error"
       );
     } finally {

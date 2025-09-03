@@ -1,7 +1,9 @@
 import React from 'react';
 import { Input, Button } from '../../../components';
+import { useTranslation } from 'react-i18next';
 
 const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, loading }) => {
+  const { t } = useTranslation();
   const checkboxStyle = "w-4 h-4 sm:w-5 sm:h-5 text-primary bg-gray-100 border-gray-300 rounded-sm focus:ring-primary-focus focus:border-primary focus:ring-1 accent-primary checked:border-primary";
 
   if (form.solutionTypeInScreen === "MODULE_SOLUTION") {
@@ -10,7 +12,7 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
           <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
-            Module Information
+            {t('screens.screenForm.moduleInformation')}
           </h2>
           <Button 
             type="button" 
@@ -18,7 +20,7 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
             size="sm"
             className="w-full sm:w-auto min-w-[120px]"
           >
-            Add Module
+            {t('screens.actions.addModule')}
           </Button>
         </div>
         
@@ -43,7 +45,7 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
               {/* Module Title */}
               <div className="mb-3 sm:mb-4 pr-8 sm:pr-10">
                 <h3 className="text-base sm:text-lg font-medium text-gray-800">
-                  Module {index + 1}
+                  {t('screens.screenForm.module')} {index + 1}
                 </h3>
               </div>
 
@@ -51,7 +53,7 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
                 {/* Quantity Fields */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <Input
-                    label="Width Quantity"
+                    label={t('screens.screenForm.widthQuantity')}
                     name={`moduleDto_${index}_widthQuantity`}
                     type="number"
                     value={module.widthQuantity}
@@ -60,7 +62,7 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
                     required
                   />
                   <Input
-                    label="Height Quantity"
+                    label={t('screens.screenForm.heightQuantity')}
                     name={`moduleDto_${index}_heightQuantity`}
                     type="number"
                     value={module.heightQuantity}
@@ -73,7 +75,7 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
                 {/* Dimension Fields */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <Input
-                    label="Height (px)"
+                    label={t('screens.screenForm.heightPx')}
                     name={`moduleDto_${index}_height`}
                     type="number"
                     value={module.height}
@@ -82,7 +84,7 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
                     required
                   />
                   <Input
-                    label="Width (px)"
+                    label={t('screens.screenForm.widthPx')}
                     name={`moduleDto_${index}_width`}
                     type="number"
                     value={module.width}
@@ -103,7 +105,7 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
                       className={checkboxStyle}
                     />
                     <span className="text-sm sm:text-base font-medium text-gray-700">
-                      Is Width
+                      {t('screens.screenForm.isWidth')}
                     </span>
                   </label>
                   <label className="flex items-center space-x-2 sm:space-x-3 cursor-pointer p-2 rounded-md hover:bg-gray-50 transition-colors">
@@ -115,14 +117,14 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
                       className={checkboxStyle}
                     />
                     <span className="text-sm sm:text-base font-medium text-gray-700">
-                      Is Height
+                      {t('screens.screenForm.isHeight')}
                     </span>
                   </label>
                 </div>
 
                 {/* Batch Number */}
                 <Input
-                  label="Batch Number"
+                  label={t('screens.screenForm.batchNumber')}
                   name={`moduleDto_${index}_moduleBatchNumber`}
                   value={module.moduleBatchNumber}
                   onChange={onChange}
@@ -137,7 +139,7 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
           {form.modulesDto.length === 0 && (
             <div className="text-center py-8 sm:py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
               <p className="text-gray-500 text-sm sm:text-base mb-4">
-                No modules added yet
+                {t('screens.screenForm.noModulesAdded')}
               </p>
               <Button 
                 type="button" 
@@ -145,7 +147,7 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
                 variant="outline"
                 className="w-full sm:w-auto"
               >
-                Add Your First Module
+                {t('screens.screenForm.addFirstModule')}
               </Button>
             </div>
           )}
@@ -159,14 +161,14 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
             onClick={onBack}
             className="w-full sm:w-auto min-w-[100px] order-2 sm:order-1"
           >
-            Back
+            {t('screens.actions.back')}
           </Button>
           <Button 
             type="submit" 
             isLoading={loading}
             className="w-full sm:w-auto min-w-[140px] order-1 sm:order-2"
           >
-            Create Screen
+            {t('screens.actions.createScreen')}
           </Button>
         </div>
       </div>
@@ -178,7 +180,7 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
       {/* Header Section */}
       <div className="mb-4 sm:mb-6">
         <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
-          Module Information
+          {t('screens.screenForm.moduleInformation')}
         </h2>
       </div>
       
@@ -191,7 +193,7 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
             {/* Cabinet Title */}
             <div className="mb-3 sm:mb-4">
               <h3 className="text-base sm:text-lg font-medium text-gray-800">
-                Module for Cabinet {index + 1}
+                {t('screens.screenForm.moduleForCabinet')} {index + 1}
               </h3>
             </div>
 
@@ -199,7 +201,7 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
               {/* Quantity Fields */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <Input
-                  label="Width Quantity"
+                  label={t('screens.screenForm.widthQuantity')}
                   name={`moduleDto_${index}_widthQuantity`}
                   type="number"
                   value={cabinet.moduleDto.widthQuantity}
@@ -208,7 +210,7 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
                   required
                 />
                 <Input
-                  label="Height Quantity"
+                  label={t('screens.screenForm.heightQuantity')}
                   name={`moduleDto_${index}_heightQuantity`}
                   type="number"
                   value={cabinet.moduleDto.heightQuantity}
@@ -221,7 +223,7 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
               {/* Dimension Fields */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <Input
-                  label="Height (px)"
+                  label={t('screens.screenForm.heightPx')}
                   name={`moduleDto_${index}_height`}
                   type="number"
                   value={cabinet.moduleDto.height}
@@ -230,7 +232,7 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
                   required
                 />
                 <Input
-                  label="Width (px)"
+                  label={t('screens.screenForm.widthPx')}
                   name={`moduleDto_${index}_width`}
                   type="number"
                   value={cabinet.moduleDto.width}
@@ -242,7 +244,7 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
 
               {/* Batch Number */}
               <Input
-                label="Batch Number"
+                label={t('screens.screenForm.batchNumber')}
                 name={`moduleDto_${index}_moduleBatchNumber`}
                 value={cabinet.moduleDto.moduleBatchNumber}
                 onChange={onChange}
@@ -257,7 +259,7 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
         {form.cabinets.length === 0 && (
           <div className="text-center py-8 sm:py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
             <p className="text-gray-500 text-sm sm:text-base">
-              No cabinets available. Please add cabinets in the previous step.
+              {t('screens.screenForm.noCabinetsAvailable')}
             </p>
           </div>
         )}
@@ -271,14 +273,14 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
           onClick={onBack}
           className="w-full sm:w-auto min-w-[100px] order-2 sm:order-1"
         >
-          Back
+          {t('screens.actions.back')}
         </Button>
         <Button 
           type="submit" 
           isLoading={loading}
           className="w-full sm:w-auto min-w-[140px] order-1 sm:order-2"
         >
-          Create Screen
+          {t('screens.actions.createScreen')}
         </Button>
       </div>
     </div>

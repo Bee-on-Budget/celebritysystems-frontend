@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Input } from '../../../components';
+import { useTranslation } from 'react-i18next';
 
 const CabinetsStep = ({
   form,
@@ -11,16 +12,17 @@ const CabinetsStep = ({
   removeCabinet,
   loading
 }) => {
+  const { t } = useTranslation();
   const checkboxStyle = "w-4 h-4 sm:w-5 sm:h-5 text-primary bg-gray-100 border-gray-300 rounded-sm focus:ring-primary-focus focus:border-primary focus:ring-1 accent-primary checked:border-primary";
 
   const handleCheckboxChange = (e, index) => {
     const { name, checked } = e.target;
     const fieldName = name.split('_')[2];
-    
-    const updatedCabinets = form.cabinets.map((cabinet, i) => 
+
+    const updatedCabinets = form.cabinets.map((cabinet, i) =>
       i === index ? { ...cabinet, [fieldName]: checked } : cabinet
     );
-    
+
     onChange({
       target: {
         name: 'cabinets',
@@ -34,18 +36,18 @@ const CabinetsStep = ({
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
         <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
-          Cabinet Information
+          {t('screens.screenForm.cabinetInformation')}
         </h2>
-        <Button 
-          type="button" 
-          onClick={addCabinet} 
+        <Button
+          type="button"
+          onClick={addCabinet}
           size="sm"
           className="w-full sm:w-auto min-w-[120px]"
         >
-          Add Cabinet
+          {t('screens.actions.addCabinet')}
         </Button>
       </div>
-      
+
       <hr className="border-gray-200" />
 
       {/* Cabinet List */}
@@ -67,14 +69,14 @@ const CabinetsStep = ({
             {/* Cabinet Title */}
             <div className="mb-3 sm:mb-4 pr-8 sm:pr-10">
               <h3 className="text-base sm:text-lg font-medium text-gray-800">
-                Cabinet {index + 1}
+                {t('screens.screenForm.cabinet')} {index + 1}
               </h3>
             </div>
 
             <div className="space-y-3 sm:space-y-4">
               {/* Cabinet Name */}
               <Input
-                label="Name"
+                label={t('common.name')}
                 name={`cabinet_${index}_cabinetName`}
                 value={cabinet.cabinetName}
                 onChange={onChange}
@@ -85,7 +87,7 @@ const CabinetsStep = ({
               {/* Quantity Fields */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <Input
-                  label="Height Quantity"
+                  label={t('screens.screenForm.heightQuantity')}
                   name={`cabinet_${index}_heightQuantity`}
                   type="number"
                   value={cabinet.heightQuantity}
@@ -94,7 +96,7 @@ const CabinetsStep = ({
                   required
                 />
                 <Input
-                  label="Width Quantity"
+                  label={t('screens.screenForm.widthQuantity')}
                   name={`cabinet_${index}_widthQuantity`}
                   type="number"
                   value={cabinet.widthQuantity}
@@ -107,7 +109,8 @@ const CabinetsStep = ({
               {/* Dimension Fields */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <Input
-                  label="Height (px)"
+                  // label="Height (px)"
+                  label={t('screens.screenForm.heightPx')}
                   name={`cabinet_${index}_height`}
                   type="number"
                   value={cabinet.height}
@@ -116,7 +119,8 @@ const CabinetsStep = ({
                   required
                 />
                 <Input
-                  label="Width (px)"
+                  // label="Width (px)"
+                  label={t('screens.screenForm.widthPx')}
                   name={`cabinet_${index}_width`}
                   type="number"
                   value={cabinet.width}
@@ -137,7 +141,7 @@ const CabinetsStep = ({
                     className={checkboxStyle}
                   />
                   <span className="text-sm sm:text-base font-medium text-gray-700">
-                    Is Width
+                    {t('screens.screenForm.isWidth')}
                   </span>
                 </label>
                 <label className="flex items-center space-x-2 sm:space-x-3 cursor-pointer p-2 rounded-md hover:bg-gray-50 transition-colors">
@@ -149,7 +153,7 @@ const CabinetsStep = ({
                     className={checkboxStyle}
                   />
                   <span className="text-sm sm:text-base font-medium text-gray-700">
-                    Is Height
+                    {t('screens.screenForm.isHeight')}
                   </span>
                 </label>
               </div>
@@ -161,15 +165,15 @@ const CabinetsStep = ({
         {form.cabinets.length === 0 && (
           <div className="text-center py-8 sm:py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
             <p className="text-gray-500 text-sm sm:text-base mb-4">
-              No cabinets added yet
+              {t('screens.screenForm.noCabinetsAdded')}
             </p>
-            <Button 
-              type="button" 
-              onClick={addCabinet} 
+            <Button
+              type="button"
+              onClick={addCabinet}
               variant="outline"
               className="w-full sm:w-auto"
             >
-              Add Your First Cabinet
+              {t('screens.screenForm.addFirstCabinet')}
             </Button>
           </div>
         )}
@@ -177,13 +181,14 @@ const CabinetsStep = ({
 
       {/* Navigation Buttons */}
       <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-4 pt-4 sm:pt-6 border-t border-gray-200">
-        <Button 
-          type="button" 
-          variant="ghost" 
+        <Button
+          type="button"
+          variant="ghost"
           onClick={onBack}
           className="w-full sm:w-auto min-w-[100px] order-2 sm:order-1"
         >
-          Back
+
+          {t('screens.actions.back')}
         </Button>
         <Button
           type={form.solutionTypeInScreen === "MODULE_SOLUTION" ? "submit" : "button"}
@@ -191,7 +196,11 @@ const CabinetsStep = ({
           isLoading={loading}
           className="w-full sm:w-auto min-w-[140px] order-1 sm:order-2"
         >
-          {form.solutionTypeInScreen === "MODULE_SOLUTION" ? "Create Screen" : "Next: Module"}
+          {
+            form.solutionTypeInScreen === "MODULE_SOLUTION" ?
+              t('screens.actions.createScreen') :
+              t('screens.actions.nextModules')
+          }
         </Button>
       </div>
     </div>

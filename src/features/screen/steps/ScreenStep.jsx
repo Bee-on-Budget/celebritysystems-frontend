@@ -287,7 +287,7 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
           onClick={onNext}
           className="w-full sm:w-auto min-w-[120px]"
         >
-          {t('screens.screenForm.nextCables')}
+          {t('screens.actions.nextCables')}
         </Button>
       </div>
     </div>
