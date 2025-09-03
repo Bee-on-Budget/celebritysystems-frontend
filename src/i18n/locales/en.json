@@ -58,7 +58,8 @@
     "cut": "Cut",
     "undo": "Undo",
     "redo": "Redo",
-    "selectAnOption": "Select an option"
+    "selectAnOption": "Select an option",
+    "chooseFile": "Choose File"
   },
   "tickets": {
     "title": "Tickets",

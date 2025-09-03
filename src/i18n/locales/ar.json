@@ -58,7 +58,8 @@
     "cut": "قص",
     "undo": "تراجع",
     "redo": "إعادة",
-    "selectAnOption": "حدد اختيار"
+    "selectAnOption": "حدد اختيار",
+    "chooseFile": "اختر ملف"
   },
   "tickets": {
     "title": "التذاكر",
