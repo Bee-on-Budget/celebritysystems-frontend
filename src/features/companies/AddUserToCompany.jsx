@@ -7,12 +7,14 @@ import { createUser } from "../../api/creation";
 import { showToast } from "../../components/ToastNotifier";
 import { searchCompanies } from "../../api/services/CompanyService";
 import MultiSearchBar from "../../components/MultiSearchBar";
-import { FormsContainer } from "../../components";
+import { CustomCheckbox, FormsContainer } from "../../components";
+import { useTranslation } from "react-i18next";
 
 const AddUserToCompany = () => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [searchedCompanies, setSearchedCompanies] = useState([]);
-  const [selectedCompany, setSelectedCompany] = useState(null);
+  // const [selectedCompany, setSelectedCompany] = useState(null);
   const [form, setForm] = useState({
     companyId: "",
     name: "",
@@ -47,24 +49,24 @@ const AddUserToCompany = () => {
         setSearchedCompanies(results || []);
         return (results || []).map((company) => company.name);
       } catch (e) {
-        showToast("Failed to search for companies.", "error");
+        showToast(t("companoes.messages.errorSearchingCompanies"), "error");
         return [];
       }
     },
-    []
+    [t]
   );
 
   const handleCompanySelect = (companyName) => {
     const company = searchedCompanies.find(c => c.name === companyName);
     if (company) {
-      setSelectedCompany(company);
+      // setSelectedCompany(company);
       setForm(prev => ({ ...prev, companyId: company.id }));
       if (errors.companyId) setErrors({ ...errors, companyId: null });
     }
   };
 
   const handleOnClear = () => {
-    setSelectedCompany(null);
+    // setSelectedCompany(null);
     setForm(prev => ({ ...prev, companyId: "" }));
     setSearchedCompanies([]);
   };
@@ -73,14 +75,14 @@ const AddUserToCompany = () => {
     const newErrors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!form.companyId) newErrors.companyId = 'Please select a company';
-    if (!form.fullName.trim()) newErrors.fullName = 'Full name is required';
-    if (!form.name.trim()) newErrors.name = 'Username is required';
-    if (!form.email.trim()) newErrors.email = 'Email is required';
-    else if (!emailRegex.test(form.email)) newErrors.email = 'Invalid email format';
-    if (!form.password) newErrors.password = 'Password is required';
-    else if (form.password.length < 8) newErrors.password = 'Password must be at least 8 characters';
-    if (!form.role) newErrors.role = 'Role is required';
+    if (!form.companyId) newErrors.companyId = t("companies.validationMessages.companyRequired");
+    if (!form.fullName.trim()) newErrors.fullName = t("companies.validationMessages.fullNameRequired");
+    if (!form.name.trim()) newErrors.name = t("companies.validationMessages.usernameRequired");
+    if (!form.email.trim()) newErrors.email = t("companies.validationMessages.emailRequired");
+    else if (!emailRegex.test(form.email)) newErrors.email = t("companies.validationMessages.errorValidEmail");
+    if (!form.password) newErrors.password = t("companies.validationMessages.passwordRequired");
+    else if (form.password.length < 8) newErrors.password = t("companies.validationMessages.errorValidPassword");
+    if (!form.role) newErrors.role = t("companies.validationMessages.roleRequired");
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -106,10 +108,10 @@ const AddUserToCompany = () => {
       };
 
       await createUser(payload);
-      showToast("User added to company successfully!", "success");
-      setTimeout(() => navigate('/companies'), 1500);
+      showToast(t('companies.messages.userCreated'), "success");
+      navigate('/companies');
     } catch (error) {
-      showToast(error.response?.data?.message || "Failed to create user", "error");
+      showToast(t('companies.messages.errorCreatingUser'), "error");
     } finally {
       setLoading(false);
     }
@@ -117,127 +119,115 @@ const AddUserToCompany = () => {
 
   return (
     <FormsContainer
-      title="Add User to a Company"
+      title={t('companies.addUserToCompanyTitle')}
       onSubmit={handleSubmit}
       isLoading={loading}
-      actionTitle="Add User to Company"
+      actionTitle={t('companies.actions.addUser')}
     >
-        <div className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Company <span className="text-red-500">*</span>
-            </label>
-            <MultiSearchBar
-              onSearch={handleSearch}
-              onSelectResult={handleCompanySelect}
-              onClear={handleOnClear}
-              placeholder="Search and select a company"
-            />
-            {selectedCompany && (
+      <div className="space-y-6">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            {t('companies.company')} <span className="text-red-500">*</span>
+          </label>
+          <MultiSearchBar
+            onSearch={handleSearch}
+            onSelectResult={handleCompanySelect}
+            onClear={handleOnClear}
+            placeholder="Search and select a company"
+          />
+          {/* {selectedCompany && (
               <div className="mt-2 text-sm text-gray-600">
                 Selected: {selectedCompany.name}
               </div>
-            )}
-            {errors.companyId && (
-              <p className="mt-1 text-sm text-red-600">{errors.companyId}</p>
-            )}
-          </div>
-
-          <Input
-            label="Full Name"
-            name="fullName"
-            type="text"
-            icon={<FaIdCard className="text-gray-400" />}
-            value={form.fullName}
-            onChange={handleChange}
-            error={errors.fullName}
-            placeholder="Enter user's full name"
-            required
-          />
-
-          <Input
-            label="Username"
-            name="name"
-            type="text"
-            icon={<FaUser className="text-gray-400" />}
-            value={form.name}
-            onChange={handleChange}
-            error={errors.name}
-            placeholder="Enter username"
-            required
-          />
+            )} */}
+          {errors.companyId && (
+            <p className="mt-1 text-sm text-red-600">{errors.companyId}</p>
+          )}
         </div>
 
-        {/* Right Column */}
-        <div className="space-y-6">
-          <Input
-            label="Email"
-            name="email"
-            type="email"
-            icon={<FaEnvelope className="text-gray-400" />}
-            value={form.email}
+        <Input
+          label={t('companies.userForm.fullName')}
+          name="fullName"
+          type="text"
+          icon={<FaIdCard className="text-gray-400" />}
+          value={form.fullName}
+          onChange={handleChange}
+          error={errors.fullName}
+          placeholder={t('companies.userForm.fullNamePlaceholder')}
+          required
+        />
+
+        <Input
+          label={t('companies.userForm.username')}
+          name="name"
+          type="text"
+          icon={<FaUser className="text-gray-400" />}
+          value={form.name}
+          onChange={handleChange}
+          error={errors.name}
+          placeholder={t('companies.userForm.usernamePlaceholder')}
+          required
+        />
+      </div>
+
+      {/* Right Column */}
+      <div className="space-y-6">
+        <Input
+          label={t('companies.userForm.email')}
+          name="email"
+          type="email"
+          icon={<FaEnvelope className="text-gray-400" />}
+          value={form.email}
+          onChange={handleChange}
+          error={errors.email}
+          placeholder={t('companies.userForm.emailPlaceholder')}
+          required
+        />
+
+        <Input
+          label={t('companies.userForm.password')}
+          name="password"
+          type="password"
+          icon={<FaLock className="text-gray-400" />}
+          value={form.password}
+          onChange={handleChange}
+          error={errors.password}
+          placeholder={t('companies.userForm.passwordPlaceholder')}
+          required
+        />
+
+        <DropdownInput
+          label={t('companies.userForm.role')}
+          name="role"
+          value={form.role}
+          onChange={handleChange}
+          icon={<FaUserTag className="text-gray-400" />}
+          options={[
+            { value: "COMPANY", label: t('companies.userForm.roles.COMPANY') },
+
+          ]}
+        />
+
+        <div className="space-y-3">
+          <label className="block text-sm font-medium text-gray-700">
+            {t('companies.userForm.permissions')}
+          </label>
+          <CustomCheckbox
+            id="canRead"
+            name="canRead"
+            label={t('companies.userForm.canRead')}
+            checked={form.canRead}
             onChange={handleChange}
-            error={errors.email}
-            placeholder="user@company.com"
-            required
           />
-
-          <Input
-            label="Password"
-            name="password"
-            type="password"
-            icon={<FaLock className="text-gray-400" />}
-            value={form.password}
+          <CustomCheckbox
+            id="canEdit"
+            name="canEdit"
+            label={t('companies.userForm.canEdit')}
+            checked={form.canEdit}
             onChange={handleChange}
-            error={errors.password}
-            placeholder="Minimum 8 characters"
-            required
           />
-
-          <DropdownInput
-            label="User Role"
-            name="role"
-            value={form.role}
-            onChange={handleChange}
-            icon={<FaUserTag className="text-gray-400" />}
-            options={[
-              { value: "COMPANY", label: "Company User" },
-
-            ]}
-          />
-
-          <div className="space-y-3">
-            <label className="block text-sm font-medium text-gray-700">
-              Permissions
-            </label>
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="canRead"
-                name="canRead"
-                checked={form.canRead}
-                onChange={handleChange}
-                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-              />
-              <label htmlFor="canRead" className="ml-2 block text-sm text-gray-700">
-                Can Read
-              </label>
-            </div>
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="canEdit"
-                name="canEdit"
-                checked={form.canEdit}
-                onChange={handleChange}
-                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-              />
-              <label htmlFor="canEdit" className="ml-2 block text-sm text-gray-700">
-                Can Edit
-              </label>
-            </div>
-          </div>
         </div>
+      </div>
     </FormsContainer>
   );
 };
