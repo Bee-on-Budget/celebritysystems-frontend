@@ -57,7 +57,8 @@
     "paste": "Paste",
     "cut": "Cut",
     "undo": "Undo",
-    "redo": "Redo"
+    "redo": "Redo",
+    "selectAnOption": "Select an option"
   },
   "tickets": {
     "title": "Tickets",

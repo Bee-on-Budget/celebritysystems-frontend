@@ -57,7 +57,8 @@
     "paste": "لصق",
     "cut": "قص",
     "undo": "تراجع",
-    "redo": "إعادة"
+    "redo": "إعادة",
+    "selectAnOption": "حدد اختيار"
   },
   "tickets": {
     "title": "التذاكر",

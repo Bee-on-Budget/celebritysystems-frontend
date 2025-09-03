@@ -1,3 +1,4 @@
+import { t } from "i18next";
 import React, { useState, useRef, useEffect } from "react";
 import { FaChevronDown } from "react-icons/fa";
 
@@ -49,7 +50,7 @@ const DropdownInput = ({
           <div className="flex items-center space-x-2">
             {icon && <span className="text-gray-400 w-5">{icon}</span>}
             <span className="text-dark-light">
-              {selected ? selected.label : "Select an option"}
+              {selected ? selected.label : t('common.selectAnOption')}
             </span>
           </div>
           <FaChevronDown
