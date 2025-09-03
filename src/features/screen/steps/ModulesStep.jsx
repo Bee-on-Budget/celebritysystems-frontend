@@ -279,6 +279,7 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
           type="submit" 
           isLoading={loading}
           className="w-full sm:w-auto min-w-[140px] order-1 sm:order-2"
+          loadingText={t('common.loading')}
         >
           {t('screens.actions.createScreen')}
         </Button>
