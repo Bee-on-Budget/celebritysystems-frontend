@@ -73,6 +73,24 @@ const EditContract = () => {
     });
   };
 
+  const loadScreens = useCallback(async (search = '', page = 0) => {
+    try {
+      const screensRes = await getScreens({ page, size: 20, search });
+      let screensData = [];
+      if (Array.isArray(screensRes)) screensData = screensRes;
+      else if (screensRes?.content) screensData = screensRes.content;
+      else if (screensRes?.data) screensData = screensRes.data;
+
+      if (page === 0) setScreens(screensData);
+      else setScreens((prev) => [...prev, ...screensData]);
+
+      return screensData.map((screen) => ({ value: screen.id, label: `${screen.name} (${screen.location})` }));
+    } catch (error) {
+      showToast(t('contracts.messages.errorLoadingScreens'), 'error');
+      return [];
+    }
+  }, [t]);
+
   useEffect(() => {
     const loadInitial = async () => {
       try {
@@ -98,34 +116,18 @@ const EditContract = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, t]);
 
-  const loadScreens = async (search = '', page = 0) => {
-    try {
-      const screensRes = await getScreens({ page, size: 20, search });
-      let screensData = [];
-      if (Array.isArray(screensRes)) screensData = screensRes;
-      else if (screensRes?.content) screensData = screensRes.content;
-      else if (screensRes?.data) screensData = screensRes.data;
-
-      if (page === 0) setScreens(screensData);
-      else setScreens((prev) => [...prev, ...screensData]);
-
-      return screensData.map((screen) => ({ value: screen.id, label: `${screen.name} (${screen.location})` }));
-    } catch (error) {
-      showToast(t('contracts.messages.errorLoadingScreens'), 'error');
-      return [];
-    }
-  };
-
   const debouncedLoadScreens = useMemo(
-    () => debounce((inputValue, callback) => { loadScreens(inputValue, 0).then((options) => callback(options)); }, 500),
-    []
+    () => debounce((inputValue, callback) => { 
+      loadScreens(inputValue, 0).then((options) => callback(options)); 
+    }, 500),
+    [loadScreens]
   );
 
   const handleScreenMenuScrollToBottom = useCallback(() => {
     const newPage = screenPage + 1;
     loadScreens(screenSearch, newPage);
     setScreenPage(newPage);
-  }, [screenPage, screenSearch]);
+  }, [screenPage, screenSearch, loadScreens]);
 
   const handleScreenChange = (selectedOptions) => {
     setForm((prev) => ({ ...prev, screenIds: selectedOptions ? selectedOptions.map((opt) => opt.value) : [] }));
