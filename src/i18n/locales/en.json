@@ -200,7 +200,10 @@
       "reassign": "Reassign"
     },
     "actions": {
-      "backToTickets": "Back to Tickets"
+      "backToTickets": "Back to Tickets",
+      "backToContracts": "Back to Contracts",
+      "editContract": "Edit Contract",
+      "deleteContract": "Delete Contract"
     },
     "details": {
       "created": "Created",
@@ -500,6 +503,7 @@
   },
   "contracts": {
     "title": "Contracts",
+    "contractsListTitle": "Contracts List",
     "createContract": "Create Contract",
     "editContract": "Edit Contract",
     "contractDetails": "Contract Details",
@@ -512,15 +516,23 @@
       "company": "Company",
       "companyPlaceholder": "Select company",
       "screens": "Screens",
-      "screensPlaceholder": "Select screens",
+      "screensPlaceholder": "Search and select screens...",
+      "noScreensFound": "No screens found",
+      "startTypingScreens": "Start typing to search screens",
+      "screensSelected": "{{count}} screen(s) selected",
       "supplyType": "Supply Type",
       "operatorType": "Operator Type",
       "accountName": "Account Name",
-      "accountNamePlaceholder": "Enter account name",
+      "accountNamePlaceholder": "Enter account name (optional)",
       "durationType": "Duration Type",
-      "contractValue": "Contract Value",
+      "contractValue": "Contract Value ($)",
       "contractValuePlaceholder": "Enter contract value",
-      "accountPermissions": "Account Permissions"
+      "accountPermissions": "Account Permissions",
+      "accountIdentifierPlaceholder": "Account email or username",
+      "addAccountPermission": "Add Account Permission",
+      "read": "Read",
+      "edit": "Edit",
+      "remove": "Remove"
     },
     "supplyTypes": {
       "CELEBRITY_SYSTEMS": "Celebrity Systems",
@@ -528,12 +540,15 @@
     },
     "operatorTypes": {
       "OWNER": "Owner",
-      "OPERATOR": "Operator"
+      "THIRD_PARTY": "Third Party"
     },
     "durationTypes": {
+      "WEEKLY": "Weekly",
+      "TWO_WEEKLY": "Two Weekly",
       "MONTHLY": "Monthly",
-      "YEARLY": "Yearly",
-      "CUSTOM": "Custom"
+      "BIMONTHLY": "Bimonthly",
+      "QUARTERLY": "Quarterly",
+      "TWICE_A_YEAR": "Twice a Year"
     },
     "messages": {
       "contractCreated": "Contract created successfully",
@@ -541,7 +556,52 @@
       "contractDeleted": "Contract deleted successfully",
       "errorCreatingContract": "Error creating contract",
       "errorUpdatingContract": "Error updating contract",
-      "errorDeletingContract": "Error deleting contract"
+      "errorDeletingContract": "Error deleting contract",
+      "unexpectedDataFormat": "Unexpected companies data format",
+      "errorLoadingCompanies": "Failed to load companies",
+      "errorFetchingContract": "Failed to load contract details",
+      "errorLoadingScreens": "Failed to load screens",
+      "contractNotFound": "Contract not found",
+      "noScreensFound": "No screens found",
+      "typingToSearchScreens": "Start typing to search screens"
+    },
+    "details": {
+      "untitledContract": "Untitled Contract",
+      "contractId": "Contract ID",
+      "value": "Value",
+      "created": "Created",
+      "contractInformation": "Contract Information",
+      "companyAndAccount": "Company & Account",
+      "companyName": "Company Name",
+      "accountName": "Account Name",
+      "financialAndDates": "Financial & Dates",
+      "contractValue": "Contract Value",
+      "startDate": "Start Date",
+      "expiryDate": "Expiry Date",
+      "daysRemaining": "Days Remaining",
+      "contractDetails": "Contract Details",
+      "durationType": "Duration Type",
+      "operatorType": "Operator Type",
+      "supplyType": "Supply Type",
+      "lastUpdated": "Last Updated",
+      "screens": "Screens",
+      "loadingScreenDetails": "Loading screen details...",
+      "screenType": "Screen Type",
+      "solutionType": "Solution Type",
+      "resolution": "Resolution",
+      "noScreensAssociated": "No screens associated with this contract",
+      "accountPermissions": "Account Permissions",
+      "noPermissionsSet": "No permissions set for this contract"
+    },
+    "table": {
+      "name": "Contract Name",
+      "account": "Account",
+      "value": "Value",
+      "expiryDate": "Expiry Date"
+    },
+    "actions": {
+      "saveChanges": "Save Changes",
+      "cancel": "Cancel"
     }
   },
   "subcontracts": {

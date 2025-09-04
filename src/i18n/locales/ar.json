@@ -200,7 +200,10 @@
       "reassign": "إعادة تعيين"
     },
     "actions": {
-      "backToTickets": "الرجوع إلى التذاكر"
+      "backToTickets": "الرجوع إلى التذاكر",
+      "backToContracts": "الرجوع إلى العقود",
+      "editContract": "تعديل العقد",
+      "deleteContract": "حذف العقد"
     },
     "details": {
       "created": "تم الإنشاء",
@@ -500,6 +503,7 @@
   },
   "contracts": {
     "title": "العقود",
+    "contractsListTitle": "قائمة العقود",
     "createContract": "إنشاء عقد",
     "editContract": "تعديل العقد",
     "contractDetails": "تفاصيل العقد",
@@ -512,28 +516,39 @@
       "company": "الشركة",
       "companyPlaceholder": "اختر الشركة",
       "screens": "الشاشات",
-      "screensPlaceholder": "اختر الشاشات",
+      "screensPlaceholder": "البحث واختيار الشاشات...",
+      "noScreensFound": "لم يتم العثور على شاشات",
+      "startTypingScreens": "ابدأ الكتابة للبحث عن الشاشات",
+      "screensSelected": "تم اختيار {{count}} شاشة",
       "supplyType": "نوع التوريد",
       "operatorType": "نوع المشغل",
       "accountName": "اسم الحساب",
-      "accountNamePlaceholder": "أدخل اسم الحساب",
+      "accountNamePlaceholder": "أدخل اسم الحساب (اختياري)",
       "durationType": "نوع المدة",
-      "contractValue": "قيمة العقد",
+      "contractValue": "قيمة العقد ($)",
       "contractValuePlaceholder": "أدخل قيمة العقد",
-      "accountPermissions": "صلاحيات الحساب"
+      "accountPermissions": "صلاحيات الحساب",
+      "accountIdentifierPlaceholder": "بريد إلكتروني أو اسم مستخدم للحساب",
+      "addAccountPermission": "إضافة صلاحية حساب",
+      "read": "قراءة",
+      "edit": "تعديل",
+      "remove": "إزالة"
     },
     "supplyTypes": {
-      "CELEBRITY_SYSTEMS": "أنظمة المشاهير",
+      "CELEBRITY_SYSTEMS": "سيليبريتي سيستيمز",
       "THIRD_PARTY": "طرف ثالث"
     },
     "operatorTypes": {
       "OWNER": "المالك",
-      "OPERATOR": "المشغل"
+      "THIRD_PARTY": "طرف ثالث"
     },
     "durationTypes": {
+      "WEEKLY": "أسبوعي",
+      "TWO_WEEKLY": "كل أسبوعين",
       "MONTHLY": "شهري",
-      "YEARLY": "سنوي",
-      "CUSTOM": "مخصص"
+      "BIMONTHLY": "كل شهرين",
+      "QUARTERLY": "ربعي",
+      "TWICE_A_YEAR": "مرتين في السنة"
     },
     "messages": {
       "contractCreated": "تم إنشاء العقد بنجاح",
@@ -541,7 +556,52 @@
       "contractDeleted": "تم حذف العقد بنجاح",
       "errorCreatingContract": "خطأ في إنشاء العقد",
       "errorUpdatingContract": "خطأ في تحديث العقد",
-      "errorDeletingContract": "خطأ في حذف العقد"
+      "errorDeletingContract": "خطأ في حذف العقد",
+      "unexpectedDataFormat": "تنسيق بيانات الشركات غير متوقع",
+      "errorLoadingCompanies": "فشل تحميل الشركات",
+      "errorFetchingContract": "فشل تحميل تفاصيل العقد",
+      "errorLoadingScreens": "فشل تحميل الشاشات",
+      "contractNotFound": "العقد غير موجود",
+      "noScreensFound": "لم يتم العثور على شاشات",
+      "typingToSearchScreens": "ابدأ بالكتابة للبحت عن الشاشات"
+    },
+    "details": {
+      "untitledContract": "عقد بدون عنوان",
+      "contractId": "رقم العقد",
+      "value": "القيمة",
+      "created": "تم الإنشاء",
+      "contractInformation": "معلومات العقد",
+      "companyAndAccount": "الشركة والحساب",
+      "companyName": "اسم الشركة",
+      "accountName": "اسم الحساب",
+      "financialAndDates": "المالية والتواريخ",
+      "contractValue": "قيمة العقد",
+      "startDate": "تاريخ البداية",
+      "expiryDate": "تاريخ الانتهاء",
+      "daysRemaining": "الأيام المتبقية",
+      "contractDetails": "تفاصيل العقد",
+      "durationType": "نوع المدة",
+      "operatorType": "نوع المشغل",
+      "supplyType": "نوع التوريد",
+      "lastUpdated": "آخر تحديث",
+      "screens": "الشاشات",
+      "loadingScreenDetails": "جاري تحميل تفاصيل الشاشات...",
+      "screenType": "نوع الشاشة",
+      "solutionType": "نوع الحل",
+      "resolution": "الدقة",
+      "noScreensAssociated": "لا توجد شاشات مرتبطة بهذا العقد",
+      "accountPermissions": "صلاحيات الحساب",
+      "noPermissionsSet": "لم يتم تعيين صلاحيات لهذا العقد"
+    },
+    "table": {
+      "name": "اسم العقد",
+      "account": "الحساب",
+      "value": "القيمة",
+      "expiryDate": "تاريخ الانتهاء"
+    },
+    "actions": {
+      "saveChanges": "حفظ التعديلات",
+      "cancel": "إلغاء"
     }
   },
   "subcontracts": {

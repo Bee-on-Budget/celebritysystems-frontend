@@ -2,8 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { DataList, Pagination } from '../../components';
 import { getAllContracts } from '../../api/services/ContractService';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const ContractList = () => {
+  const { t } = useTranslation();
   const [contracts, setContracts] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -25,11 +27,11 @@ const ContractList = () => {
       setCurrentPage(data.number);
       setPageSize(data.pageSize);
     } catch (e) {
-      setError("Failed to load contracts");
+      setError(t('contracts.messages.errorLoadingContracts'));
     } finally {
       setIsLoading(false);
     }
-  }, [pageSize]);
+  }, [pageSize, t]);
 
   useEffect(() => {
     fetchContracts(currentPage);
@@ -62,7 +64,7 @@ const ContractList = () => {
   const formatCurrency = (value) => value ? `$${value.toLocaleString()}` : 'N/A';
 
   const renderContractItem = (list) => {
-    const headerStyle = "px-3 py-2 text-left text-sm font-medium text-gray-500 uppercase tracking-wider";
+    const headerStyle = "px-3 py-2 text-start text-sm font-medium text-gray-500 uppercase tracking-wider";
     const nameStyle = "px-3 py-2 text-sm text-dark font-bold";
     const bodyStyle = "px-3 py-2 text-sm text-dark max-w-xs whitespace-nowrap overflow-hidden text-ellipsis";
     const rowStyle = "h-14 hover:bg-gray-100 transition cursor-pointer";
@@ -72,10 +74,10 @@ const ContractList = () => {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className={`${headerStyle} w-72`}>Contract Name</th>
-              <th className={`${headerStyle} w-52`}>Account</th>
-              <th className={`${headerStyle} w-32`}>Value</th>
-              <th className={`${headerStyle} w-32`}>Expiry Date</th>
+              <th className={`${headerStyle} w-72`}>{t('contracts.table.name')}</th>
+              <th className={`${headerStyle} w-52`}>{t('contracts.table.account')}</th>
+              <th className={`${headerStyle} w-32`}>{t('contracts.table.value')}</th>
+              <th className={`${headerStyle} w-32`}>{t('contracts.table.expiryDate')}</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -99,7 +101,7 @@ const ContractList = () => {
 
   return (
     <DataList
-      title="Contract Management"
+      title={t('contracts.contractsListTitle')}
       label="contracts"
       error={error}
       isLoading={isLoading}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import { showToast } from '../../components/ToastNotifier';
@@ -11,6 +12,7 @@ import AsyncSelect from 'react-select/async';
 import debounce from 'lodash/debounce';
 
 const CreateContract = () => {
+  const { t } = useTranslation();
   const [form, setForm] = useState({
     info: '',
     startContractAt: '',
@@ -46,20 +48,20 @@ const CreateContract = () => {
           companiesData = companiesRes.data;
         } else {
           console.error('Unexpected companies response format:', companiesRes);
-          showToast('Unexpected companies data format', 'warning');
+          showToast(t('contracts.messages.unexpectedDataFormat'), 'warning');
         }
         setCompanies(companiesData);
       } catch (error) {
         console.error('Error fetching companies:', error);
-        showToast('Failed to load companies', 'error');
+        showToast(t('contracts.messages.errorLoadingCompanies'), 'error');
       } finally {
         setFetching(false);
       }
     };
     fetchInitialData();
-  }, []);
+  }, [t]);
 
-  const loadScreens = async (search = '', page = 0) => {
+  const loadScreens = useCallback(async (search = '', page = 0) => {
     try {
       const screensRes = await getScreens({ 
         page, 
@@ -91,23 +93,23 @@ const CreateContract = () => {
       }));
     } catch (error) {
       console.error('Error loading screens:', error);
-      showToast('Failed to load screens', 'error');
+      showToast(t('screens.messages.errorLoadingScreens'), 'error');
       return [];
     }
-  };
+  }, [t]);
 
   const debouncedLoadScreens = useMemo(
     () => debounce((inputValue, callback) => {
       loadScreens(inputValue, 0).then(options => callback(options));
     }, 500),
-    []
+    [loadScreens]
   );
 
   const handleScreenMenuScrollToBottom = useCallback(() => {
     const newPage = screenPage + 1;
     loadScreens(screenSearch, newPage);
     setScreenPage(newPage);
-  }, [screenPage, screenSearch]);
+  }, [screenPage, screenSearch, loadScreens]);
 
   const handleScreenChange = (selectedOptions) => {
     setForm(prev => ({
@@ -170,25 +172,25 @@ const CreateContract = () => {
           canEdit: perm.canEdit
         }))
       });
-      showToast('Contract created successfully!');
+      showToast(t('contracts.messages.contractCreated'));
       navigate('/contracts');
     } catch (error) {
-      showToast(error.message || 'Failed to create contract', 'error');
+      showToast(error.message || t('contracts.messages.errorCreatingContract'), 'error');
     } finally {
       setLoading(false);
     }
   };
   
 
-  if (fetching) return <div className="p-4">Loading initial data...</div>;
+  if (fetching) return <div className="p-4">{t('common.loading')}</div>;
 
   return (
     <div className="max-w-4xl mx-auto mt-8 p-4">
-      <h1 className="text-2xl font-semibold mb-6">Create New Contract</h1>
+      <h1 className="text-2xl font-semibold mb-6">{t('contracts.createContract')}</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
-          label="Contract Information"
+          label={t('contracts.contractForm.info')}
           name="info"
           value={form.info}
           onChange={handleChange}
@@ -197,7 +199,7 @@ const CreateContract = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
-            label="Start Date"
+            label={t('contracts.contractForm.startDate')}
             name="startContractAt"
             type="date"
             value={form.startContractAt}
@@ -205,7 +207,7 @@ const CreateContract = () => {
             required
           />
           <Input
-            label="Expiry Date"
+            label={t('contracts.contractForm.endDate')}
             name="expiredAt"
             type="date"
             value={form.expiredAt}
@@ -216,15 +218,15 @@ const CreateContract = () => {
 
         <div className="grid grid-cols-1 gap-4">
           <Input
-            label="Account Name"
+            label={t('contracts.contractForm.accountName')}
             name="accountName"
             value={form.accountName}
             onChange={handleChange}
-            placeholder="Enter account name (optional)"
+            placeholder={t('contracts.contractForm.accountNamePlaceholder')}
           />
 
           <div>
-            <label className="block mb-2 text-sm font-medium">Company</label>
+            <label className="block mb-2 text-sm font-medium">{t('common.company')}</label>
             <Select
               options={companies.map(company => ({
                 value: company.id,
@@ -236,14 +238,14 @@ const CreateContract = () => {
               } : null}
               onChange={handleCompanyChange}
               isSearchable
-              placeholder="Select company"
+              placeholder={t('contracts.contractForm.companyPlaceholder')}
               className="react-select-container"
               classNamePrefix="react-select"
             />
           </div>
 
           <div>
-            <label className="block mb-2 text-sm font-medium">Screens</label>
+            <label className="block mb-2 text-sm font-medium">{t('contracts.contractForm.screens')}</label>
             <AsyncSelect
               isMulti
               cacheOptions
@@ -258,16 +260,16 @@ const CreateContract = () => {
               onChange={handleScreenChange}
               onInputChange={newValue => setScreenSearch(newValue)}
               onMenuScrollToBottom={handleScreenMenuScrollToBottom}
-              placeholder="Search and select screens..."
+              placeholder={t('contracts.contractForm.screensPlaceholder')}
               noOptionsMessage={({ inputValue }) =>
-                inputValue ? 'No screens found' : 'Start typing to search screens'
+                inputValue ? t('contracts.contractForm.noScreensFound') : t('contracts.contractForm.startTypingScreens')
               }
               className="react-select-container"
               classNamePrefix="react-select"
             />
             {form.screenIds.length > 0 && (
               <div className="mt-2 text-sm text-gray-500">
-                {form.screenIds.length} screen(s) selected
+                {t('contracts.contractForm.screensSelected', { count: form.screenIds.length })}
               </div>
             )}
           </div>
@@ -275,7 +277,7 @@ const CreateContract = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block mb-2 text-sm font-medium">Supply Type</label>
+            <label className="block mb-2 text-sm font-medium">{t('contracts.contractForm.supplyType')}</label>
             <select
               className="w-full p-2 border rounded"
               name="supplyType"
@@ -283,12 +285,12 @@ const CreateContract = () => {
               onChange={handleChange}
               required
             >
-              <option value="CELEBRITY_SYSTEMS">Celebrity Systems</option>
-              <option value="THIRD_PARTY">Third Party</option>
+              <option value="CELEBRITY_SYSTEMS">{t('contracts.supplyTypes.CELEBRITY_SYSTEMS')}</option>
+              <option value="THIRD_PARTY">{t('contracts.supplyTypes.THIRD_PARTY')}</option>
             </select>
           </div>
           <div>
-            <label className="block mb-2 text-sm font-medium">Operator Type</label>
+            <label className="block mb-2 text-sm font-medium">{t('contracts.contractForm.operatorType')}</label>
             <select
               className="w-full p-2 border rounded"
               name="operatorType"
@@ -296,19 +298,19 @@ const CreateContract = () => {
               onChange={handleChange}
               required
             >
-              <option value="OWNER">Owner</option>
-              <option value="THIRD_PARTY">Third party</option>
+              <option value="OWNER">{t('contracts.operatorTypes.OWNER')}</option>
+              <option value="THIRD_PARTY">{t('contracts.operatorTypes.THIRD_PARTY')}</option>
             </select>
           </div>
         </div>
 
         <div>
-          <label className="block mb-2 text-sm font-semibold">Account Permissions</label>
+          <label className="block mb-2 text-sm font-semibold">{t('contracts.contractForm.accountPermissions')}</label>
           {form.accountPermissions.map((perm, idx) => (
             <div key={idx} className="mb-2 p-2 border rounded flex flex-col md:flex-row gap-2 items-center">
               <Input
                 type="text"
-                placeholder="Account email or username"
+                placeholder={t('contracts.contractForm.accountIdentifierPlaceholder')}
                 value={perm.accountIdentifier}
                 onChange={(e) => handleAccountPermissionChange(idx, 'accountIdentifier', e.target.value)}
                 className="w-full md:w-1/2"
@@ -322,7 +324,7 @@ const CreateContract = () => {
                     checked={perm.canRead}
                     onChange={(e) => handleAccountPermissionChange(idx, 'canRead', e.target.checked)}
                   />
-                  Read
+                  {t('common.canRead')}
                 </label>
                 
                 <label className="flex items-center gap-2">
@@ -331,7 +333,7 @@ const CreateContract = () => {
                     checked={perm.canEdit}
                     onChange={(e) => handleAccountPermissionChange(idx, 'canEdit', e.target.checked)}
                   />
-                  Edit
+                  {t('common.canEdit')}
                 </label>
                 
                 <button
@@ -339,7 +341,7 @@ const CreateContract = () => {
                   className="text-red-500 ml-2"
                   onClick={() => handleRemoveAccountPermission(idx)}
                 >
-                  Remove
+                  {t('common.remove')}
                 </button>
               </div>
             </div>
@@ -350,13 +352,13 @@ const CreateContract = () => {
             onClick={handleAddAccountPermission}
             className="mt-2"
           >
-            + Add Account Permission
+            + {t('contracts.contractForm.addAccountPermission')}
           </Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block mb-2 text-sm font-medium">Duration Type</label>
+            <label className="block mb-2 text-sm font-medium">{t('contracts.contractForm.durationType')}</label>
             <select
               className="w-full p-2 border rounded"
               name="durationType"
@@ -364,18 +366,18 @@ const CreateContract = () => {
               onChange={handleChange}
               required
             >
-    <option value="WEEKLY">Weekly</option>
-<option value="TWO_WEEKLY">Two Weekly</option>
-<option value="MONTHLY">Monthly</option>
-<option value="BIMONTHLY">Bimonthly</option>
-<option value="QUARTERLY">Quarterly</option>
-<option value="TWICE_A_YEAR">Twice a Year</option>
+    <option value="WEEKLY">{t('contracts.durationTypes.WEEKLY')}</option>
+<option value="TWO_WEEKLY">{t('contracts.durationTypes.TWO_WEEKLY')}</option>
+<option value="MONTHLY">{t('contracts.durationTypes.MONTHLY')}</option>
+<option value="BIMONTHLY">{t('contracts.durationTypes.BIMONTHLY')}</option>
+<option value="QUARTERLY">{t('contracts.durationTypes.QUARTERLY')}</option>
+<option value="TWICE_A_YEAR">{t('contracts.durationTypes.TWICE_A_YEAR')}</option>
 
             </select>
           </div>
           
           <Input
-            label="Contract Value ($)"
+            label={t('contracts.contractForm.contractValue')}
             name="contractValue"
             type="number"
             step="0.01"
@@ -385,8 +387,8 @@ const CreateContract = () => {
           />
         </div>
 
-        <Button type="submit" isLoading={loading}>
-          Create Contract
+        <Button type="submit" isLoading={loading} loadingText={t('common.loading')}>
+          {t('contracts.createContract')}
         </Button>
       </form>
 

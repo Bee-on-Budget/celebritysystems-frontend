@@ -1,16 +1,16 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import Input from '../../components/Input';
-import Button from '../../components/Button';
-import { showToast } from '../../components/ToastNotifier';
+import { Loading, Button, Input, showToast } from '../../components/';
 import { getAllCompanies } from '../../api/services/CompanyService';
 import { getScreens } from '../../api/services/ScreenService';
 import { getContractById, updateContract } from '../../api/services/ContractService';
 import Select from 'react-select';
 import AsyncSelect from 'react-select/async';
 import debounce from 'lodash/debounce';
+import { useTranslation } from 'react-i18next';
 
 const EditContract = () => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -89,14 +89,14 @@ const EditContract = () => {
         setCompanies(companiesData);
         hydrateFormFromContract(contractRes);
       } catch (err) {
-        showToast(err.message || 'Failed to load contract', 'error');
+        showToast(t('contracts.messages.errorLoadingCompanies'), 'error');
       } finally {
         setInitialLoading(false);
       }
     };
     loadInitial();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, t]);
 
   const loadScreens = async (search = '', page = 0) => {
     try {
@@ -111,7 +111,7 @@ const EditContract = () => {
 
       return screensData.map((screen) => ({ value: screen.id, label: `${screen.name} (${screen.location})` }));
     } catch (error) {
-      showToast('Failed to load screens', 'error');
+      showToast(t('contracts.messages.errorLoadingScreens'), 'error');
       return [];
     }
   };
@@ -178,47 +178,47 @@ const EditContract = () => {
           canEdit: perm.canEdit
         }))
       });
-      showToast('Contract updated successfully');
+      showToast(t('contracts.messages.contractUpdated'));
       navigate(`/contracts/${id}`);
     } catch (error) {
-      showToast(error.message || 'Failed to update contract', 'error');
+      showToast(t('contracts.messages.errorUpdatingContract'), 'error');
     } finally {
       setSaving(false);
     }
   };
 
-  if (initialLoading) return <div className="p-4">Loading...</div>;
+  if (initialLoading) return <Loading />;
 
   return (
     <div className="max-w-4xl mx-auto mt-8 p-4">
-      <h1 className="text-2xl font-semibold mb-6">Edit Contract</h1>
+      <h1 className="text-2xl font-semibold mb-6">{t('contracts.editContract')}</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <Input label="Contract Information" name="info" value={form.info} onChange={handleChange} required />
+        <Input label={t('contracts.contractForm.info')} name="info" value={form.info} onChange={handleChange} required />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Input label="Start Date" name="startContractAt" type="date" value={form.startContractAt} onChange={handleChange} required />
-          <Input label="Expiry Date" name="expiredAt" type="date" value={form.expiredAt} onChange={handleChange} required />
+          <Input label={t('contracts.contractForm.startDate')} name="startContractAt" type="date" value={form.startContractAt} onChange={handleChange} required />
+          <Input label={t('contracts.contractForm.endDate')} name="expiredAt" type="date" value={form.expiredAt} onChange={handleChange} required />
         </div>
 
         <div className="grid grid-cols-1 gap-4">
-          <Input label="Account Name" name="accountName" value={form.accountName} onChange={handleChange} placeholder="Enter account name (optional)" />
+          <Input label={t('contracts.contractForm.accountName')} name="accountName" value={form.accountName} onChange={handleChange} placeholder={t('contracts.contractForm.accountNamePlaceholder')} />
 
           <div>
-            <label className="block mb-2 text-sm font-medium">Company</label>
+            <label className="block mb-2 text-sm font-medium">{t('contracts.contractForm.company')}</label>
             <Select
               options={companies.map((company) => ({ value: company.id, label: company.name }))}
               value={form.companyId ? { value: form.companyId, label: companies.find((c) => c.id === form.companyId)?.name || '' } : null}
               onChange={handleCompanyChange}
               isSearchable
-              placeholder="Select company"
+              placeholder={t('contracts.contractForm.companyPlaceholder')}
               className="react-select-container"
               classNamePrefix="react-select"
             />
           </div>
 
           <div>
-            <label className="block mb-2 text-sm font-medium">Screens</label>
+            <label className="block mb-2 text-sm font-medium">{t('contracts.contractForm.screens')}</label>
             <AsyncSelect
               isMulti
               cacheOptions
@@ -230,8 +230,8 @@ const EditContract = () => {
               onChange={handleScreenChange}
               onInputChange={(newValue) => setScreenSearch(newValue)}
               onMenuScrollToBottom={handleScreenMenuScrollToBottom}
-              placeholder="Search and select screens..."
-              noOptionsMessage={({ inputValue }) => (inputValue ? 'No screens found' : 'Start typing to search screens')}
+              placeholder={t('contracts.contractForm.screensPlaceholder')}
+              noOptionsMessage={({ inputValue }) => (inputValue ? t('contracts.messages.noScreensFound') : t('contracts.messages.typingToSearchScreens'))}
               className="react-select-container"
               classNamePrefix="react-select"
             />
@@ -241,28 +241,28 @@ const EditContract = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block mb-2 text-sm font-medium">Supply Type</label>
+            <label className="block mb-2 text-sm font-medium">{t('contracts.contractForm.supplyType')}</label>
             <select className="w-full p-2 border rounded" name="supplyType" value={form.supplyType} onChange={handleChange} required>
-              <option value="CELEBRITY_SYSTEMS">Celebrity Systems</option>
-              <option value="THIRD_PARTY">Third Party</option>
+              <option value="CELEBRITY_SYSTEMS">{t('contracts.supplyTypes.CELEBRITY_SYSTEMS')}</option>
+              <option value="THIRD_PARTY">{t('contracts.supplyTypes.THIRD_PARTY')}</option>
             </select>
           </div>
           <div>
-            <label className="block mb-2 text-sm font-medium">Operator Type</label>
+            <label className="block mb-2 text-sm font-medium">{t('contracts.contractForm.operatorType')}</label>
             <select className="w-full p-2 border rounded" name="operatorType" value={form.operatorType} onChange={handleChange} required>
-              <option value="OWNER">Owner</option>
-              <option value="THIRD_PARTY">Third party</option>
+              <option value="OWNER">{t('contracts.operatorTypes.OWNER')}</option>
+              <option value="THIRD_PARTY">{t('contracts.operatorTypes.THIRD_PARTY')}</option>
             </select>
           </div>
         </div>
 
         <div>
-          <label className="block mb-2 text-sm font-semibold">Account Permissions</label>
+          <label className="block mb-2 text-sm font-semibold">{t('contracts.contractForm.accountPermissions')}</label>
           {form.accountPermissions.map((perm, idx) => (
             <div key={idx} className="mb-2 p-2 border rounded flex flex-col md:flex-row gap-2 items-center">
               <Input
                 type="text"
-                placeholder="Account email or username"
+                placeholder={t('contracts.contractForm.accountIdentifierPlaceholder')}
                 value={perm.accountIdentifier}
                 onChange={(e) => handleAccountPermissionChange(idx, 'accountIdentifier', e.target.value)}
                 className="w-full md:w-1/2"
@@ -272,45 +272,45 @@ const EditContract = () => {
               <div className="flex items-center gap-4">
                 <label className="flex items-center gap-2">
                   <input type="checkbox" checked={perm.canRead} onChange={(e) => handleAccountPermissionChange(idx, 'canRead', e.target.checked)} />
-                  Read
+                  {t('contracts.contractForm.read')}
                 </label>
 
                 <label className="flex items-center gap-2">
                   <input type="checkbox" checked={perm.canEdit} onChange={(e) => handleAccountPermissionChange(idx, 'canEdit', e.target.checked)} />
-                  Edit
+                  {t('contracts.contractForm.edit')}
                 </label>
 
                 <button type="button" className="text-red-500 ml-2" onClick={() => handleRemoveAccountPermission(idx)}>
-                  Remove
+                  {t('contracts.contractForm.remove')}
                 </button>
               </div>
             </div>
           ))}
 
           <Button type="button" onClick={handleAddAccountPermission} className="mt-2">
-            + Add Account Permission
+          {t('contracts.contractForm.addAccountPermission')}
           </Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block mb-2 text-sm font-medium">Duration Type</label>
+            <label className="block mb-2 text-sm font-medium">{t('contracts.contractForm.durationType')}</label>
             <select className="w-full p-2 border rounded" name="durationType" value={form.durationType} onChange={handleChange} required>
-              <option value="WEEKLY">Weekly</option>
-              <option value="TWO_WEEKLY">Two Weekly</option>
-              <option value="MONTHLY">Monthly</option>
-              <option value="BIMONTHLY">Bimonthly</option>
-              <option value="QUARTERLY">Quarterly</option>
-              <option value="TWICE_A_YEAR">Twice a Year</option>
+              <option value="WEEKLY">{t('contracts.durationTypes.WEEKLY')}</option>
+              <option value="TWO_WEEKLY">{t('contracts.durationTypes.TWO_WEEKLY')}</option>
+              <option value="MONTHLY">{t('contracts.durationTypes.MONTHLY')}</option>
+              <option value="BIMONTHLY">{t('contracts.durationTypes.BIMONTHLY')}</option>
+              <option value="QUARTERLY">{t('contracts.durationTypes.QUARTERLY')}</option>
+              <option value="TWICE_A_YEAR">{t('contracts.durationTypes.TWICE_A_YEAR')}</option>
             </select>
           </div>
 
-          <Input label="Contract Value ($)" name="contractValue" type="number" step="0.01" value={form.contractValue} onChange={handleChange} required />
+          <Input label={t('contracts.contractForm.contractValue')} name="contractValue" type="number" step="0.01" value={form.contractValue} onChange={handleChange} required />
         </div>
 
         <div className="flex gap-3">
-          <Button type="submit" isLoading={saving}>Save Changes</Button>
-          <Button type="button" variant="outline" onClick={() => navigate(`/contracts/${id}`)}>Cancel</Button>
+          <Button type="submit" isLoading={saving} loadingText={t('common.loading')}>{t('contracts.actions.saveChanges')}</Button>
+          <Button type="button" variant="outline" onClick={() => navigate(`/contracts/${id}`)}>{t('contracts.actions.cancel')}</Button>
         </div>
       </form>
 
