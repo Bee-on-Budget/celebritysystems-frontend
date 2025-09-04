@@ -318,6 +318,7 @@
   },
   "screens": {
     "title": "Screens",
+    "screensListTitle": "Screens List",
     "createScreen": "Create Screen",
     "editScreen": "Edit Screen",
     "screenDetails": "Screen Details",
@@ -469,7 +470,9 @@
       "deletingScreen": "Deleting Screen",
       "errorCreatingScreen": "Error creating screen",
       "errorUpdatingScreen": "Error updating screen",
-      "errorDeletingScreen": "Error deleting screen"
+      "errorDeletingScreen": "Error deleting screen",
+      "errorLoadingScreens": "Failed to load screens",
+      "errorSearchingScreens": "Failed to search for screen"
     }
   },
   "contracts": {

@@ -318,6 +318,7 @@
   },
   "screens": {
     "title": "الشاشات",
+    "screensListTitle": "قائمة الشاشات",
     "createScreen": "إنشاء شاشة",
     "editScreen": "تعديل الشاشة",
     "screenDetails": "تفاصيل الشاشة",
@@ -469,7 +470,9 @@
       "deletingScreen": "جاري حذف الشاشة",
       "errorCreatingScreen": "خطأ في إنشاء الشاشة",
       "errorUpdatingScreen": "خطأ في تحديث الشاشة",
-      "errorDeletingScreen": "خطأ في حذف الشاشة"
+      "errorDeletingScreen": "خطأ في حذف الشاشة",
+      "errorLoadingScreens": "فشل تحميل الشاشات",
+      "errorSearchingScreens": "فشل البحث عن الشاشات"
     }
   },
   "contracts": {

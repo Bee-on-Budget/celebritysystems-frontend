@@ -2,8 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { DataList, Pagination } from '../../components';
 import { getScreens, searchScreens } from '../../api/services/ScreenService';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const ScreensList = () => {
+  const { t } = useTranslation();
   const [screens, setScreens] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -31,11 +33,11 @@ const ScreensList = () => {
       setCurrentPage(data.pageNumber);
       setPageSize(data.pageSize);
     } catch (e) {
-      setError("Failed to load screens");
+      setError(t('screens.messages.errorLoadingScreens'));
     } finally {
       setIsLoading(false);
     }
-  }, [pageSize]);
+  }, [pageSize, t]);
 
   useEffect(() => {
     fetchScreens(currentPage);
@@ -47,11 +49,11 @@ const ScreensList = () => {
         const results = await searchScreens(query);
         return (results || []).map((screen) => screen.name);
       } catch (e) {
-        setError('Failed to search screens');
+        setError(t('screens.messages.errorSearchingScreens'));
         return [];
       }
     },
-    []
+    [t]
   );
 
   const handleResultClick = async (query) => {
@@ -59,7 +61,7 @@ const ScreensList = () => {
       const results = await searchScreens(query);
       setFiltered(results || []);
     } catch (e) {
-      setError('Failed to search screens');
+      setError(t('screens.messages.errorSearchingScreens'));
     }
   };
 
@@ -76,22 +78,30 @@ const ScreensList = () => {
 
   const getScreenTypeLabel = (type) => {
     switch (type) {
-      case 'IN_DOOR': return <span className={`${labelStyle} ${labelColor4}`}>In Door</span>;
-      case 'OUT_DOOR': return <span className={`${labelStyle} ${labelColor5}`}>Out Door</span>;
+      case 'IN_DOOR': return <span className={`${labelStyle} ${labelColor4}`}>
+        {t('screens.options.indoor')}
+      </span>;
+      case 'OUT_DOOR': return <span className={`${labelStyle} ${labelColor5}`}>
+        {t('screens.options.outdoor')}
+      </span>;
       default: return <span className={`${labelStyle} ${labelColor3}`}>N/A</span>;
     }
   }
 
   const getScreenSolutionLabel = (type) => {
     switch (type) {
-      case 'CABINET_SOLUTION': return <span className={`${labelStyle} ${labelColor1}`}>Cabinet</span>;
-      case 'MODULE_SOLUTION': return <span className={`${labelStyle} ${labelColor2}`}>Module</span>;
+      case 'CABINET_SOLUTION': return <span className={`${labelStyle} ${labelColor1}`}>
+        {t('screens.options.cabinet')}
+      </span>;
+      case 'MODULE_SOLUTION': return <span className={`${labelStyle} ${labelColor2}`}>
+        {t('screens.options.module')}
+      </span>;
       default: return <span className={`${labelStyle} ${labelColor3}`}>N/A</span>;
     }
   }
 
   const renderScreenItem = (list) => {
-    const headerStyle = "px-3 py-2 text-left text-sm font-medium text-gray-500 uppercase tracking-wider";
+    const headerStyle = "px-3 py-2 text-start text-sm font-medium text-gray-500 uppercase tracking-wider";
     const nameStyle = "px-3 py-2 text-sm text-dark font-bold";
     const bodyStyle = "px-3 py-2 text-sm text-dark px-3 py-2 text-sm text-dark max-w-xs whitespace-nowrap overflow-hidden text-ellipsis";
     const rowStyle = "h-14 hover:bg-gray-100 transition cursor-pointer";
@@ -101,18 +111,18 @@ const ScreensList = () => {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className={`${headerStyle} w-72`}>Name</th>
-              <th className={`${headerStyle} w-32`}>Screen Type</th>
-              <th className={`${headerStyle} w-32`}>Solution</th>
-              <th className={headerStyle}>Location</th>
+              <th className={`${headerStyle} w-80`}>{t('screens.screenForm.name')}</th>
+              <th className={`${headerStyle} w-40`}>{t('screens.screenForm.screenType')}</th>
+              <th className={`${headerStyle} w-40`}>{t('screens.screenForm.solution')}</th>
+              <th className={headerStyle}>{t('screens.screenForm.location')}</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {list.map((screen, idx) => (
               <tr
-              key={idx}
-              className={rowStyle}
-              onClick={() => navigate(`/screens/${screen.id}`, { state: { screen } })}
+                key={idx}
+                className={rowStyle}
+                onClick={() => navigate(`/screens/${screen.id}`, { state: { screen } })}
               >
                 <td
                   className={nameStyle}>
@@ -148,7 +158,7 @@ const ScreensList = () => {
 
   return (
     <DataList
-      title="LED Screen Inventory"
+      title={t('screens.screensListTitle')}
       label="screens"
       error={error}
       isLoading={isLoading}
