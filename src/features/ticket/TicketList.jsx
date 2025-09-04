@@ -2,8 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DataList, Pagination } from '../../components';
 import { getAllTickets } from '../../api/services/TicketService';
+import { useTranslation } from 'react-i18next';
 
 const TicketList = () => {
+  const { t } = useTranslation();
   const [tickets, setTickets] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -25,11 +27,11 @@ const TicketList = () => {
       setCurrentPage(data.pageNumber);
       setPageSize(data.pageSize);
     } catch (e) {
-      setError("Failed to load tickets");
+      setError(t('tickets.messages.errorFetchingTickets'));
     } finally {
       setIsLoading(false);
     }
-  }, [pageSize]);
+  }, [pageSize, t]);
 
   useEffect(() => {
     fetchTickets(currentPage);
@@ -59,7 +61,7 @@ const TicketList = () => {
   };
 
   const renderTicketItem = (list) => {
-    const headerStyle = "px-3 py-2 text-left text-sm font-medium text-gray-500 uppercase tracking-wider";
+    const headerStyle = "px-3 py-2 text-start text-sm font-medium text-gray-500 uppercase tracking-wider";
     const nameStyle = "px-3 py-2 text-sm text-dark font-bold";
     const bodyStyle = "px-3 py-2 text-sm text-dark max-w-xs whitespace-nowrap overflow-hidden text-ellipsis";
     const rowStyle = "h-14 hover:bg-gray-100 transition cursor-pointer";
@@ -69,10 +71,10 @@ const TicketList = () => {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className={`${headerStyle} w-72`}>Title</th>
-              <th className={headerStyle}>Description</th>
-              <th className={headerStyle}>Company</th>
-              <th className={headerStyle}>Status</th>
+              <th className={`${headerStyle} w-72`}>{t('tickets.table.title')}</th>
+              <th className={headerStyle}>{t('tickets.table.description')}</th>
+              <th className={headerStyle}>{t('tickets.table.company')}</th>
+              <th className={headerStyle}>{t('tickets.table.status')}</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -107,7 +109,7 @@ const TicketList = () => {
 
   return (
     <DataList
-      title="Ticket Management"
+      title={t('tickets.ticketsListTitle')}
       label="tickets"
       error={error}
       isLoading={isLoading}

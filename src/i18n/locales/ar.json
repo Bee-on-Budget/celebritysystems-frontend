@@ -64,6 +64,7 @@
   },
   "tickets": {
     "title": "التذاكر",
+    "ticketsListTitle": "قائمة التذاكر",
     "createTicket": "إنشاء تذكرة",
     "editTicket": "تعديل التذكرة",
     "viewTicket": "عرض التذكرة",
@@ -183,7 +184,8 @@
     },
     "table": {
       "ticketNumber": "رقم التذكرة",
-      "title": "العنوان",
+      "title": "عنوان التذكرة",
+      "description": "الوصف",
       "serviceType": "نوع الخدمة",
       "status": "الحالة",
       "company": "الشركة",
@@ -196,6 +198,26 @@
       "delete": "حذف",
       "assign": "تعيين",
       "reassign": "إعادة تعيين"
+    },
+    "actions": {
+      "backToTickets": "الرجوع إلى التذاكر"
+    },
+    "details": {
+      "created": "تم الإنشاء",
+      "noDescription": "لا يوجد وصف متاح",
+      "createdBy": "تم الإنشاء بواسطة",
+      "userId": "معرف المستخدم",
+      "assignedTo": "تم التعيين لـ",
+      "assignedBy": "تم التعيين بواسطة",
+      "activityTimeline": "الجدول الزمني للنشاط",
+      "ticketOpened": "تم فتح التذكرة",
+      "inProgress": "قيد التنفيذ",
+      "resolved": "تم حلها",
+      "closed": "مغلقة"
+    },
+    "deleteDialog": {
+      "title": "حذف التذكرة",
+      "message": "هل أنت متأكد من حذف هذه التذكرة؟ لا يمكن التراجع عن هذا الإجراء."
     }
   },
   "dashboard": {
@@ -277,7 +299,8 @@
       "cancel": "إلغاء",
       "back": "رجوع",
       "backToCompanies": "الرجوع إلى الشركات",
-      "addUser": "إضافة مستخدم"
+      "addUser": "إضافة مستخدم",
+      "backToTickets": "الرجوع إلى التذاكر"
     },
     "deleteDialog": {
       "title": "حذف الشركة",

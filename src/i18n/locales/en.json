@@ -64,6 +64,7 @@
   },
   "tickets": {
     "title": "Tickets",
+    "ticketsListTitle": "Tickets List",
     "createTicket": "Create Ticket",
     "editTicket": "Edit Ticket",
     "viewTicket": "View Ticket",
@@ -183,7 +184,8 @@
     },
     "table": {
       "ticketNumber": "Ticket #",
-      "title": "Title",
+      "title": "Ticket Title",
+      "description": "Description",
       "serviceType": "Service Type",
       "status": "Status",
       "company": "Company",
@@ -196,6 +198,26 @@
       "delete": "Delete",
       "assign": "Assign",
       "reassign": "Reassign"
+    },
+    "actions": {
+      "backToTickets": "Back to Tickets"
+    },
+    "details": {
+      "created": "Created",
+      "noDescription": "No description provided",
+      "createdBy": "Created By",
+      "userId": "User ID",
+      "assignedTo": "Assigned To",
+      "assignedBy": "Assigned By",
+      "activityTimeline": "Activity Timeline",
+      "ticketOpened": "Ticket Opened",
+      "inProgress": "In Progress",
+      "resolved": "Resolved",
+      "closed": "Closed"
+    },
+    "deleteDialog": {
+      "title": "Delete Ticket",
+      "message": "Are you sure you want to delete this ticket? This action cannot be undone."
     }
   },
   "dashboard": {
@@ -277,7 +299,8 @@
       "cancel": "Cancel",
       "back": "Back",
       "backToCompanies": "Back to companies",
-      "addUser": "Add User"
+      "addUser": "Add User",
+      "backToTickets": "Back to Tickets"
     },
     "deleteDialog": {
       "title": "Delete company",

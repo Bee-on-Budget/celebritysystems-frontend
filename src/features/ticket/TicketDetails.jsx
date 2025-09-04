@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { getTicketById, deleteTicket } from '../../api/services/TicketService';
 import { FiArrowLeft, FiDownload, FiCalendar, FiUser, FiCheckCircle, FiAlertCircle, FiTrash2 } from 'react-icons/fi';
 import { Button, Loading, showToast, ConfirmationModal } from '../../components';
 
 const TicketDetails = () => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -19,7 +21,7 @@ const TicketDetails = () => {
         const data = await getTicketById(id);
         setTicket(data);
       } catch (err) {
-        setError(err.message || 'Failed to load ticket details');
+        setError(err.message || t('tickets.messages.errorFetchingTicket'));
       } finally {
         setLoading(false);
       }
@@ -28,7 +30,7 @@ const TicketDetails = () => {
     if (!ticket && id) {
       fetchTicket();
     }
-  }, [id, ticket]);
+  }, [id, ticket, t]);
 
   const handleDeleteClick = () => {
     setShowDeleteModal(true);
@@ -37,10 +39,10 @@ const TicketDetails = () => {
   const handleDeleteConfirm = async () => {
     try {
       await deleteTicket(id);
-      showToast('Ticket deleted successfully', 'success');
+      showToast(t('tickets.messages.ticketDeleted'), 'success');
       navigate('/tickets');
     } catch (err) {
-      showToast(err.message || 'Failed to delete ticket', 'error');
+      showToast(err.message || t('tickets.messages.errorDeletingTicket'), 'error');
     } finally {
       setShowDeleteModal(false);
     }
@@ -82,9 +84,9 @@ const TicketDetails = () => {
   const handleDownloadAttachment = () => {
     if (ticket.attachmentFileName) {
       // Implement your download logic here
-      showToast('Downloading attachment...', 'info');
+      showToast(t('tickets.messages.attachmentDownloading'), 'info');
     } else {
-      showToast('No attachment available', 'warning');
+      showToast(t('tickets.messages.noAttachmentAvailable'), 'warning');
     }
   };
 
@@ -98,7 +100,7 @@ const TicketDetails = () => {
 
   if (!ticket) return (
     <div className="bg-white p-8 rounded-lg shadow-md text-center">
-      <p className="text-gray-600">Ticket not found</p>
+      <p className="text-gray-600">{t('tickets.messages.ticketNotFound')}</p>
     </div>
   );
 
@@ -109,9 +111,9 @@ const TicketDetails = () => {
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onConfirm={handleDeleteConfirm}
-        title="Delete Ticket"
-        message="Are you sure you want to delete this ticket? This action cannot be undone."
-        confirmText="Delete"
+        title={t('tickets.deleteDialog.title')}
+        message={t('tickets.deleteDialog.message')}
+        confirmText={t('common.delete')}
         danger={true}
       />
 
@@ -122,7 +124,7 @@ const TicketDetails = () => {
           icon={<FiArrowLeft />}
           size='sm'
         >
-          Back to Tickets
+          {t('tickets.actions.backToTickets')}
         </Button>
         <div className="flex gap-2">
           {ticket.attachmentFileName && (
@@ -131,7 +133,7 @@ const TicketDetails = () => {
               variant="secondary"
               icon={<FiDownload />}
             >
-              Download
+              {t('common.download')}
             </Button>
           )}
           <Button
@@ -139,7 +141,7 @@ const TicketDetails = () => {
             variant="danger"
             icon={<FiTrash2 />}
           >
-            Delete
+            {t('common.delete')}
           </Button>
         </div>
       </div>
@@ -154,16 +156,16 @@ const TicketDetails = () => {
                 {getStatusBadge(ticket.status)}
                 <span className="px-3 py-1 bg-gray-100 text-gray-800 text-sm rounded-full flex items-center">
                   <FiCalendar className="mr-1" />
-                  Created: {new Date(ticket.createdAt).toLocaleDateString()}
+                  {t('tickets.details.created')}: {new Date(ticket.createdAt).toLocaleDateString()}
                 </span>
                 {ticket.companyName && (
                   <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
-                    Company: {ticket.companyName}
+                    {t('common.company')}: {ticket.companyName}
                   </span>
                 )}
                 {ticket.screenName && (
                   <span className="px-3 py-1 bg-purple-100 text-purple-800 text-sm rounded-full">
-                    Screen: {ticket.screenName}
+                    {t('screens.title')}: {ticket.screenName}
                   </span>
                 )}
               </div>
@@ -176,26 +178,26 @@ const TicketDetails = () => {
           {/* Basic Information Section */}
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-100">
-              Ticket Details
+              {t('tickets.ticketDetails')}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-gray-50 p-3 md:p-4 rounded-lg">
-                <h3 className="text-sm font-medium text-gray-500 mb-2">Description</h3>
-                <p className="break-words break-all">{ticket.description || 'No description provided'}</p>
+                <h3 className="text-sm font-medium text-gray-500 mb-2">{t('common.description')}</h3>
+                <p className="break-words break-all">{ticket.description || t('tickets.details.noDescription')}</p>
               </div>
 
               <div className="space-y-4">
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h3 className="text-sm font-medium text-gray-500 mb-2 flex items-center gap-2">
-                    <FiUser /> Created By
+                    <FiUser /> {t('tickets.details.createdBy')}
                   </h3>
-                  <p className="font-medium">User ID: {ticket.createdBy}</p>
+                  <p className="font-medium">{t('tickets.details.userId')}: {ticket.createdBy}</p>
                 </div>
 
                 {ticket.assignedToWorkerName && (
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <h3 className="text-sm font-medium text-gray-500 mb-2 flex items-center gap-2">
-                      <FiUser /> Assigned To
+                      <FiUser /> {t('tickets.details.assignedTo')}
                     </h3>
                     <p className="font-medium">{ticket.assignedToWorkerName}</p>
                   </div>
@@ -204,7 +206,7 @@ const TicketDetails = () => {
                 {ticket.assignedBySupervisorName && (
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <h3 className="text-sm font-medium text-gray-500 mb-2 flex items-center gap-2">
-                      <FiUser /> Assigned By
+                      <FiUser /> {t('tickets.details.assignedBy')}
                     </h3>
                     <p className="font-medium">{ticket.assignedBySupervisorName}</p>
                   </div>
@@ -216,7 +218,7 @@ const TicketDetails = () => {
           {/* Timeline Section */}
           <div>
             <h2 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-100">
-              Activity Timeline
+              {t('tickets.details.activityTimeline')}
             </h2>
             <div className="bg-gray-50 p-4 rounded-lg">
               <div className="space-y-4">
@@ -227,7 +229,7 @@ const TicketDetails = () => {
                       <FiCheckCircle className="h-4 w-4 text-white" />
                     </div>
                     <div className="ml-3">
-                      <p className="text-sm font-medium text-gray-900">Ticket Opened</p>
+                      <p className="text-sm font-medium text-gray-900">{t('tickets.details.ticketOpened')}</p>
                       <p className="text-sm text-gray-500">
                         {new Date(ticket.openedAt).toLocaleString()}
                       </p>
@@ -241,7 +243,7 @@ const TicketDetails = () => {
                       <FiAlertCircle className="h-4 w-4 text-white" />
                     </div>
                     <div className="ml-3">
-                      <p className="text-sm font-medium text-gray-900">In Progress</p>
+                      <p className="text-sm font-medium text-gray-900">{t('tickets.details.inProgress')}</p>
                       <p className="text-sm text-gray-500">
                         {new Date(ticket.inProgressAt).toLocaleString()}
                       </p>
@@ -255,7 +257,7 @@ const TicketDetails = () => {
                       <FiCheckCircle className="h-4 w-4 text-white" />
                     </div>
                     <div className="ml-3">
-                      <p className="text-sm font-medium text-gray-900">Resolved</p>
+                      <p className="text-sm font-medium text-gray-900">{t('tickets.details.resolved')}</p>
                       <p className="text-sm text-gray-500">
                         {new Date(ticket.resolvedAt).toLocaleString()}
                       </p>
@@ -269,7 +271,7 @@ const TicketDetails = () => {
                       <FiCheckCircle className="h-4 w-4 text-white" />
                     </div>
                     <div className="ml-3">
-                      <p className="text-sm font-medium text-gray-900">Closed</p>
+                      <p className="text-sm font-medium text-gray-900">{t('tickets.details.closed')}</p>
                       <p className="text-sm text-gray-500">
                         {new Date(ticket.closedAt).toLocaleString()}
                       </p>
