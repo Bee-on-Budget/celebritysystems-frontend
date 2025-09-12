@@ -716,6 +716,8 @@
     "editReport": "تعديل التقرير",
     "reportDetails": "تفاصيل التقرير",
     "reportList": "قائمة التقارير",
+    "allReports": "حميع التقارير",
+    "reportSummary": "ملخص التقرير",
     "reportForm": {
       "title": "عنوان التقرير",
       "titlePlaceholder": "أدخل عنوان التقرير",
@@ -867,7 +869,8 @@
     "allContracts": "جميع العقود",
     "createContract": "إنشاء عقد",
     "allSubcontracts": "جميع العقود الفرعية",
-    "createSubcontract": "إنشاء عقد فرعي"
+    "createSubcontract": "إنشاء عقد فرعي",
+    "resolvedTickets": "التذاكر المحلولة"
   },
   "navigation": {
     "dashboard": "لوحة التحكم",

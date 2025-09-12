@@ -716,6 +716,8 @@
     "editReport": "Edit Report",
     "reportDetails": "Report Details",
     "reportList": "Report List",
+    "allReports": "All Reports",
+    "reportSummary": "Report Summary",
     "reportForm": {
       "title": "Report Title",
       "titlePlaceholder": "Enter report title",
@@ -867,7 +869,8 @@
     "allContracts": "All Contracts",
     "createContract": "Create Contract",
     "allSubcontracts": "All Sub-Contracts",
-    "createSubcontract": "Create Sub-Contract"
+    "createSubcontract": "Create Sub-Contract",
+    "resolvedTickets": "Resolved Tickets"
   },
   "navigation": {
     "dashboard": "Dashboard",
