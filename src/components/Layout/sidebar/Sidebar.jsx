@@ -92,7 +92,8 @@ const Sidebar = ({ open, setOpen }) => {
             items={[
               { label: t('sidebar.allTickets'), href: "/tickets", onClick: () => setOpen(false) },
               { label: t('sidebar.createTicket'), href: "/tickets/create", onClick: () => setOpen(false) },
-              { label: t('sidebar.pendingTickets'), href: "/tickets/pending", onClick: () => setOpen(false) }
+              { label: t('sidebar.pendingTickets'), href: "/tickets/pending", onClick: () => setOpen(false) },
+              { label: t('sidebar.resolvedTickets'), href: "/tickets/resolved", onClick: () => setOpen(false) },
             ]}
           />
 
@@ -118,7 +119,16 @@ const Sidebar = ({ open, setOpen }) => {
             ]}
           />
 
-          <NavButton to={"/reports"} icon={<FaFileContract />} label={t('reports.title')} onClick={() => setOpen(false)} />
+          <SidebarDropdown
+            icon={FaFileContract}
+            label={t('reports.title')}
+            isOpen={openDropdowns['reports']}
+            onToggle={() => handleDropdownToggle("reports")}
+            items={[
+              { label: t('reports.allReports'), href: "/reports", onClick: () => setOpen(false) },
+              { label: t('reports.reportSummary'), href: "/reports-summary", onClick: () => setOpen(false) },
+            ]}
+          />
         </div>
       </nav>
     </div>
