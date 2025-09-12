@@ -48,11 +48,13 @@ import CreateTicket from "../features/ticket/CreateTicket";
 import TicketDetails from "../features/ticket/TicketDetails";
 import PendingTicketsList from "../features/ticket/PendingTicketsList";
 import PendingTicketDetails from "../features/ticket/PendingTicketDetails";
+import ResolvedTickets from "../features/ticket/ResolvedTickets";
 
 // Report management
 import ReportList from "../features/report/ReportList";
 import ReportDetails from "../features/report/ReportDetails";
 import CreateReport from "../features/report/CreateReport";
+import ReportSummary from "../features/report/ReportSummary"
 
 // Sub-Contract management
 import SubcontractList from "../features/subcontract/SubcontractList";
@@ -210,7 +212,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-        
+
         {/*Tickets*/}
         <Route
           path="tickets"
@@ -260,6 +262,14 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="tickets/resolved"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
+              <ResolvedTickets />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Report management */}
         <Route
@@ -275,6 +285,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
               <ReportDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="reports-summary"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
+              <ReportSummary />
             </ProtectedRoute>
           }
         />
