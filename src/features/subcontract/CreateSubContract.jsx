@@ -5,15 +5,15 @@ import { Input, MultiSearchBar, showToast, FormsContainer } from "../../componen
 import { createSubContract } from "../../api/services/SubContractService";
 import { searchCompanies } from "../../api/services/CompanyService";
 import { searchContractsByCompanyName } from "../../api/services/ContractService";
+import { useTranslation } from "react-i18next";
 
 const CreateSubContract = () => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [contractsLoading, setContractsLoading] = useState(false);
   const [searchedCompanies, setSearchedCompanies] = useState([]);
   const [searchedContracts, setSearchedContracts] = useState([]);
   const [selectedMainCompany, setSelectedMainCompany] = useState(null);
-  const [selectedControllerCompany, setSelectedControllerCompany] = useState(null);
-  const [selectedContract, setSelectedContract] = useState(null);
 
   const [form, setForm] = useState({
     main_company_id: "",
@@ -45,19 +45,19 @@ const CreateSubContract = () => {
       setSearchedCompanies(results || []);
       return (results || []).map((company) => company.name);
     } catch (e) {
-      showToast("Failed to search for companies.", "error");
+      showToast(t('subcontracts.messages.errorLoadingCompanies'), "error");
       return [];
     }
-  }, []);
+  }, [t]);
 
   const handleSearchContracts = useCallback(async (query) => {
     if (!selectedMainCompany) {
-      setErrors((prev) => ({ ...prev, contract_id: 'Select a main company first' }));
+      setErrors((prev) => ({ ...prev, contract_id: t('subcontracts.messages.errorSelectMainCompany') }));
       return [];
     }
     if (!query.trim()) {
       return searchedContracts.map(contract =>
-        `Contract #${contract.id} - ${contract.info || 'Unnamed Contract'}`
+        `ID: ${contract.id} - ${contract.info || 'Unnamed Contract'}`
       );
     }
 
@@ -66,9 +66,9 @@ const CreateSubContract = () => {
       (contract.info && contract.info.toLowerCase().includes(query.toLowerCase()))
     );
     return filtered.map(contract =>
-      `Contract #${contract.id} - ${contract.info || 'Unnamed Contract'}`
+      `ID: ${contract.id} - ${contract.info || 'Unnamed Contract'}`
     );
-  }, [selectedMainCompany, searchedContracts, setErrors]);
+  }, [selectedMainCompany, searchedContracts, setErrors, t]);
 
   const handleMainCompanySelect = async (companyName) => {
     const company = searchedCompanies.find(c => c.name === companyName);
@@ -78,7 +78,6 @@ const CreateSubContract = () => {
       if (errors.main_company_id) setErrors({ ...errors, main_company_id: null });
 
       // Reset contract selection when changing company
-      setSelectedContract(null);
       setForm(prev => ({ ...prev, contract_id: "" }));
 
       // Load contracts for the selected company
@@ -87,7 +86,7 @@ const CreateSubContract = () => {
         const contracts = await searchContractsByCompanyName(company.name);
         setSearchedContracts(contracts || []);
       } catch (error) {
-        showToast(error.message || "Failed to load company contracts", "error");
+        showToast(t('subcontracts.messages.errorLoadingContracts'), "error");
       } finally {
         setContractsLoading(false);
       }
@@ -97,34 +96,35 @@ const CreateSubContract = () => {
   const handleControllerCompanySelect = (companyName) => {
     const company = searchedCompanies.find(c => c.name === companyName);
     if (company) {
-      setSelectedControllerCompany(company);
       setForm(prev => ({ ...prev, controller_company_id: company.id }));
       if (errors.controller_company_id) setErrors({ ...errors, controller_company_id: null });
     }
   };
 
   const handleContractSelect = (contractDisplay) => {
-    // Extract ID from the display string
-    const contractId = parseInt(contractDisplay.split('#')[1].split(' ')[0]);
-    const contract = searchedContracts.find(c => c.id === contractId);
+    // Extract ID from the display string "ID: 123 - Contract Info"
+    const idMatch = contractDisplay.match(/^ID: (\d+)/);
+    if (idMatch) {
+      const contractId = parseInt(idMatch[1]);
+      const contract = searchedContracts.find(c => c.id === contractId);
 
-    if (contract) {
-      setSelectedContract(contract);
-      setForm(prev => ({ ...prev, contract_id: contract.id }));
-      if (errors.contract_id) setErrors({ ...errors, contract_id: null });
+      if (contract) {
+        setForm(prev => ({ ...prev, contract_id: contract.id }));
+        if (errors.contract_id) setErrors({ ...errors, contract_id: null });
+      }
     }
   };
 
   const validateForm = () => {
     const newErrors = {};
 
-    if (!form.main_company_id) newErrors.main_company_id = 'Main company is required';
-    if (!form.controller_company_id) newErrors.controller_company_id = 'Controller company is required';
-    if (!form.contract_id) newErrors.contract_id = 'Contract is required';
-    if (!form.created_at) newErrors.created_at = 'Creation date is required';
-    if (!form.expired_at) newErrors.expired_at = 'Expiration date is required';
+    if (!form.main_company_id) newErrors.main_company_id = t('subcontracts.validationMessages.mainCompanyRequired');
+    if (!form.controller_company_id) newErrors.controller_company_id = t('subcontracts.validationMessages.controllerCompanyRequired');
+    if (!form.contract_id) newErrors.contract_id = t('subcontracts.validationMessages.contractRequired');
+    if (!form.created_at) newErrors.created_at = t('subcontracts.validationMessages.creationRequired');
+    if (!form.expired_at) newErrors.expired_at = t('subcontracts.validationMessages.expirationRequired');
     if (form.expired_at && form.created_at && new Date(form.expired_at) <= new Date(form.created_at)) {
-      newErrors.expired_at = 'Expiration date must be after creation date';
+      newErrors.expired_at = t('subcontracts.validationMessages.expireationError');
     }
 
     setErrors(newErrors);
@@ -145,10 +145,10 @@ const CreateSubContract = () => {
         expiredAt: form.expired_at
       });
 
-      showToast("Subcontract created successfully!", "success");
+      showToast(t('subcontracts.messages.subcontractCreated'), "success");
       navigate('/subcontract');
     } catch (error) {
-      showToast(error.response?.data?.message || "Failed to create subcontract", "error");
+      showToast(t('subcontracts.messages.errorCreatingSubcontract'), "error");
     } finally {
       setLoading(false);
     }
@@ -156,16 +156,16 @@ const CreateSubContract = () => {
 
   return (
     <FormsContainer
-      title="Create New Subcontract"
+      title={t('subcontracts.createSubcontractTitle')}
       onSubmit={handleSubmit}
       isLoading={loading}
-      actionTitle="Create Subcontract"
+      actionTitle={t('subcontracts.actions.create')}
     >
       <div className="space-y-6">
         {/* Main Company Selection */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Main Company <span className="text-red-500">*</span>
+            {t('subcontracts.subcontractForm.mainCompany')} <span className="text-red-500">*</span>
           </label>
           <MultiSearchBar
             onSearch={handleSearchCompanies}
@@ -174,15 +174,9 @@ const CreateSubContract = () => {
               setSelectedMainCompany(null);
               setForm(prev => ({ ...prev, main_company_id: "" }));
               setSearchedContracts([]);
-              setSelectedContract(null);
             }}
-            placeholder="Search and select main company"
+            placeholder={t('subcontracts.subcontractForm.mainCompanyPlaceholder')}
           />
-          {selectedMainCompany && (
-            <div className="mt-2 text-sm text-gray-600">
-              Selected: {selectedMainCompany.name}
-            </div>
-          )}
           {errors.main_company_id && (
             <p className="mt-1 text-sm text-red-600">{errors.main_company_id}</p>
           )}
@@ -191,22 +185,16 @@ const CreateSubContract = () => {
         {/* Controller Company Selection */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Controller Company <span className="text-red-500">*</span>
+            {t('subcontracts.subcontractForm.controllerCompany')} <span className="text-red-500">*</span>
           </label>
           <MultiSearchBar
             onSearch={handleSearchCompanies}
             onSelectResult={handleControllerCompanySelect}
             onClear={() => {
-              setSelectedControllerCompany(null);
               setForm(prev => ({ ...prev, controller_company_id: "" }));
             }}
-            placeholder="Search and select controller company"
+            placeholder={t('subcontracts.subcontractForm.controllerCompanyPlaceholder')}
           />
-          {selectedControllerCompany && (
-            <div className="mt-2 text-sm text-gray-600">
-              Selected: {selectedControllerCompany.name}
-            </div>
-          )}
           {errors.controller_company_id && (
             <p className="mt-1 text-sm text-red-600">{errors.controller_company_id}</p>
           )}
@@ -215,7 +203,7 @@ const CreateSubContract = () => {
         {/* Contract Selection */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Contract <span className="text-red-500">*</span>
+            {t('subcontracts.subcontractForm.contract')} <span className="text-red-500">*</span>
           </label>
           {contractsLoading ? (
             <div className="p-2 text-sm text-gray-500">Loading contracts...</div>
@@ -225,29 +213,23 @@ const CreateSubContract = () => {
                 onSearch={handleSearchContracts}
                 onSelectResult={handleContractSelect}
                 onClear={() => {
-                  setSelectedContract(null);
                   setForm(prev => ({ ...prev, contract_id: "" }));
                 }}
                 placeholder={
                   selectedMainCompany
-                    ? `Search contracts for ${selectedMainCompany.name}`
-                    : "Select a main company first"
+                    ? `${t('subcontracts.subcontractForm.contractPlaceholder')} ${selectedMainCompany.name}`
+                    : t('subcontracts.messages.errorSelectMainCompany')
                 }
                 disabled={!selectedMainCompany}
                 options={
                   searchedContracts.map(contract =>
-                    `Contract #${contract.id} - ${contract.info || 'Unnamed Contract'}`
+                    `ID: ${contract.id} - ${contract.info || 'Unnamed Contract'}`
                   )
                 }
               />
-              {selectedContract && (
-                <div className="mt-2 text-sm text-gray-600">
-                  Selected: Contract #{selectedContract.id}
-                </div>
-              )}
               {searchedContracts.length === 0 && !contractsLoading && selectedMainCompany && (
                 <div className="mt-2 text-sm text-gray-500">
-                  No contracts found for {selectedMainCompany.name}
+                  {t('subcontracts.messages.noContracts')} {selectedMainCompany.name}
                 </div>
               )}
               {errors.contract_id && (
@@ -261,7 +243,7 @@ const CreateSubContract = () => {
       <div className="space-y-6">
         {/* Creation Date */}
         <Input
-          label="Creation Date"
+          label={t('subcontracts.subcontractForm.startDate')}
           name="created_at"
           type="date"
           icon={<FaCalendarAlt className="text-gray-400" />}
@@ -273,7 +255,7 @@ const CreateSubContract = () => {
 
         {/* Expiration Date */}
         <Input
-          label="Expiration Date"
+          label={t('subcontracts.subcontractForm.endDate')}
           name="expired_at"
           type="date"
           icon={<FaCalendarAlt className="text-gray-400" />}

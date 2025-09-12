@@ -147,7 +147,9 @@
       "workerReportCreated": "Worker report created successfully",
       "workerReportUpdated": "Worker report updated successfully",
       "errorCreatingReport": "Error creating report",
-      "errorUpdatingReport": "Error updating report"
+      "errorUpdatingReport": "Error updating report",
+      "ticketClosed": "Ticket closed successfully",
+      "errorTicketClose": "Failed to close the ticket"
     },
     "placeholders": {
       "searchCompanies": "Search companies...",
@@ -606,6 +608,8 @@
   },
   "subcontracts": {
     "title": "Sub-Contracts",
+    "subcontractsListtitle": "Sub-Contracts List",
+    "createSubcontractTitle": "Create New Sub-Contract",
     "createSubcontract": "Create Sub-Contract",
     "editSubcontract": "Edit Sub-Contract",
     "subcontractDetails": "Sub-Contract Details",
@@ -626,7 +630,84 @@
       "subcontractDeleted": "Sub-contract deleted successfully",
       "errorCreatingSubcontract": "Error creating sub-contract",
       "errorUpdatingSubcontract": "Error updating sub-contract",
-      "errorDeletingSubcontract": "Error deleting sub-contract"
+      "errorDeletingSubcontract": "Error deleting sub-contract",
+      "errorLoadingSubcontracts": "Failed to load subcontracts",
+      "errorLoadingCompanies": "Error loading companies",
+      "errorSelectMainCompany": "Select a main company first",
+      "errorLoadingContracts": "Error loading company contracts",
+      "noContracts": "No contracts found for",
+      "subcontractNotFound": "Subcontract not found",
+      "failedToLoadInfo": "Failed to load subcontract info, please try again!",
+      "loadingScreenDetails": "Loading screen details...",
+      "noScreensAssociated": "No screens associated with this contract",
+      "noUsersFound": "No users found for the",
+      "noPermissionsSet": "No permissions set for this contract"
+    },
+    "table": {
+      "mainCompany": "Main Company",
+      "controllerCompany": "Controller Company",
+      "contractId": "Contract ID",
+      "expiryDate": "Expiry Date"
+    },
+    "validationMessages": {
+      "mainCompanyRequired": "Main company is required",
+      "controllerCompanyRequired": "Controller company is required",
+      "contractRequired": "Contract is required",
+      "creationRequired": "Creation date is required",
+      "expirationRequired": "Expiration date is required",
+      "expireationError": "Expiration date must be after creation date"
+    },
+    "actions": {
+      "create": "Create Sub-Contract",
+      "edit": "Edit",
+      "delete": "Delete",
+      "back": "Back",
+      "backToSubcontracts": "Back to Subcontracts"
+    },
+    "details": {
+      "subcontractInfo": "Subcontract Information",
+      "subcontractId": "Subcontract ID",
+      "created": "Created",
+      "expires": "Expires",
+      "mainCompany": "Main Company",
+      "controllerCompany": "Controller Company",
+      "contractDetails": "Contract Details",
+      "companyName": "Company Name",
+      "email": "Email",
+      "phone": "Phone",
+      "location": "Location",
+      "viewOnMaps": "View on Maps",
+      "status": "Status",
+      "active": "Active",
+      "inactive": "Inactive",
+      "contractInfo": "Contract Info",
+      "startDate": "Start Date",
+      "expiryDate": "Expiry Date",
+      "durationType": "Duration Type",
+      "daysRemaining": "Days Remaining",
+      "screens": "Screens",
+      "mainCompanyUsers": "Main Company Users",
+      "controllerCompanyUsers": "Controller Company Users",
+      "contractPermissions": "Contract Permissions",
+      "username": "Username",
+      "fullName": "Full Name",
+      "permissions": "Permissions",
+      "canRead": "Can Read",
+      "canEdit": "Can Edit",
+      "noRead": "No Read",
+      "noEdit": "No Edit",
+      "yes": "Yes",
+      "no": "No",
+      "name": "Name",
+      "screenType": "Screen Type",
+      "solutionType": "Solution Type",
+      "resolution": "Resolution",
+      "na": "N/A"
+    },
+    "confirmations": {
+      "deleteTitle": "Delete Subcontract",
+      "deleteMessage": "Are you sure you want to delete this subcontract? This action cannot be undone.",
+      "deleteConfirm": "Delete"
     }
   },
   "reports": {

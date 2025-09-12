@@ -147,7 +147,9 @@
       "workerReportCreated": "تم إنشاء تقرير العامل بنجاح",
       "workerReportUpdated": "تم تحديث تقرير العامل بنجاح",
       "errorCreatingReport": "خطأ في إنشاء التقرير",
-      "errorUpdatingReport": "خطأ في تحديث التقرير"
+      "errorUpdatingReport": "خطأ في تحديث التقرير",
+      "ticketClosed": "تم غلق التذكرة",
+      "errorTicketClose": "فشل غلق التذكرة"
     },
     "placeholders": {
       "searchCompanies": "البحث في الشركات...",
@@ -606,6 +608,8 @@
   },
   "subcontracts": {
     "title": "العقود الفرعية",
+    "subcontractsListtitle": "قائمة العقود الفرعية",
+    "createSubcontractTitle": "أنشاء عقد فرعي جديد",
     "createSubcontract": "إنشاء عقد فرعي",
     "editSubcontract": "تعديل العقد الفرعي",
     "subcontractDetails": "تفاصيل العقد الفرعي",
@@ -626,7 +630,84 @@
       "subcontractDeleted": "تم حذف العقد الفرعي بنجاح",
       "errorCreatingSubcontract": "خطأ في إنشاء العقد الفرعي",
       "errorUpdatingSubcontract": "خطأ في تحديث العقد الفرعي",
-      "errorDeletingSubcontract": "خطأ في حذف العقد الفرعي"
+      "errorDeletingSubcontract": "خطأ في حذف العقد الفرعي",
+      "errorLoadingSubcontracts": "فشل تحميل العقود الفرعية",
+      "errorLoadingCompanies": "حطأ في تحميل الشركات",
+      "errorSelectMainCompany": "حدد الشركة الرئيسية أولاً",
+      "errorLoadingContracts": "فشل في تحميل العقود",
+      "noContracts": "لا يوجد عقود لـ",
+      "subcontractNotFound": "العقد الفرعي غير موجود",
+      "failedToLoadInfo": "فشل في تحميل معلومات العقد الفرعي، الرجاء المحاولة مرة أخرى!",
+      "loadingScreenDetails": "جارٍ تحميل تفاصيل الشاشات...",
+      "noScreensAssociated": "لا توجد شاشات مرتبطة بهذا العقد",
+      "noUsersFound": "لم يتم العثور على مستخدمين",
+      "noPermissionsSet": "لم يتم تعيين صلاحيات لهذا العقد"
+    },
+    "table": {
+      "mainCompany": "الشركة الرئيسية",
+      "controllerCompany": "شركة التحكم",
+      "contractId": "رقم العقد",
+      "expiryDate": "تاريخ الانتهاء"
+    },
+    "validationMessages": {
+      "mainCompanyRequired": "الشركة الرئيسية مطلوبة",
+      "controllerCompanyRequired": "شركة التحكم مطلوبة",
+      "contractRequired": "العقد مطلوب",
+      "creationRequired": "تاريخ الإنشاء مطلوب",
+      "expirationRequired": "تاريخ الإنتهاء مطلوب",
+      "expireationError": "يجب أن يكون تاريخ انتهاء الصلاحية بعد تاريخ الإنشاء"
+    },
+    "actions": {
+      "create": "إنشاء عقد فرعي",
+      "edit": "تعديل",
+      "delete": "حذف",
+      "back": "رجوع",
+      "backToSubcontracts": "العودة إلى العقود الفرعية"
+    },
+    "details": {
+      "subcontractInfo": "معلومات العقد الفرعي",
+      "subcontractId": "رقم العقد الفرعي",
+      "created": "تم الإنشاء",
+      "expires": "ينتهي",
+      "mainCompany": "الشركة الرئيسية",
+      "controllerCompany": "شركة التحكم",
+      "contractDetails": "تفاصيل العقد",
+      "companyName": "اسم الشركة",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "location": "الموقع",
+      "viewOnMaps": "عرض على الخرائط",
+      "status": "الحالة",
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "contractInfo": "معلومات العقد",
+      "startDate": "تاريخ البداية",
+      "expiryDate": "تاريخ الانتهاء",
+      "durationType": "نوع المدة",
+      "daysRemaining": "الأيام المتبقية",
+      "screens": "الشاشات",
+      "mainCompanyUsers": "مستخدمو الشركة الرئيسية",
+      "controllerCompanyUsers": "مستخدمو شركة التحكم",
+      "contractPermissions": "صلاحيات العقد",
+      "username": "اسم المستخدم",
+      "fullName": "الاسم الكامل",
+      "permissions": "الصلاحيات",
+      "canRead": "يمكن القراءة",
+      "canEdit": "يمكن التعديل",
+      "noRead": "لا يمكن القراءة",
+      "noEdit": "لا يمكن التعديل",
+      "yes": "نعم",
+      "no": "لا",
+      "name": "الاسم",
+      "screenType": "نوع الشاشة",
+      "solutionType": "نوع الحل",
+      "resolution": "الدقة",
+      "na": "غير متوفر"
+    },
+    "confirmations": {
+      "deleteTitle": "حذف العقد الفرعي",
+      "deleteMessage": "هل أنت متأكد من أنك تريد حذف هذا العقد الفرعي؟ لا يمكن التراجع عن هذا الإجراء.",
+      "deleteConfirm": "حذف"
     }
   },
   "reports": {

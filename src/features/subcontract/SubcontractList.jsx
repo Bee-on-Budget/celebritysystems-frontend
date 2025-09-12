@@ -2,8 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { DataList, Pagination } from '../../components';
 import { getSubContracts } from '../../api/services/SubContractService';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const SubContractList = () => {
+  const { t } = useTranslation();
   const [subContracts, setSubContracts] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -26,15 +28,15 @@ const SubContractList = () => {
       setCurrentPage(response.pageNumber || 0);
       setPageSize(response.pageSize || 10);
     } catch (e) {
-      setError("Failed to load subcontracts");
+      setError(t("subcontracts.messages.errorLoadingSubcontracts"));
     } finally {
       setIsLoading(false);
     }
-  }, [pageSize]);
+  }, [pageSize, t]);
 
   useEffect(() => {
     fetchSubContracts(currentPage);
-  }, [currentPage, fetchSubContracts]);
+  }, [currentPage, fetchSubContracts, t]);
 
   const handleSearch = useCallback(
     async (query) => {
@@ -65,7 +67,7 @@ const SubContractList = () => {
   const formatDate = (dateString) => dateString ? new Date(dateString).toLocaleDateString() : 'N/A';
 
   const renderSubContractItem = (list) => {
-    const headerStyle = "px-3 py-2 text-left text-sm font-medium text-gray-500 uppercase tracking-wider";
+    const headerStyle = "px-3 py-2 text-start text-sm font-medium text-gray-500 uppercase tracking-wider";
     const nameStyle = "px-3 py-2 text-sm text-dark font-bold";
     const bodyStyle = "px-3 py-2 text-sm text-dark max-w-xs whitespace-nowrap overflow-hidden text-ellipsis";
     const rowStyle = "h-14 hover:bg-gray-100 transition cursor-pointer";
@@ -75,10 +77,10 @@ const SubContractList = () => {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className={`${headerStyle} w-72`}>Main Company</th>
-              <th className={`${headerStyle} w-72`}>Controller Company</th>
-              <th className={`${headerStyle} w-32`}>Contract ID</th>
-              <th className={`${headerStyle} w-32`}>Expiry Date</th>
+              <th className={`${headerStyle} w-72`}>{t("subcontracts.table.mainCompany")}</th>
+              <th className={`${headerStyle} w-72`}>{t("subcontracts.table.controllerCompany")}</th>
+              <th className={`${headerStyle} w-32`}>{t("subcontracts.table.contractId")}</th>
+              <th className={`${headerStyle} w-32`}>{t("subcontracts.table.expiryDate")}</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -102,7 +104,7 @@ const SubContractList = () => {
 
   return (
     <DataList
-      title="Subcontract Management"
+      title={t('subcontracts.subcontractsListtitle')}
       label="subcontracts"
       error={error}
       isLoading={isLoading}
