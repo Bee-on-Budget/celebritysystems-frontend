@@ -11,6 +11,15 @@ const handleApiError = (error, defaultMessage) => {
   throw new Error(errorMessage);
 };
 
+export const getTicketsPaginated = async (params = {}) => {
+  try {
+    const response = await axios.get('/tickets/paginated', { params });
+    return response.data;
+  } catch (error) {
+    return error.response?.data?.message || "Failed to load tickets";
+  }
+}
+
 export const getAllTickets = async () => {
   try {
     const response = await axios.get(TICKET_API_URL);
@@ -63,10 +72,9 @@ export const createReport = async (ticketId, formData) => {
 export const updateTicket = async (id, ticketData) => {
   try {
     const response = await axios.patch(`${TICKET_API_URL}/${id}`, ticketData);
-    showToast("Ticket updated successfully", "success");
     return response.data;
   } catch (error) {
-    return handleApiError(error, "Failed to update ticket");
+    throw error.response?.data?.message || "Failed to update ticket";
   }
 };
 
@@ -138,10 +146,10 @@ export const prepareTicketFormData = (ticketData, files = []) => {
 
 
 export const getUsersByRole = async (role) => {
-    const response = await axios.get(`/users/roles/${role}`); // <-- roles not role
-    return response.data;
-  };
-  
+  const response = await axios.get(`/users/roles/${role}`); // <-- roles not role
+  return response.data;
+};
+
 // Pending tickets endpoints
 export const getPendingTickets = async () => {
   try {
@@ -163,8 +171,8 @@ export const getPendingTicketById = async (id) => {
 
 export const getReportById = async (id) => {
   try {
-      const response = await axios.get(`tickets/${id}/worker-report`);
-      return response.data;
+    const response = await axios.get(`tickets/${id}/worker-report`);
+    return response.data;
   } catch (error) {
     throw error.response?.data?.message || "Faild to load report";
   }
