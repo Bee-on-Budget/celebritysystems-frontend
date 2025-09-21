@@ -23,11 +23,11 @@ const Sidebar = ({ open, setOpen }) => {
   return (
     <div
       className={`fixed inset-y-0 ${dir === "rtl" ? "right-0" : "left-0"} z-30 w-64 
-        bg-gradient-to-b from-slate-900 to-blue-950 backdrop-blur-lg shadow-2xl
-        transform ${open ? "translate-x-0" : dir === "rtl" ? "translate-x-full" : "-translate-x-full"}
-        transition-transform duration-200 ease-in-out 
-        md:translate-x-0 md:static md:inset-0 
-        flex flex-col`}
+      bg-gradient-to-b from-green-900 to-emerald-950 backdrop-blur-lg shadow-2xl
+      transform ${open ? "translate-x-0" : dir === "rtl" ? "translate-x-full" : "-translate-x-full"}
+      transition-transform duration-200 ease-in-out 
+      md:translate-x-0 md:static md:inset-0 
+      flex flex-col`}
     >
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-dark">
