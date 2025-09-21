@@ -4,7 +4,8 @@
 
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #E83D29 transparent;
+  /* scrollbar-color: #E83D29 transparent; */
+  scrollbar-color: #16A34A transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -19,11 +20,13 @@
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: transparent;
   border-radius: 4px;
-  border: 1px solid #E83D29;
+  /* border: 1px solid #E83D29; */
+  border: 1px solid #16A34A;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: #b32413;
+  /* background-color: #b32413; */
+  background-color: #16A34A;
 }
 
 /* Modern browsers (best solution) */
@@ -42,7 +45,8 @@
 }
 
 .scrollbar-gutter-stable::-webkit-scrollbar-thumb {
-  background-color: #b32413;
+  /* background-color: #b32413; */
+  background-color: #16A34A;
   border-radius: 4px;
 }
 

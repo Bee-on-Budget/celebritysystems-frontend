@@ -7,7 +7,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "#E83D29", 
+        // primary: "#E83D29",
+        primary: "#16A34A",        // ✅ base green (Tailwind emerald-600 / green-600)
+        "primary-focus": "#15803D", // ✅ darker shade for focus
+        "primary-hover": "#166534", // ✅ even darker for hover
+
         // {
         //   100: '#fce8e5',
         //   200: '#f7b9b2',
@@ -22,8 +26,8 @@ module.exports = {
         dark: "#2B3237",
         "bg-color": "#f5f5f7",
         "dark-light": "#3B434A",
-        "primary-focus": "#b32413",
-        "primary-hover": "#801a0e",
+        // "primary-focus": "#b32413",
+        // "primary-hover": "#801a0e",
         "sidebar-bg": "#2c3d49",
       },
       animation: {
