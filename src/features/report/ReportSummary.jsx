@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Calendar, BarChart3, Filter, Eye, Settings } from 'lucide-react';
 import { Button, Loading, showToast } from '../../components';
 import { getReportsDashboardSummary } from '../../api/services/ReportingService';
 import { FaDownload, FaSyncAlt } from 'react-icons/fa';
 
 const ComponentSummaryDashboard = () => {
+  const { t } = useTranslation();
   // Initialize with empty data structure
   const [reportData, setReportData] = useState({
     reportType: "",
@@ -139,16 +141,11 @@ const ComponentSummaryDashboard = () => {
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
 
-      showToast('Exported CSV successfully');
+      showToast(t('reports.reportSummary.exportSuccess'));
     } catch (error) {
       console.error('Export failed:', error);
-      showToast('Failed to export CSV');
+      showToast(t('reports.reportSummary.exportFailed'));
     }
-  };
-
-  const handleDateRangeUpdate = () => {
-    // This will trigger the useEffect that calls loadInitialValues
-    showToast("Date range updated");
   };
 
   if (isLoading)
@@ -162,9 +159,9 @@ const ComponentSummaryDashboard = () => {
         <div className="bg-white rounded-xl shadow-sm p-4 md:p-6 border border-gray-200">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Component Summary Report</h1>
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">{t('reports.reportSummary.title')}</h1>
               <p className="text-gray-600">
-                Monitoring period: {formatDate(reportData.startDate)} - {formatDate(reportData.endDate)}
+                {t('reports.reportSummary.monitoringPeriod')}: {formatDate(reportData.startDate)} - {formatDate(reportData.endDate)}
               </p>
             </div>
 
@@ -172,11 +169,11 @@ const ComponentSummaryDashboard = () => {
               <Button
                 onClick={handleRefresh}
                 icon={<FaSyncAlt />}
-              >Refresh</Button>
+              >{t('common.refresh')}</Button>
               <Button
                 onClick={handleExport}
                 icon={<FaDownload />}
-              >Export</Button>
+              >{t('common.export')}</Button>
             </div>
           </div>
         </div>
@@ -189,7 +186,7 @@ const ComponentSummaryDashboard = () => {
             <div className="lg:col-span-2 space-y-2">
               <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
                 <Calendar size={16} />
-                Date Range
+                {t('reports.reportSummary.dateRange')}
               </label>
               <div className="flex flex-col sm:flex-row gap-2">
                 <input
@@ -204,12 +201,6 @@ const ComponentSummaryDashboard = () => {
                   onChange={(e) => setEndDate(e.target.value)}
                   className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
-                <Button
-                onClick={handleDateRangeUpdate}
-                fullWidth={true}
-                >
-                  Update
-                </Button>
               </div>
             </div>
 
@@ -217,11 +208,11 @@ const ComponentSummaryDashboard = () => {
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
                 <Filter size={16} />
-                Filter Components
+                {t('reports.reportSummary.filterComponents')}
               </label>
               <input
                 type="text"
-                placeholder="Search components..."
+                placeholder={t('reports.reportSummary.searchComponentsPlaceholder')}
                 value={filterText}
                 onChange={(e) => setFilterText(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -232,7 +223,7 @@ const ComponentSummaryDashboard = () => {
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
                 <Settings size={16} />
-                Sort & View
+                {t('reports.reportSummary.sortAndView')}
               </label>
               <div className="flex gap-2">
                 <select
@@ -240,8 +231,8 @@ const ComponentSummaryDashboard = () => {
                   onChange={(e) => setSortBy(e.target.value)}
                   className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
-                  <option value="name">Name</option>
-                  <option value="changes">Changes</option>
+                  <option value="name">{t('reports.reportSummary.sortByName')}</option>
+                  <option value="changes">{t('reports.reportSummary.sortByChanges')}</option>
                 </select>
                 <button
                   onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
@@ -260,7 +251,7 @@ const ComponentSummaryDashboard = () => {
           <div className="bg-white rounded-xl shadow-sm p-4 md:p-6 border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 mb-1">Total Components</p>
+                <p className="text-sm text-gray-600 mb-1">{t('reports.reportSummary.totalComponents')}</p>
                 <p className="text-2xl font-bold text-gray-900">{reportData.componentSummaries.length}</p>
               </div>
               <div className="p-3 bg-blue-100 rounded-full">
@@ -272,7 +263,7 @@ const ComponentSummaryDashboard = () => {
           <div className="bg-white rounded-xl shadow-sm p-4 md:p-6 border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 mb-1">Overall Total Changes</p>
+                <p className="text-sm text-gray-600 mb-1">{t('reports.reportSummary.overallTotalChanges')}</p>
                 <p className="text-2xl font-bold text-gray-900">{reportData.totalCounts.overallTotal}</p>
               </div>
               <div className="p-3 bg-green-100 rounded-full">
@@ -284,7 +275,7 @@ const ComponentSummaryDashboard = () => {
           <div className="bg-white rounded-xl shadow-sm p-4 md:p-6 border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 mb-1">Active Components</p>
+                <p className="text-sm text-gray-600 mb-1">{t('reports.reportSummary.activeComponents')}</p>
                 <p className="text-2xl font-bold text-gray-900">
                   {reportData.componentSummaries.filter(c => c.totalChanges > 0).length}
                 </p>
@@ -316,7 +307,7 @@ const ComponentSummaryDashboard = () => {
                       <h3 className="font-medium text-gray-900">{component.componentName}</h3>
                       {viewMode === 'grid' && (
                         <p className="text-sm text-gray-600">
-                          {Object.keys(component.changesPerScreen || {}).length} screens monitored
+                          {Object.keys(component.changesPerScreen || {}).length} {t('reports.reportSummary.screensMonitored')}
                         </p>
                       )}
                     </div>
@@ -324,7 +315,7 @@ const ComponentSummaryDashboard = () => {
 
                   <div className={`flex items-center gap-4 ${viewMode === 'list' ? '' : 'justify-between'}`}>
                     <div className="text-center">
-                      <p className="text-sm text-gray-600">Total Changes</p>
+                      <p className="text-sm text-gray-600">{t('reports.reportSummary.totalChanges')}</p>
                       <p className={`text-lg font-bold ${component.totalChanges === 0 ? 'text-gray-400' : 'text-blue-600'}`}>
                         {component.totalChanges}
                       </p>
@@ -332,11 +323,11 @@ const ComponentSummaryDashboard = () => {
 
                     {component.totalChanges === 0 ? (
                       <div className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
-                        Stable
+                        {t('reports.reportSummary.stable')}
                       </div>
                     ) : (
                       <div className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">
-                        Active
+                        {t('reports.reportSummary.active')}
                       </div>
                     )}
                   </div>
@@ -344,7 +335,7 @@ const ComponentSummaryDashboard = () => {
               ))
             ) : (
               <div className="col-span-full text-center py-8 text-gray-500">
-                No components found matching your criteria
+                {t('reports.reportSummary.noComponentsFound')}
               </div>
             )}
           </div>
@@ -354,8 +345,7 @@ const ComponentSummaryDashboard = () => {
         <div className="bg-white rounded-xl shadow-sm p-4 md:p-6 border border-gray-200">
           <div className="text-center text-gray-600">
             <p className="text-sm">
-              Report generated on {formatDate(new Date().toISOString().split('T')[0])} •
-              Showing {filteredComponents.length} of {reportData.componentSummaries.length} components
+              {t('reports.reportSummary.reportGeneratedOn')} {formatDate(new Date().toISOString().split('T')[0])} • {t('reports.reportSummary.showingCount', { current: filteredComponents.length, total: reportData.componentSummaries.length })}
             </p>
           </div>
         </div>
