@@ -739,6 +739,7 @@
       "totalComponents": "Total Components",
       "overallTotalChanges": "Overall Total Changes",
       "activeComponents": "Active Components",
+      "componentDetails": "Component Details",
       "screensMonitored": "screens monitored",
       "totalChanges": "Total Changes",
       "stable": "Stable",

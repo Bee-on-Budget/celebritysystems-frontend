@@ -290,7 +290,7 @@ const ComponentSummaryDashboard = () => {
         {/* Components List */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200">
           <div className="p-4 md:p-6 border-b border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900">Component Details</h2>
+            <h2 className="text-xl font-semibold text-gray-900">{t('reports.reportSummary.componentDetails')}</h2>
           </div>
 
           <div className={`p-4 md:p-6 ${viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4' : 'space-y-3'}`}>
