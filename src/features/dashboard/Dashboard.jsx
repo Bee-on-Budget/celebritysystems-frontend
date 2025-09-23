@@ -143,7 +143,12 @@ const Dashboard = () => {
           {/* Right Column - Feeds */}
           <div className="xl:col-span-4">
             <div className="sticky top-6">
-              <Feeds title="Recent Activity" items={customFeeds} />
+              <Feeds 
+                title={t('dashboard.recentActivity')}
+                items={customFeeds}
+                startDate={new Date(Date.now() - 6*24*60*60*1000).toISOString().slice(0,10)}
+                endDate={new Date().toISOString().slice(0,10)}
+              />
             </div>
           </div>
         </div>

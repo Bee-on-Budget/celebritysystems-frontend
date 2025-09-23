@@ -11,3 +11,14 @@ export const getReportsDashboardSummary = async (params = {}) => {
         throw error.response?.data?.message || "Error fetching report summury";
     }
 };
+
+export const getDailyActivity = async ({ startDate, endDate }) => {
+    try {
+        const response = await api.get(`${REPORT_URL}/daily-activity`, {
+            params: { startDate, endDate }
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data?.message || "Error fetching daily activity";
+    }
+};

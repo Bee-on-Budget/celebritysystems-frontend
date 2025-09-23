@@ -228,6 +228,14 @@
   "dashboard": {
     "title": "Dashboard",
     "welcome": "Welcome to Celebrity Systems",
+    "feeds": {
+      "usersCreated": "{{count}} user(s) created",
+      "contractsCreated": "{{count}} contract(s) created",
+      "ticketsCreated": "{{count}} ticket(s) created",
+      "companiesCreated": "{{count}} company(ies) created",
+      "failedLoadActivity": "Failed to load activity",
+      "noActivity": "No recent activity"
+    },
     "stats": {
       "totalTickets": "Total Tickets",
       "totalCompanies": "Total Companies",

@@ -228,6 +228,14 @@
   "dashboard": {
     "title": "لوحة التحكم",
     "welcome": "مرحباً بك في أنظمة المشاهير",
+    "feeds": {
+      "usersCreated": "تم إنشاء {{count}} مستخدم",
+      "contractsCreated": "تم إنشاء {{count}} عقد",
+      "ticketsCreated": "تم إنشاء {{count}} تذكرة",
+      "companiesCreated": "تم إنشاء {{count}} شركة",
+      "failedLoadActivity": "فشل تحميل النشاط",
+      "noActivity": "لا يوجد نشاط حديث"
+    },
     "stats": {
       "totalTickets": "إجمالي التذاكر",
       "totalCompanies": "إجمالي الشركات",
