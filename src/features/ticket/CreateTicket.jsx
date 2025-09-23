@@ -41,7 +41,7 @@ const CreateTicket = () => {
     { value: "PREVENTIVE_MAINTENANCE", label: t('tickets.serviceTypes.PREVENTIVE_MAINTENANCE') },
     { value: "CALL_BACK_SERVICE", label: t('tickets.serviceTypes.CALL_BACK_SERVICE') },
   ];
-  
+
 
   const customStyles = {
     control: (provided, state) => ({
@@ -161,7 +161,12 @@ const CreateTicket = () => {
       file.size <= MAX_FILE_SIZE_MB * 1024 * 1024 &&
       ALLOWED_TYPES.includes(file.type)
     );
-    setFiles(validFiles);
+    setFiles(prev => [...prev, ...validFiles]);
+  };
+
+  // Remove file
+  const handleRemoveFile = (index) => {
+    setFiles(prev => prev.filter((_, i) => i !== index));
   };
 
   // Form submission
@@ -192,11 +197,11 @@ const CreateTicket = () => {
           {/* Title & Service Type */}
           <div className="col-span-2 md:col-span-1">
             <Input
-            label={t('tickets.ticketForm.title')}
-            name={"title"}
-            value={formData.title}
-            onChange={handleChange}
-            required
+              label={t('tickets.ticketForm.title')}
+              name={"title"}
+              value={formData.title}
+              onChange={handleChange}
+              required
             />
             <DropdownInput
               name="serviceType"
@@ -334,16 +339,16 @@ const CreateTicket = () => {
               <p className="text-xs text-gray-500">
                 {t('tickets.ticketForm.fileTypes')}
               </p>
-                              {files.length > 0 && (
-                  <div className="mt-2">
-                    <p className="text-sm font-medium">{t('tickets.ticketForm.selectedFiles')}</p>
-                    <ul className="text-sm text-gray-500">
-                      {files.map((file, index) => (
-                        <li key={index} className="truncate max-w-xs">{file.name}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+              {files.length > 0 && (
+                <div className="mt-2">
+                  <p className="text-sm font-medium">{t('tickets.ticketForm.selectedFiles')}</p>
+                  <ul className="text-sm text-gray-500">
+                    {files.map((file, index) => (
+                      <li key={index} className="truncate max-w-xs">{file.name}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -10,96 +10,128 @@ const CablesStep = ({ form, errors, onChange, onNext, onBack }) => {
       <SectionContainer title={t('screens.screenForm.cableInformation')}>
         <div className="space-y-4 sm:space-y-6">
           {/* Main Cables */}
-          <SectionContainer title={t('screens.screenForm.mainCables')}>
+          <SectionContainer title={t('screens.screenForm.mainPowerCable')}>
             <div className="space-y-3 sm:space-y-4">
-              <Input 
-                label={t('screens.screenForm.mainCableType')} 
-                name="cable" 
-                value={form.cable} 
-                onChange={onChange} 
+              <Input
+                label={t('screens.screenForm.mainPowerCableType')}
+                name="mainPowerCable"
+                value={form.mainPowerCable}
+                onChange={onChange}
               />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <Input
                   label={t('screens.screenForm.quantity')}
-                  name="cableQuantity"
+                  name="mainPowerCableQuantity"
                   type="number"
-                  value={form.cableQuantity}
+                  value={form.mainPowerCableQuantity}
                   onChange={onChange}
-                  error={errors.cableQuantity}
-                  required={!!form.cable}
-                  disabled={!form.cable}
+                  error={errors.mainPowerCableQuantity}
+                  required={!!form.mainPowerCable}
+                  disabled={!form.mainPowerCable}
                 />
                 <Input
                   label={t('screens.screenForm.spareQuantity')}
-                  name="spareCableQuantity"
+                  name="spareMainPowerCableQuantity"
                   type="number"
-                  value={form.spareCableQuantity}
+                  value={form.spareMainPowerCableQuantity}
                   onChange={onChange}
-                  disabled={!form.cable}
+                  disabled={!form.mainPowerCable}
                 />
               </div>
             </div>
           </SectionContainer>
 
           {/* Power Cables */}
-          <SectionContainer title={t('screens.screenForm.powerCables')}>
+          <SectionContainer title={t('screens.screenForm.loopPowerCable')}>
             <div className="space-y-3 sm:space-y-4">
-              <Input 
-                label={t('screens.screenForm.powerCableType')} 
-                name="powerCable" 
-                value={form.powerCable} 
-                onChange={onChange} 
+              <Input
+                label={t('screens.screenForm.loopPowerCableType')}
+                name="loopPowerCable"
+                value={form.loopPowerCable}
+                onChange={onChange}
               />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <Input
                   label={t('screens.screenForm.quantity')}
-                  name="powerCableQuantity"
+                  name="loopPowerCableQuantity"
                   type="number"
-                  value={form.powerCableQuantity}
+                  value={form.loopPowerCableQuantity}
                   onChange={onChange}
-                  error={errors.powerCableQuantity}
-                  required={!!form.powerCable}
-                  disabled={!form.powerCable}
+                  error={errors.loopPowerCableQuantity}
+                  required={!!form.loopPowerCable}
+                  disabled={!form.loopPowerCable}
                 />
                 <Input
                   label={t('screens.screenForm.spareQuantity')}
-                  name="sparePowerCableQuantity"
+                  name="spareLoopPowerCableQuantity"
                   type="number"
-                  value={form.sparePowerCableQuantity}
+                  value={form.spareLoopPowerCableQuantity}
                   onChange={onChange}
-                  disabled={!form.powerCable}
+                  disabled={!form.loopPowerCable}
                 />
               </div>
             </div>
           </SectionContainer>
 
           {/* Data Cables */}
-          <SectionContainer title={t('screens.screenForm.dataCables')}>
+          <SectionContainer title={t('screens.screenForm.mainDataCable')}>
             <div className="space-y-3 sm:space-y-4">
-              <Input 
-                label={t('screens.screenForm.dataCableType')} 
-                name="dataCable" 
-                value={form.dataCable} 
-                onChange={onChange} 
+              <Input
+                label={t('screens.screenForm.mainDataCableType')}
+                name="mainDataCable"
+                value={form.mainDataCable}
+                onChange={onChange}
               />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <Input
                   label={t('screens.screenForm.quantity')}
-                  name="dataCableQuantity"
+                  name="mainDataCableQuantity"
                   type="number"
-                  value={form.dataCableQuantity}
+                  value={form.mainDataCableQuantity}
                   onChange={onChange}
-                  error={errors.dataCableQuantity}
-                  required={!!form.dataCable}
-                  disabled={!form.dataCable}
+                  error={errors.mainDataCableQuantity}
+                  required={!!form.mainDataCable}
+                  disabled={!form.mainDataCable}
                 />
                 <Input
                   label={t('screens.screenForm.spareQuantity')}
-                  name="spareDataCableQuantity"
+                  name="spareMainDataCableQuantity"
                   type="number"
-                  value={form.spareDataCableQuantity}
+                  value={form.spareMainDataCableQuantity}
                   onChange={onChange}
-                  disabled={!form.dataCable}
+                  disabled={!form.mainDataCable}
+                />
+              </div>
+            </div>
+          </SectionContainer>
+
+          {/* Data Cables */}
+          <SectionContainer title={t('screens.screenForm.loopDataCable')}>
+            <div className="space-y-3 sm:space-y-4">
+              <Input
+                label={t('screens.screenForm.loopDataCableType')}
+                name="loopDataCable"
+                value={form.loopDataCable}
+                onChange={onChange}
+              />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <Input
+                  label={t('screens.screenForm.quantity')}
+                  name="loopDataCableQuantity"
+                  type="number"
+                  value={form.loopDataCableQuantity}
+                  onChange={onChange}
+                  error={errors.loopDataCableQuantity}
+                  required={!!form.loopDataCable}
+                  disabled={!form.loopDataCable}
+                />
+                <Input
+                  label={t('screens.screenForm.spareQuantity')}
+                  name="spareLoopDataCableQuantity"
+                  type="number"
+                  value={form.spareLoopDataCableQuantity}
+                  onChange={onChange}
+                  disabled={!form.loopDataCable}
                 />
               </div>
             </div>
@@ -109,16 +141,16 @@ const CablesStep = ({ form, errors, onChange, onNext, onBack }) => {
 
       {/* Navigation Buttons */}
       <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-4 pt-4 sm:pt-6 border-t border-gray-200">
-        <Button 
-          type="button" 
-          variant="ghost" 
+        <Button
+          type="button"
+          variant="ghost"
           onClick={onBack}
           className="w-full sm:w-auto min-w-[100px] order-2 sm:order-1"
         >
           {t('screens.actions.back')}
         </Button>
-        <Button 
-          type="button" 
+        <Button
+          type="button"
           onClick={onNext}
           className="w-full sm:w-auto min-w-[140px] order-1 sm:order-2"
         >

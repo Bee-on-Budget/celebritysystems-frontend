@@ -1,10 +1,11 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Input, Button, DropdownInput } from "../../../components";
+import { Input, Button, DropdownInput, CustomCheckbox } from "../../../components";
 import { FileInput, SectionContainer } from '../components';
 
 const ScreenStep = ({ form, errors, onChange, onNext }) => {
   const { t } = useTranslation();
+  const [irregularPixelPitch, setIrregularPixelPitch] = useState(form.irregularPixelPitch || false);
   const connectionFileRef = useRef(null);
   const configFileRef = useRef(null);
   const versionFileRef = useRef(null);
@@ -19,17 +20,34 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
     { value: "MODULE_SOLUTION", label: t('screens.options.module') }
   ];
 
+  // Keep local state in sync with form state
+  useEffect(() => {
+    setIrregularPixelPitch(form.irregularPixelPitch || false);
+  }, [form.irregularPixelPitch]);
+
+  const onIrregularChange = () => {
+    const newValue = !irregularPixelPitch;
+    setIrregularPixelPitch(newValue);
+    onChange({
+      target: {
+        name: 'irregularPixelPitch',
+        checked: newValue,
+        type: 'checkbox'
+      }
+    });
+  }
+
   return (
     <div className="space-y-4 sm:space-y-6 max-w-4xl mx-auto">
       {/* Screen name */}
       <div className="space-y-2">
-        <Input 
-          label={t('screens.screenForm.name')} 
-          name="name" 
-          value={form.name} 
-          onChange={onChange} 
-          error={errors.name} 
-          required 
+        <Input
+          label={t('screens.screenForm.name')}
+          name="name"
+          value={form.name}
+          onChange={onChange}
+          error={errors.name}
+          required
         />
       </div>
 
@@ -90,17 +108,16 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
         />
       </div>
 
-      {/* Screen pixelScreen */}
+      {/* Screen batchScreen */}
       <div className="space-y-2">
-        <Input 
-          label={t('screens.screenForm.pixelScreen')} 
-          name="pixelScreen" 
-          type="text" 
-          placeholder={t('screens.screenForm.pixelScreenPlaceholder')}
-          value={form.pixelScreen} 
-          onChange={onChange} 
-          error={errors.pixelScreen} 
-          required 
+        <Input
+          label={t('screens.screenForm.batchScreen')}
+          name="batchScreen"
+          placeholder={t('screens.screenForm.batchScreenPlaceholder')}
+          value={form.batchScreen}
+          onChange={onChange}
+          error={errors.batchScreen}
+          required
         />
       </div>
 
@@ -119,14 +136,82 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
         />
       </div>
 
+      {/* Dimensions */}
+      <SectionContainer title={t('screens.screenForm.dimensions')}>
+        <div className="space-y-3 sm:space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            <Input
+              label={t('screens.screenForm.screenWidth')}
+              name="screenWidth"
+              value={form.screenWidth}
+              error={errors.screenWidth}
+              onChange={onChange}
+              required
+            />
+            <Input
+              label={t('screens.screenForm.screenHeight')}
+              name="screenHeight"
+              value={form.screenHeight}
+              error={errors.screenHeight}
+              onChange={onChange}
+              required
+            />
+          </div>
+        </div>
+      </SectionContainer>
+
+      {/* Pixel Pitch */}
+      <SectionContainer title={t('screens.screenForm.dimensions')}>
+        <div className="space-y-3 sm:space-y-4">
+          <CustomCheckbox
+            name="irregularPixelPitch"
+            label={t('screens.screenForm.irregularPixelPitch')}
+            checked={irregularPixelPitch}
+            onChange={onIrregularChange}
+          />
+          {
+            !irregularPixelPitch && <Input
+              label={t('screens.screenForm.pixelPitch')}
+              name="pixelPitch"
+              value={form.pixelPitch}
+              error={errors.pixelPitch}
+              onChange={onChange}
+              required
+            />
+          }
+
+          {
+            irregularPixelPitch && <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <Input
+                label={t('screens.screenForm.pixelPitchhWidth')}
+                name="pixelPitchWidth"
+                value={form.pixelPitchWidth}
+                error={errors.pixelPitchWidth}
+                onChange={onChange}
+                required
+              />
+              <Input
+                label={t('screens.screenForm.pixelPitchHeight')}
+                name="pixelPitchHeight"
+                value={form.pixelPitchHeight}
+                error={errors.pixelPitchHeight}
+                onChange={onChange}
+                required
+              />
+            </div>
+          }
+
+        </div>
+      </SectionContainer>
+
       {/* Power Supply */}
       <SectionContainer title={t('screens.screenForm.powerSupply')}>
         <div className="space-y-3 sm:space-y-4">
-          <Input 
-            label={t('screens.screenForm.powerSupplyType')} 
-            name="powerSupply" 
-            value={form.powerSupply} 
-            onChange={onChange} 
+          <Input
+            label={t('screens.screenForm.powerSupplyType')}
+            name="powerSupply"
+            value={form.powerSupply}
+            onChange={onChange}
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <Input
@@ -142,7 +227,7 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
             <Input
               label={t('screens.screenForm.spareQuantity')}
               name="sparePowerSupplyQuantity"
-              type="number" 
+              type="number"
               value={form.sparePowerSupplyQuantity}
               onChange={onChange}
               disabled={!form.powerSupply}
@@ -154,11 +239,11 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
       {/* Receiving card */}
       <SectionContainer title={t('screens.screenForm.receivingCard')}>
         <div className="space-y-3 sm:space-y-4">
-          <Input 
-            label={t('screens.screenForm.receivingCardType')} 
-            name="receivingCard" 
-            value={form.receivingCard} 
-            onChange={onChange} 
+          <Input
+            label={t('screens.screenForm.receivingCardType')}
+            name="receivingCard"
+            value={form.receivingCard}
+            onChange={onChange}
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <Input
@@ -174,7 +259,7 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
             <Input
               label={t('screens.screenForm.spareQuantity')}
               name="spareReceivingCardQuantity"
-              type="number" 
+              type="number"
               value={form.spareReceivingCardQuantity}
               onChange={onChange}
               disabled={!form.receivingCard}
@@ -186,11 +271,11 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
       {/* Media */}
       <SectionContainer title={t('screens.screenForm.media')}>
         <div className="space-y-3 sm:space-y-4">
-          <Input 
-            label={t('screens.screenForm.mediaType')} 
-            name="media" 
-            value={form.media} 
-            onChange={onChange} 
+          <Input
+            label={t('screens.screenForm.mediaType')}
+            name="media"
+            value={form.media}
+            onChange={onChange}
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <Input
@@ -203,13 +288,13 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
               disabled={!form.media}
               required={!!form.media}
             />
-            <Input 
+            <Input
               label={t('screens.screenForm.spareMediaQuantity')}
               name="spareMediaQuantity"
               type="number"
               value={form.spareMediaQuantity}
               onChange={onChange}
-              disabled={!form.media} 
+              disabled={!form.media}
             />
           </div>
         </div>
@@ -218,11 +303,11 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
       {/* Hub */}
       <SectionContainer title={t('screens.screenForm.hub')}>
         <div className="space-y-3 sm:space-y-4">
-          <Input 
-            label={t('screens.screenForm.hubType')} 
-            name="hub" 
-            value={form.hub} 
-            onChange={onChange} 
+          <Input
+            label={t('screens.screenForm.hubType')}
+            name="hub"
+            value={form.hub}
+            onChange={onChange}
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <Input
@@ -235,14 +320,14 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
               disabled={!form.hub}
               required={!!form.hub}
             />
-            <Input 
+            <Input
               label={t('screens.screenForm.spareHubQuantity')}
               name="spareHubQuantity"
-              type="number" 
+              type="number"
               value={form.spareHubQuantity}
               onChange={onChange}
               error={errors.spareHubQuantity}
-              disabled={!form.hub} 
+              disabled={!form.hub}
             />
           </div>
         </div>
@@ -282,8 +367,8 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
 
       {/* Next Button */}
       <div className="flex justify-end pt-4 sm:pt-6 border-t border-gray-200">
-        <Button 
-          type="button" 
+        <Button
+          type="button"
           onClick={onNext}
           className="w-full sm:w-auto min-w-[120px]"
         >
