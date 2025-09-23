@@ -395,6 +395,8 @@
       "pixelScreenPlaceholder": "مثال: 1920x1080، 3840x2160",
       "description": "الوصف",
       "descriptionPlaceholder": "أدخل وصف الشاشة (اختياري)",
+      "batchScreen": "دفعة الشاشة",
+      "batchScreenPlaceholder": "أدخل معرف دفعة الشاشة",
       "powerSupply": "مصدر الطاقة",
       "powerSupplyType": "نوع مصدر الطاقة",
       "quantity": "الكمية",

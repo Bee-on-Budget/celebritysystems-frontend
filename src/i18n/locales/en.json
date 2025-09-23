@@ -395,6 +395,8 @@
       "pixelScreenPlaceholder": "e.g., 1920x1080, 3840x2160",
       "description": "Description",
       "descriptionPlaceholder": "Enter screen description (optional)",
+      "batchScreen": "Batch Screen",
+      "batchScreenPlaceholder": "Enter batch screen identifier",
       "powerSupply": "Power Supply",
       "powerSupplyType": "Power Supply Type",
       "quantity": "Quantity",
