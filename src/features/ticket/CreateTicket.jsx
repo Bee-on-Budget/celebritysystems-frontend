@@ -165,9 +165,9 @@ const CreateTicket = () => {
   };
 
   // Remove file
-  const handleRemoveFile = (index) => {
-    setFiles(prev => prev.filter((_, i) => i !== index));
-  };
+  // const handleRemoveFile = (index) => {
+  //   setFiles(prev => prev.filter((_, i) => i !== index));
+  // };
 
   // Form submission
   const handleSubmit = async (e) => {

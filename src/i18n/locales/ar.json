@@ -734,8 +734,8 @@
     "editReport": "تعديل التقرير",
     "reportDetails": "تفاصيل التقرير",
     "reportList": "قائمة التقارير",
-    "allReports": "حميع التقارير",
-    "reportSummary": "ملخص التقرير",
+    "allReports": "جميع التقارير",
+    "reportSummaryTab": "ملخص التقرير",
     "reportSummary": {
       "title": "تقرير ملخص المكونات",
       "monitoringPeriod": "فترة المراقبة",

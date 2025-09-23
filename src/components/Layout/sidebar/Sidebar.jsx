@@ -126,7 +126,7 @@ const Sidebar = ({ open, setOpen }) => {
             onToggle={() => handleDropdownToggle("reports")}
             items={[
               { label: t('reports.allReports'), href: "/reports", onClick: () => setOpen(false) },
-              { label: t('reports.reportSummary'), href: "/reports-summary", onClick: () => setOpen(false) },
+              { label: t('reports.reportSummaryTab'), href: "/reports-summary", onClick: () => setOpen(false) },
             ]}
           />
         </div>

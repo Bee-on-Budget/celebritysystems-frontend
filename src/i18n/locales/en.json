@@ -735,6 +735,7 @@
     "reportDetails": "Report Details",
     "reportList": "Report List",
     "allReports": "All Reports",
+    "reportSummaryTab": "Report Summary",
     "reportSummary": {
       "title": "Component Summary Report",
       "monitoringPeriod": "Monitoring period",
