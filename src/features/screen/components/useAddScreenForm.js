@@ -8,23 +8,33 @@ const initialFormState = {
   screenType: "",
   solutionTypeInScreen: "",
   location: "",
-  pixelScreen: "",
+  batchScreen: "",
   description: "",
+  screenWidth: "",
+  screenHeight: "",
+  pixelPitch: "",
+  pixelPitchWidth: "",
+  pixelPitchHeight: "",
+  irregularPixelPitch: false,
   powerSupply: "",
   powerSupplyQuantity: "",
   sparePowerSupplyQuantity: "",
   receivingCard: "",
   receivingCardQuantity: "",
   spareReceivingCardQuantity: "",
-  cable: "",
-  cableQuantity: "",
-  spareCableQuantity: "",
-  powerCable: "",
-  powerCableQuantity: "",
-  sparePowerCableQuantity: "",
-  dataCable: "",
-  dataCableQuantity: "",
-  spareDataCableQuantity: "",
+  // CableStep fields (align with CablesStep.jsx)
+  mainPowerCable: "",
+  mainPowerCableQuantity: "",
+  spareMainPowerCableQuantity: "",
+  loopPowerCable: "",
+  loopPowerCableQuantity: "",
+  spareLoopPowerCableQuantity: "",
+  mainDataCable: "",
+  mainDataCableQuantity: "",
+  spareMainDataCableQuantity: "",
+  loopDataCable: "",
+  loopDataCableQuantity: "",
+  spareLoopDataCableQuantity: "",
   media: "",
   mediaQuantity: "",
   spareMediaQuantity: "",
@@ -43,8 +53,6 @@ const initialFormState = {
       height: "",
       width: "",
       moduleBatchNumber: "",
-      isWidth: false,
-      isHeight: false,
     }
   ],
   cabinets: [
@@ -54,8 +62,6 @@ const initialFormState = {
       heightQuantity: "",
       height: "",
       width: "",
-      isHeight: false,
-      isWidth: false,
       moduleDto: {
         widthQuantity: "",
         heightQuantity: "",
@@ -85,8 +91,6 @@ const useAddScreenForm = () => {
           heightQuantity: "",
           height: "",
           width: "",
-          isHeight: false,
-          isWidth: false,
           moduleDto: {
             widthQuantity: "",
             heightQuantity: "",
@@ -124,8 +128,6 @@ const useAddScreenForm = () => {
           height: "",
           width: "",
           moduleBatchNumber: "",
-          isWidth: false,
-          isHeight: false,
         },
       ],
     }));
@@ -190,7 +192,7 @@ const useAddScreenForm = () => {
       });
     }
     else {
-      setForm((prev) => ({ ...prev, [name]: files ? files[0] : value }));
+      setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : (files ? files[0] : value) }));
     }
   };
 
@@ -206,12 +208,24 @@ const useAddScreenForm = () => {
       } else if (!mapsUrlRegex.test(form.location)) {
         newErrors.location = t('screens.validation.validMapsLink');
       }
-      if (!form.pixelScreen) newErrors.pixelScreen = t('screens.validation.pixelScreenRequired');
+      // if (!form.pixelScreen) newErrors.pixelScreen = t('screens.validation.pixelScreenRequired');
       if (!form.solutionTypeInScreen) newErrors.solutionTypeInScreen = t('screens.validation.solutionRequired');
       if (form.fan && !form.fanQuantity) {
         newErrors.fanQuantity = t('screens.validation.fanQuantityRequired');
       } else if (form.fan && Number(form.fanQuantity) < 0) {
         newErrors.fanQuantity = t('screens.validation.fanQuantityNonNegative');
+      }
+
+      // Dimentions validation
+      if (!form.screenWidth) newErrors.screenWidth = t('screens.validation.screenWidthRequired');
+      if (!form.screenHeight) newErrors.screenHeight = t('screens.validation.screenHeightRequired');
+
+      // Pixel Pitch validation
+      if (!form.irregularPixelPitch) {
+        if (!form.pixelPitch) newErrors.pixelPitch = t('screens.validation.pixelPitchRequired');
+      } else {
+        if (!form.pixelPitchWidth) newErrors.pixelPitchWidth = t('screens.validation.pixelPitchWidthRequired');
+        if (!form.pixelPitchHeight) newErrors.pixelPitchHeight = t('screens.validation.pixelPitchHeightRequired');
       }
 
       // Power Supply validation
@@ -255,40 +269,50 @@ const useAddScreenForm = () => {
       }
 
       // Files validation
-      if(!form.connectionFile) newErrors.connectionFile = t('screens.validation.connectionFileRequired');
-      if(!form.configFile) newErrors.configFile = t('screens.validation.configFileRequired');
-      if(!form.versionFile) newErrors.versionFile = t('screens.validation.versionFileRequired');
+      if (!form.connectionFile) newErrors.connectionFile = t('screens.validation.connectionFileRequired');
+      if (!form.configFile) newErrors.configFile = t('screens.validation.configFileRequired');
+      if (!form.versionFile) newErrors.versionFile = t('screens.validation.versionFileRequired');
     }
 
     if (currentStep === 2) {
-      // Cable validation
-      if (form.cable && !form.cableQuantity) {
-        newErrors.cableQuantity = t('screens.validation.cableQuantityRequired');
-      } else if (form.cable && Number(form.cableQuantity) <= 0) {
-        newErrors.cableQuantity = t('screens.validation.cableQuantityPositive');
+      // Main Power Cable
+      if (form.mainPowerCable && !form.mainPowerCableQuantity) {
+        newErrors.mainPowerCableQuantity = t('screens.validation.powerCableQuantityRequired');
+      } else if (form.mainPowerCable && Number(form.mainPowerCableQuantity) <= 0) {
+        newErrors.mainPowerCableQuantity = t('screens.validation.powerCableQuantityPositive');
       }
-      if (form.spareCableQuantity && Number(form.spareCableQuantity) < 0) {
-        newErrors.spareCableQuantity = t('screens.validation.spareCableQuantityNonNegative');
-      }
-
-      // Power Cable validation
-      if (form.powerCable && !form.powerCableQuantity) {
-        newErrors.powerCableQuantity = t('screens.validation.powerCableQuantityRequired');
-      } else if (form.powerCable && Number(form.powerCableQuantity) <= 0) {
-        newErrors.powerCableQuantity = t('screens.validation.powerCableQuantityPositive');
-      }
-      if (form.sparePowerCableQuantity && Number(form.sparePowerCableQuantity) < 0) {
-        newErrors.sparePowerCableQuantity = t('screens.validation.sparePowerCableQuantityNonNegative');
+      if (form.spareMainPowerCableQuantity && Number(form.spareMainPowerCableQuantity) < 0) {
+        newErrors.spareMainPowerCableQuantity = t('screens.validation.sparePowerCableQuantityNonNegative');
       }
 
-      // Data Cable validation
-      if (form.dataCable && !form.dataCableQuantity) {
-        newErrors.dataCableQuantity = t('screens.validation.dataCableQuantityRequired');
-      } else if (form.dataCable && Number(form.dataCableQuantity) <= 0) {
-        newErrors.dataCableQuantity = t('screens.validation.dataCableQuantityPositive');
+      // Loop Power Cable
+      if (form.loopPowerCable && !form.loopPowerCableQuantity) {
+        newErrors.loopPowerCableQuantity = t('screens.validation.powerCableQuantityRequired');
+      } else if (form.loopPowerCable && Number(form.loopPowerCableQuantity) <= 0) {
+        newErrors.loopPowerCableQuantity = t('screens.validation.powerCableQuantityPositive');
       }
-      if (form.spareDataCableQuantity && Number(form.spareDataCableQuantity) < 0) {
-        newErrors.spareDataCableQuantity = t('screens.validation.spareDataCableQuantityNonNegative');
+      if (form.spareLoopPowerCableQuantity && Number(form.spareLoopPowerCableQuantity) < 0) {
+        newErrors.spareLoopPowerCableQuantity = t('screens.validation.sparePowerCableQuantityNonNegative');
+      }
+
+      // Main Data Cable
+      if (form.mainDataCable && !form.mainDataCableQuantity) {
+        newErrors.mainDataCableQuantity = t('screens.validation.dataCableQuantityRequired');
+      } else if (form.mainDataCable && Number(form.mainDataCableQuantity) <= 0) {
+        newErrors.mainDataCableQuantity = t('screens.validation.dataCableQuantityPositive');
+      }
+      if (form.spareMainDataCableQuantity && Number(form.spareMainDataCableQuantity) < 0) {
+        newErrors.spareMainDataCableQuantity = t('screens.validation.spareDataCableQuantityNonNegative');
+      }
+
+      // Loop Data Cable
+      if (form.loopDataCable && !form.loopDataCableQuantity) {
+        newErrors.loopDataCableQuantity = t('screens.validation.dataCableQuantityRequired');
+      } else if (form.loopDataCable && Number(form.loopDataCableQuantity) <= 0) {
+        newErrors.loopDataCableQuantity = t('screens.validation.dataCableQuantityPositive');
+      }
+      if (form.spareLoopDataCableQuantity && Number(form.spareLoopDataCableQuantity) < 0) {
+        newErrors.spareLoopDataCableQuantity = t('screens.validation.spareDataCableQuantityNonNegative');
       }
     }
 
@@ -375,34 +399,32 @@ const useAddScreenForm = () => {
 
     setLoading(true);
     try {
+      const asNumberOrUndefined = (v) => (v === '' || v === undefined || v === null ? undefined : Number(v));
+
       // Prepare solution-specific data first
       let solutionData = {};
       if (form.solutionTypeInScreen === "MODULE_SOLUTION") {
         solutionData.modulesDto = form.modulesDto.map(module => ({
           moduleBatchNumber: module.moduleBatchNumber,
-          widthQuantity: Number(module.widthQuantity),
-          heightQuantity: Number(module.heightQuantity),
-          height: Number(module.height),
-          width: Number(module.width),
-          isWidth: !!module.isWidth,
-          isHeight: !!module.isHeight,
+          widthQuantity: asNumberOrUndefined(module.widthQuantity),
+          heightQuantity: asNumberOrUndefined(module.heightQuantity),
+          height: asNumberOrUndefined(module.height),
+          width: asNumberOrUndefined(module.width),
         }));
       } else {
         solutionData.cabinDtoListJson = JSON.stringify(
           form.cabinets.map(cabinet => ({
             cabinetName: cabinet.cabinetName,
-            widthQuantity: Number(cabinet.widthQuantity),
-            heightQuantity: Number(cabinet.heightQuantity),
-            height: Number(cabinet.height),
-            width: Number(cabinet.width),
-            isWidth: cabinet.isWidth,
-            isHeight: cabinet.isHeight,
+            widthQuantity: asNumberOrUndefined(cabinet.widthQuantity),
+            heightQuantity: asNumberOrUndefined(cabinet.heightQuantity),
+            height: asNumberOrUndefined(cabinet.height),
+            width: asNumberOrUndefined(cabinet.width),
             moduleDto: {
               moduleBatchNumber: cabinet.moduleDto.moduleBatchNumber,
-              widthQuantity: Number(cabinet.moduleDto.widthQuantity),
-              heightQuantity: Number(cabinet.moduleDto.heightQuantity),
-              height: Number(cabinet.moduleDto.height),
-              width: Number(cabinet.moduleDto.width)
+              widthQuantity: asNumberOrUndefined(cabinet.moduleDto.widthQuantity),
+              heightQuantity: asNumberOrUndefined(cabinet.moduleDto.heightQuantity),
+              height: asNumberOrUndefined(cabinet.moduleDto.height),
+              width: asNumberOrUndefined(cabinet.moduleDto.width)
             }
           }))
         );
@@ -415,47 +437,61 @@ const useAddScreenForm = () => {
         screenType: form.screenType,
         solutionTypeInScreen: form.solutionTypeInScreen,
         location: form.location,
-        pixelScreen: form.pixelScreen,
+        batchScreen: form.batchScreen,
         description: form.description,
+
+        // Dimensions
+        screenWidth: asNumberOrUndefined(form.screenWidth),
+        screenHeight: asNumberOrUndefined(form.screenHeight),
+
+        // Pixel Pitch
+        pixelPitch: form.irregularPixelPitch ? undefined : asNumberOrUndefined(form.pixelPitch),
+        pixelPitchWidth: form.irregularPixelPitch ? asNumberOrUndefined(form.pixelPitchWidth) : undefined,
+        pixelPitchHeight: form.irregularPixelPitch ? asNumberOrUndefined(form.pixelPitchHeight) : undefined,
+        irregularPixelPitch: form.irregularPixelPitch,
 
         // Power Supply Information
         powerSupply: form.powerSupply,
-        powerSupplyQuantity: Number(form.powerSupplyQuantity),
-        sparePowerSupplyQuantity: Number(form.sparePowerSupplyQuantity),
+        powerSupplyQuantity: asNumberOrUndefined(form.powerSupplyQuantity),
+        sparePowerSupplyQuantity: asNumberOrUndefined(form.sparePowerSupplyQuantity),
 
         // Receiving Card Information
         receivingCard: form.receivingCard,
-        receivingCardQuantity: Number(form.receivingCardQuantity),
-        spareReceivingCardQuantity: Number(form.spareReceivingCardQuantity),
+        receivingCardQuantity: asNumberOrUndefined(form.receivingCardQuantity),
+        spareReceivingCardQuantity: asNumberOrUndefined(form.spareReceivingCardQuantity),
 
         // Cable Information
-        cable: form.cable,
-        cableQuantity: Number(form.cableQuantity),
-        spareCableQuantity: Number(form.spareCableQuantity),
+        // aligned fields are used below instead
 
         // Power Cable Information
-        powerCable: form.powerCable,
-        powerCableQuantity: Number(form.powerCableQuantity),
-        sparePowerCableQuantity: Number(form.sparePowerCableQuantity),
+        mainPowerCable: form.mainPowerCable,
+        mainPowerCableQuantity: asNumberOrUndefined(form.mainPowerCableQuantity),
+        spareMainPowerCableQuantity: asNumberOrUndefined(form.spareMainPowerCableQuantity),
+        loopPowerCable: form.loopPowerCable,
+        loopPowerCableQuantity: asNumberOrUndefined(form.loopPowerCableQuantity),
+        spareLoopPowerCableQuantity: asNumberOrUndefined(form.spareLoopPowerCableQuantity),
 
         // Data Cable Information
-        dataCable: form.dataCable,
-        dataCableQuantity: Number(form.dataCableQuantity),
-        spareDataCableQuantity: Number(form.spareDataCableQuantity),
+        mainDataCable: form.mainDataCable,
+        mainDataCableQuantity: asNumberOrUndefined(form.mainDataCableQuantity),
+        spareMainDataCableQuantity: asNumberOrUndefined(form.spareMainDataCableQuantity),
+        loopDataCable: form.loopDataCable,
+        loopDataCableQuantity: asNumberOrUndefined(form.loopDataCableQuantity),
+        spareLoopDataCableQuantity: asNumberOrUndefined(form.spareLoopDataCableQuantity),
 
         // Media Information
         media: form.media,
-        mediaQuantity: Number(form.mediaQuantity),
-        spareMediaQuantity: Number(form.spareMediaQuantity),
+        mediaQuantity: asNumberOrUndefined(form.mediaQuantity),
+        spareMediaQuantity: asNumberOrUndefined(form.spareMediaQuantity),
 
         // Fan Information
         fan: form.fan,
-        fanQuantity: Number(form.fanQuantity),
+        fanQuantity: asNumberOrUndefined(form.fanQuantity),
 
         // Hub Information
         hub: form.hub,
-        hubQuantity: Number(form.hubQuantity),
-        spareHubQuantity: Number(form.spareHubQuantity),
+        hubQuantity: asNumberOrUndefined(form.hubQuantity),
+        spareHubQuantity: asNumberOrUndefined(form.spareHubQuantity),
 
         // Files
         connectionFile: form.connectionFile,
