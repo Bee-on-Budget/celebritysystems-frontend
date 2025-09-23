@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, loading }) => {
   const { t } = useTranslation();
-  const checkboxStyle = "w-4 h-4 sm:w-5 sm:h-5 text-primary bg-gray-100 border-gray-300 rounded-sm focus:ring-primary-focus focus:border-primary focus:ring-1 accent-primary checked:border-primary";
+  // const checkboxStyle = "w-4 h-4 sm:w-5 sm:h-5 text-primary bg-gray-100 border-gray-300 rounded-sm focus:ring-primary-focus focus:border-primary focus:ring-1 accent-primary checked:border-primary";
 
   if (form.solutionTypeInScreen === "MODULE_SOLUTION") {
     return (
@@ -94,33 +94,7 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
                   />
                 </div>
 
-                {/* Checkbox Fields */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 pt-2">
-                  <label className="flex items-center space-x-2 sm:space-x-3 cursor-pointer p-2 rounded-md hover:bg-gray-50 transition-colors">
-                    <input
-                      name={`moduleDto_${index}_isWidth`}
-                      type="checkbox"
-                      checked={!!module.isWidth}
-                      onChange={onChange}
-                      className={checkboxStyle}
-                    />
-                    <span className="text-sm sm:text-base font-medium text-gray-700">
-                      {t('screens.screenForm.isWidth')}
-                    </span>
-                  </label>
-                  <label className="flex items-center space-x-2 sm:space-x-3 cursor-pointer p-2 rounded-md hover:bg-gray-50 transition-colors">
-                    <input
-                      name={`moduleDto_${index}_isHeight`}
-                      type="checkbox"
-                      checked={!!module.isHeight}
-                      onChange={onChange}
-                      className={checkboxStyle}
-                    />
-                    <span className="text-sm sm:text-base font-medium text-gray-700">
-                      {t('screens.screenForm.isHeight')}
-                    </span>
-                  </label>
-                </div>
+                {/* isWidth/isHeight removed */}
 
                 {/* Batch Number */}
                 <Input
