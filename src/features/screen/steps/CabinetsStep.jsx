@@ -13,23 +13,23 @@ const CabinetsStep = ({
   loading
 }) => {
   const { t } = useTranslation();
-  const checkboxStyle = "w-4 h-4 sm:w-5 sm:h-5 text-primary bg-gray-100 border-gray-300 rounded-sm focus:ring-primary-focus focus:border-primary focus:ring-1 accent-primary checked:border-primary";
+  // const checkboxStyle = "w-4 h-4 sm:w-5 sm:h-5 text-primary bg-gray-100 border-gray-300 rounded-sm focus:ring-primary-focus focus:border-primary focus:ring-1 accent-primary checked:border-primary";
 
-  const handleCheckboxChange = (e, index) => {
-    const { name, checked } = e.target;
-    const fieldName = name.split('_')[2];
+  // const handleCheckboxChange = (e, index) => {
+  //   const { name, checked } = e.target;
+  //   const fieldName = name.split('_')[2];
 
-    const updatedCabinets = form.cabinets.map((cabinet, i) =>
-      i === index ? { ...cabinet, [fieldName]: checked } : cabinet
-    );
+  //   const updatedCabinets = form.cabinets.map((cabinet, i) =>
+  //     i === index ? { ...cabinet, [fieldName]: checked } : cabinet
+  //   );
 
-    onChange({
-      target: {
-        name: 'cabinets',
-        value: updatedCabinets
-      }
-    });
-  };
+  //   onChange({
+  //     target: {
+  //       name: 'cabinets',
+  //       value: updatedCabinets
+  //     }
+  //   });
+  // };
 
   return (
     <div className="space-y-4 sm:space-y-6 max-w-4xl mx-auto">
@@ -87,21 +87,21 @@ const CabinetsStep = ({
               {/* Quantity Fields */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <Input
-                  label={t('screens.screenForm.heightQuantity')}
-                  name={`cabinet_${index}_heightQuantity`}
+                  label={t('screens.screenForm.cabinsByWidth')}
+                  name={`cabinet_${index}_cabinsByWidth`}
                   type="number"
-                  value={cabinet.heightQuantity}
+                  value={cabinet.cabinsByWidth}
                   onChange={onChange}
-                  error={errors[`cabinet_${index}_heightQuantity`]}
+                  error={errors[`cabinet_${index}_cabinsByWidth`]}
                   required
                 />
                 <Input
-                  label={t('screens.screenForm.widthQuantity')}
-                  name={`cabinet_${index}_widthQuantity`}
+                  label={t('screens.screenForm.cabinsByHeight')}
+                  name={`cabinet_${index}_cabinsByHeight`}
                   type="number"
-                  value={cabinet.widthQuantity}
+                  value={cabinet.cabinsByHeight}
                   onChange={onChange}
-                  error={errors[`cabinet_${index}_widthQuantity`]}
+                  error={errors[`cabinet_${index}_cabinsByHeight`]}
                   required
                 />
               </div>
@@ -109,29 +109,27 @@ const CabinetsStep = ({
               {/* Dimension Fields */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <Input
-                  // label="Height (px)"
-                  label={t('screens.screenForm.heightPx')}
-                  name={`cabinet_${index}_height`}
+                  label={t('screens.screenForm.widthPx')}
+                  name={`cabinet_${index}_pixelWidth`}
                   type="number"
-                  value={cabinet.height}
+                  value={cabinet.pixelWidth}
                   onChange={onChange}
-                  error={errors[`cabinet_${index}_height`]}
+                  error={errors[`cabinet_${index}_pixelWidth`]}
                   required
                 />
                 <Input
-                  // label="Width (px)"
-                  label={t('screens.screenForm.widthPx')}
-                  name={`cabinet_${index}_width`}
+                  label={t('screens.screenForm.heightPx')}
+                  name={`cabinet_${index}_pixelHeight`}
                   type="number"
-                  value={cabinet.width}
+                  value={cabinet.pixelHeight}
                   onChange={onChange}
-                  error={errors[`cabinet_${index}_width`]}
+                  error={errors[`cabinet_${index}_pixelHeight`]}
                   required
                 />
               </div>
 
               {/* Checkbox Fields */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 pt-2">
+              {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 pt-2">
                 <label className="flex items-center space-x-2 sm:space-x-3 cursor-pointer p-2 rounded-md hover:bg-gray-50 transition-colors">
                   <input
                     name={`cabinet_${index}_isWidth`}
@@ -156,7 +154,7 @@ const CabinetsStep = ({
                     {t('screens.screenForm.isHeight')}
                   </span>
                 </label>
-              </div>
+              </div> */}
             </div>
           </div>
         ))}

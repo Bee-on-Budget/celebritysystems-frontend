@@ -48,25 +48,25 @@ const initialFormState = {
   versionFile: null,
   modulesDto: [
     {
-      widthQuantity: "",
-      heightQuantity: "",
-      height: "",
-      width: "",
+      moduleByWidth: "",
+      moduleByHeight: "",
+      pixelHeight: "",
+      pixelWidth: "",
       moduleBatchNumber: "",
     }
   ],
   cabinets: [
     {
       cabinetName: "",
-      widthQuantity: "",
-      heightQuantity: "",
-      height: "",
-      width: "",
+      cabinsByWidth: "",
+      cabinsByHeight: "",
+      pixelHeight: "",
+      pixelWidth: "",
       moduleDto: {
-        widthQuantity: "",
-        heightQuantity: "",
-        height: "",
-        width: "",
+        moduleByWidth: "",
+        moduleByHeight: "",
+        pixelHeight: "",
+        pixelWidth: "",
         moduleBatchNumber: "",
       },
     },
@@ -85,17 +85,18 @@ const useAddScreenForm = () => {
       ...prev,
       cabinets: [
         ...prev.cabinets,
+
         {
           cabinetName: "",
-          widthQuantity: "",
-          heightQuantity: "",
-          height: "",
-          width: "",
+          cabinsByWidth: "",
+          cabinsByHeight: "",
+          pixelHeight: "",
+          pixelWidth: "",
           moduleDto: {
-            widthQuantity: "",
-            heightQuantity: "",
-            height: "",
-            width: "",
+            moduleByWidth: "",
+            moduleByHeight: "",
+            pixelHeight: "",
+            pixelWidth: "",
             moduleBatchNumber: "",
           },
         },
@@ -123,10 +124,10 @@ const useAddScreenForm = () => {
       modulesDto: [
         ...prev.modulesDto,
         {
-          widthQuantity: "",
-          heightQuantity: "",
-          height: "",
-          width: "",
+          moduleByWidth: "",
+          moduleByHeight: "",
+          pixelHeight: "",
+          pixelWidth: "",
           moduleBatchNumber: "",
         },
       ],
@@ -209,6 +210,7 @@ const useAddScreenForm = () => {
         newErrors.location = t('screens.validation.validMapsLink');
       }
       // if (!form.pixelScreen) newErrors.pixelScreen = t('screens.validation.pixelScreenRequired');
+      if (!form.batchScreen) newErrors.batchScreen = t('screens.validation.batchScreenRequired');
       if (!form.solutionTypeInScreen) newErrors.solutionTypeInScreen = t('screens.validation.solutionRequired');
       if (form.fan && !form.fanQuantity) {
         newErrors.fanQuantity = t('screens.validation.fanQuantityRequired');
@@ -321,35 +323,35 @@ const useAddScreenForm = () => {
         form.cabinets.forEach((cabinet, index) => {
           if (!cabinet.cabinetName)
             newErrors[`cabinet_${index}_cabinetName`] = t('screens.validation.cabinetNameRequired');
-          if (!cabinet.widthQuantity)
-            newErrors[`cabinet_${index}_widthQuantity`] = t('screens.validation.widthQuantityRequired');
-          else if (Number(cabinet.widthQuantity) <= 0)
-            newErrors[`cabinet_${index}_widthQuantity`] = t('screens.validation.widthQuantityPositive');
-          if (!cabinet.heightQuantity)
-            newErrors[`cabinet_${index}_heightQuantity`] = t('screens.validation.heightQuantityRequired');
-          else if (Number(cabinet.heightQuantity) <= 0)
-            newErrors[`cabinet_${index}_heightQuantity`] = t('screens.validation.heightQuantityPositive');
-          if (!cabinet.height)
-            newErrors[`cabinet_${index}_height`] = t('screens.validation.heightRequired');
-          if (!cabinet.width)
-            newErrors[`cabinet_${index}_width`] = t('screens.validation.widthRequired');
+          if (!cabinet.cabinsByWidth)
+            newErrors[`cabinet_${index}_cabinsByWidth`] = t('screens.validation.cabinsByWidthRequired');
+          else if (Number(cabinet.cabinsByWidth) <= 0)
+            newErrors[`cabinet_${index}_cabinsByWidth`] = t('screens.validation.cabinsByWidthPositive');
+          if (!cabinet.cabinsByHeight)
+            newErrors[`cabinet_${index}_cabinsByHeight`] = t('screens.validation.cabinsByHeightRequired');
+          else if (Number(cabinet.cabinsByHeight) <= 0)
+            newErrors[`cabinet_${index}_cabinsByHeight`] = t('screens.validation.cabinsByHeightPositive');
+          if (!cabinet.pixelWidth)
+            newErrors[`cabinet_${index}_pixelWidth`] = t('screens.validation.pixelWidthRequired');
+          if (!cabinet.pixelHeight)
+            newErrors[`cabinet_${index}_pixelHeight`] = t('screens.validation.pixelHeightRequired');
         });
       }
 
       if (form.solutionTypeInScreen === "MODULE_SOLUTION") {
         form.modulesDto.forEach((module, index) => {
-          if (!module.widthQuantity)
-            newErrors[`moduleDto_${index}_widthQuantity`] = t('screens.validation.quantityRequired');
-          else if (Number(module.widthQuantity) <= 0)
-            newErrors[`moduleDto_${index}_widthQuantity`] = t('screens.validation.quantityPositive');
-          if (!module.heightQuantity)
-            newErrors[`moduleDto_${index}_heightQuantity`] = t('screens.validation.heightQuantityRequired');
-          else if (Number(module.heightQuantity) <= 0)
-            newErrors[`moduleDto_${index}_heightQuantity`] = t('screens.validation.heightQuantityPositive');
-          if (!module.height)
-            newErrors[`moduleDto_${index}_height`] = t('screens.validation.heightRequired');
-          if (!module.width)
-            newErrors[`moduleDto_${index}_width`] = t('screens.validation.widthRequired');
+          if (!module.moduleByWidth)
+            newErrors[`moduleDto_${index}_moduleByWidth`] = t('screens.validation.moduleByWidthRequired');
+          else if (Number(module.moduleByWidth) <= 0)
+            newErrors[`moduleDto_${index}_moduleByWidth`] = t('screens.validation.moduleByWidthPositive');
+          if (!module.moduleByHeight)
+            newErrors[`moduleDto_${index}_moduleByHeight`] = t('screens.validation.moduleByHeightRequired');
+          else if (Number(module.moduleByHeight) <= 0)
+            newErrors[`moduleDto_${index}_moduleByHeight`] = t('screens.validation.moduleByHeightPositive');
+          if (!module.pixelWidth)
+            newErrors[`moduleDto_${index}_pixelWidth`] = t('screens.validation.pixelWidthRequired');
+          if (!module.pixelHeight)
+            newErrors[`moduleDto_${index}_pixelHeight`] = t('screens.validation.pixelHeightRequired');
           if (!module.moduleBatchNumber)
             newErrors[`moduleDto_${index}_moduleBatchNumber`] = t('screens.validation.batchNumberRequired');
         });
@@ -358,18 +360,18 @@ const useAddScreenForm = () => {
 
     if (currentStep === 4) {
       form.cabinets.forEach((cabinet, index) => {
-        if (!cabinet.moduleDto.widthQuantity)
-          newErrors[`moduleDto_${index}_widthQuantity`] = t('screens.validation.widthQuantityRequired');
-        else if (Number(cabinet.moduleDto.widthQuantity) <= 0)
-          newErrors[`moduleDto_${index}_widthQuantity`] = t('screens.validation.widthQuantityPositive');
-        if (!cabinet.moduleDto.heightQuantity)
-          newErrors[`moduleDto_${index}_heightQuantity`] = t('screens.validation.heightQuantityRequired');
-        else if (Number(cabinet.moduleDto.heightQuantity) <= 0)
-          newErrors[`moduleDto_${index}_heightQuantity`] = t('screens.validation.heightQuantityPositive');
-        if (!cabinet.moduleDto.height)
-          newErrors[`moduleDto_${index}_height`] = t('screens.validation.heightRequired');
-        if (!cabinet.moduleDto.width)
-          newErrors[`moduleDto_${index}_width`] = t('screens.validation.widthRequired');
+        if (!cabinet.moduleDto.moduleByWidth)
+          newErrors[`moduleDto_${index}_moduleByWidth`] = t('screens.validation.moduleByWidthRequired');
+        else if (Number(cabinet.moduleDto.moduleByWidth) <= 0)
+          newErrors[`moduleDto_${index}_moduleByWidth`] = t('screens.validation.moduleByWidthPositive');
+        if (!cabinet.moduleDto.moduleByHeight)
+          newErrors[`moduleDto_${index}_moduleByHeight`] = t('screens.validation.moduleByHeightRequired');
+        else if (Number(cabinet.moduleDto.moduleByHeight) <= 0)
+          newErrors[`moduleDto_${index}_moduleByHeight`] = t('screens.validation.moduleByHeightPositive');
+        if (!cabinet.moduleDto.pixelWidth)
+          newErrors[`moduleDto_${index}_pixelWidth`] = t('screens.validation.pixelWidthRequired');
+        if (!cabinet.moduleDto.pixelHeight)
+          newErrors[`moduleDto_${index}_pixelHeight`] = t('screens.validation.pixelHeightRequired');
         if (!cabinet.moduleDto.moduleBatchNumber)
           newErrors[`moduleDto_${index}_moduleBatchNumber`] = t('screens.validation.batchNumberRequired');
       });
@@ -406,25 +408,25 @@ const useAddScreenForm = () => {
       if (form.solutionTypeInScreen === "MODULE_SOLUTION") {
         solutionData.modulesDto = form.modulesDto.map(module => ({
           moduleBatchNumber: module.moduleBatchNumber,
-          widthQuantity: asNumberOrUndefined(module.widthQuantity),
-          heightQuantity: asNumberOrUndefined(module.heightQuantity),
-          height: asNumberOrUndefined(module.height),
-          width: asNumberOrUndefined(module.width),
+          moduleByWidth: asNumberOrUndefined(module.moduleByWidth),
+          moduleByHeight: asNumberOrUndefined(module.moduleByHeight),
+          pixelWidth: asNumberOrUndefined(module.pixelWidth),
+          pixelHeight: asNumberOrUndefined(module.pixelHeight),
         }));
       } else {
         solutionData.cabinDtoListJson = JSON.stringify(
           form.cabinets.map(cabinet => ({
             cabinetName: cabinet.cabinetName,
-            widthQuantity: asNumberOrUndefined(cabinet.widthQuantity),
-            heightQuantity: asNumberOrUndefined(cabinet.heightQuantity),
-            height: asNumberOrUndefined(cabinet.height),
-            width: asNumberOrUndefined(cabinet.width),
+            cabinsByWidth: asNumberOrUndefined(cabinet.cabinsByWidth),
+            cabinsByHeight: asNumberOrUndefined(cabinet.cabinsByHeight),
+            pixelWidth: asNumberOrUndefined(cabinet.pixelWidth),
+            pixelHeight: asNumberOrUndefined(cabinet.pixelHeight),
             moduleDto: {
               moduleBatchNumber: cabinet.moduleDto.moduleBatchNumber,
-              widthQuantity: asNumberOrUndefined(cabinet.moduleDto.widthQuantity),
-              heightQuantity: asNumberOrUndefined(cabinet.moduleDto.heightQuantity),
-              height: asNumberOrUndefined(cabinet.moduleDto.height),
-              width: asNumberOrUndefined(cabinet.moduleDto.width)
+              moduleByWidth: asNumberOrUndefined(module.moduleByWidth),
+              moduleByHeight: asNumberOrUndefined(module.moduleByHeight),
+              pixelWidth: asNumberOrUndefined(module.pixelWidth),
+              pixelHeight: asNumberOrUndefined(module.pixelHeight),
             }
           }))
         );

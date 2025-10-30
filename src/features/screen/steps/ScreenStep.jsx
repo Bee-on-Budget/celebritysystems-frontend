@@ -183,7 +183,7 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
           {
             irregularPixelPitch && <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <Input
-                label={t('screens.screenForm.pixelPitchhWidth')}
+                label={t('screens.screenForm.pixelPitchWidth')}
                 name="pixelPitchWidth"
                 value={form.pixelPitchWidth}
                 error={errors.pixelPitchWidth}

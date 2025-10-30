@@ -39,7 +39,6 @@ export const createScreen = async (screenData) => {
             'name', 'screenType', 'solutionTypeInScreen', 'location',
             'batchScreen', 'description',
             'screenWidth', 'screenHeight',
-            'pixelPitchWidth', 'pixelPitchHeight',
             'powerSupply', 'powerSupplyQuantity', 'sparePowerSupplyQuantity',
             'receivingCard', 'receivingCardQuantity', 'spareReceivingCardQuantity',
             'mainPowerCable', 'mainPowerCableQuantity', 'spareMainPowerCableQuantity',
@@ -64,7 +63,19 @@ export const createScreen = async (screenData) => {
         if (!screenData.irregularPixelPitch) {
             formData.append('pixelPitchWidth', screenData.pixelPitch ?? '');
             formData.append('pixelPitchHeight', screenData.pixelPitch ?? '');
+        } else {
+            formData.append('pixelPitchWidth', screenData.pixelPitchWidth);
+            formData.append('pixelPitchHeight', screenData.pixelPitchHeight);
         }
+
+        // 3. Calculate resolutionWidth and resolutionHeight
+        const pixelPitchWidth = screenData.irregularPixelPitch ? screenData.pixelPitchWidth : screenData.pixelPitch;
+        const pixelPitchHeight = screenData.irregularPixelPitch ? screenData.pixelPitchHeight : screenData.pixelPitch;
+        
+        const resolutionWidth = pixelPitchWidth * screenData.screenWidth;
+        formData.append("resolutionWidth", resolutionWidth);
+        const resolutionHeight = pixelPitchHeight * screenData.screenHeight;
+        formData.append("resolutionHeight", resolutionHeight);
 
         // 3. Solution-specific data
         if (screenData.solutionTypeInScreen === 'MODULE_SOLUTION') {
@@ -75,10 +86,10 @@ export const createScreen = async (screenData) => {
                 'moduleDtoListJson',
                 JSON.stringify(screenData.modulesDto.map(m => ({
                     moduleBatchNumber: m.moduleBatchNumber,
-                    widthQuantity: Number(m.widthQuantity),
-                    heightQuantity: Number(m.heightQuantity),
-                    width: Number(m.width),
-                    height: Number(m.height)
+                    moduleByWidth: Number(m.moduleByWidth),
+                    moduleByHeight: Number(m.moduleByHeight),
+                    pixelWidth: Number(m.pixelWidth),
+                    pixelHeight: Number(m.pixelHeight)
                 })))
             );
         } else if (screenData.solutionTypeInScreen === 'CABINET_SOLUTION') {
@@ -88,20 +99,20 @@ export const createScreen = async (screenData) => {
             formData.append('cabinDtoListJson', screenData.cabinDtoListJson);
         }
 
-        // 4. Handle file uploads
+        // 5. Handle file uploads
         ['connectionFile', 'configFile', 'versionFile'].forEach(fileField => {
             if (screenData[fileField] instanceof File) {
                 formData.append(fileField, screenData[fileField]);
             }
         });
 
-        // 5. Debug
+        // 6. Debug
         console.log('FormData contents:');
         for (let [key, value] of formData.entries()) {
             console.log(key, value);
         }
 
-        // 6. Send to API
+        // 7. Send to API
         const response = await api.post('/screens', formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
         });

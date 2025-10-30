@@ -54,20 +54,20 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <Input
                     label={t('screens.screenForm.widthQuantity')}
-                    name={`moduleDto_${index}_widthQuantity`}
+                    name={`moduleDto_${index}_moduleByWidth`}
                     type="number"
-                    value={module.widthQuantity}
+                    value={module.moduleByWidth}
                     onChange={onChange}
-                    error={errors[`moduleDto_${index}_widthQuantity`]}
+                    error={errors[`moduleDto_${index}_moduleByWidth`]}
                     required
                   />
                   <Input
                     label={t('screens.screenForm.heightQuantity')}
-                    name={`moduleDto_${index}_heightQuantity`}
+                    name={`moduleDto_${index}_moduleByHeight`}
                     type="number"
-                    value={module.heightQuantity}
+                    value={module.moduleByHeight}
                     onChange={onChange}
-                    error={errors[`moduleDto_${index}_heightQuantity`]}
+                    error={errors[`moduleDto_${index}_moduleByHeight`]}
                     required
                   />
                 </div>
@@ -76,20 +76,20 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <Input
                     label={t('screens.screenForm.heightPx')}
-                    name={`moduleDto_${index}_height`}
+                    name={`moduleDto_${index}_pixelHeight`}
                     type="number"
-                    value={module.height}
+                    value={module.pixelHeight}
                     onChange={onChange}
-                    error={errors[`moduleDto_${index}_height`]}
+                    error={errors[`moduleDto_${index}_pixelHeight`]}
                     required
                   />
                   <Input
                     label={t('screens.screenForm.widthPx')}
-                    name={`moduleDto_${index}_width`}
+                    name={`moduleDto_${index}_pixelWidth`}
                     type="number"
-                    value={module.width}
+                    value={module.pixelWidth}
                     onChange={onChange}
-                    error={errors[`moduleDto_${index}_width`]}
+                    error={errors[`moduleDto_${index}_pixelWidth`]}
                     required
                   />
                 </div>
@@ -149,6 +149,7 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
     );
   }
 
+  // STEP 4 corresponds to the validation of CABINET_SOLUTION in your hook
   return (
     <div className="space-y-4 sm:space-y-6 max-w-4xl mx-auto">
       {/* Header Section */}
@@ -157,13 +158,16 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
           {t('screens.screenForm.moduleInformation')}
         </h2>
       </div>
-      
+
       <hr className="border-gray-200" />
 
       {/* Cabinet Modules List */}
       <div className="space-y-4 sm:space-y-6">
         {form.cabinets.map((cabinet, index) => (
-          <div key={index} className="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 lg:p-6 shadow-sm hover:shadow-md transition-shadow">
+          <div
+            key={index}
+            className="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 lg:p-6 shadow-sm hover:shadow-md transition-shadow"
+          >
             {/* Cabinet Title */}
             <div className="mb-3 sm:mb-4">
               <h3 className="text-base sm:text-lg font-medium text-gray-800">
@@ -175,21 +179,21 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
               {/* Quantity Fields */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <Input
-                  label={t('screens.screenForm.widthQuantity')}
-                  name={`moduleDto_${index}_widthQuantity`}
+                  label={t('screens.screenForm.moduleByWidth')}
+                  name={`moduleDto_${index}_moduleByWidth`}
                   type="number"
-                  value={cabinet.moduleDto.widthQuantity}
+                  value={cabinet.moduleDto.moduleByWidth}
                   onChange={onChange}
-                  error={errors[`moduleDto_${index}_widthQuantity`]}
+                  error={errors[`moduleDto_${index}_moduleByWidth`]}
                   required
                 />
                 <Input
-                  label={t('screens.screenForm.heightQuantity')}
-                  name={`moduleDto_${index}_heightQuantity`}
+                  label={t('screens.screenForm.moduleByHeight')}
+                  name={`moduleDto_${index}_moduleByHeight`}
                   type="number"
-                  value={cabinet.moduleDto.heightQuantity}
+                  value={cabinet.moduleDto.moduleByHeight}
                   onChange={onChange}
-                  error={errors[`moduleDto_${index}_heightQuantity`]}
+                  error={errors[`moduleDto_${index}_moduleByHeight`]}
                   required
                 />
               </div>
@@ -197,21 +201,21 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
               {/* Dimension Fields */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <Input
-                  label={t('screens.screenForm.heightPx')}
-                  name={`moduleDto_${index}_height`}
+                  label={t('screens.screenForm.widthPx')}
+                  name={`moduleDto_${index}_pixelWidth`}
                   type="number"
-                  value={cabinet.moduleDto.height}
+                  value={cabinet.moduleDto.pixelWidth}
                   onChange={onChange}
-                  error={errors[`moduleDto_${index}_height`]}
+                  error={errors[`moduleDto_${index}_pixelWidth`]}
                   required
                 />
                 <Input
-                  label={t('screens.screenForm.widthPx')}
-                  name={`moduleDto_${index}_width`}
+                  label={t('screens.screenForm.heightPx')}
+                  name={`moduleDto_${index}_pixelHeight`}
                   type="number"
-                  value={cabinet.moduleDto.width}
+                  value={cabinet.moduleDto.pixelHeight}
                   onChange={onChange}
-                  error={errors[`moduleDto_${index}_width`]}
+                  error={errors[`moduleDto_${index}_pixelHeight`]}
                   required
                 />
               </div>
@@ -229,7 +233,7 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
           </div>
         ))}
 
-        {/* Empty State for Cabinet Solution */}
+        {/* Empty State */}
         {form.cabinets.length === 0 && (
           <div className="text-center py-8 sm:py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
             <p className="text-gray-500 text-sm sm:text-base">
@@ -241,16 +245,16 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
 
       {/* Navigation Buttons */}
       <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-4 pt-4 sm:pt-6 border-t border-gray-200">
-        <Button 
-          type="button" 
-          variant="ghost" 
+        <Button
+          type="button"
+          variant="ghost"
           onClick={onBack}
           className="w-full sm:w-auto min-w-[100px] order-2 sm:order-1"
         >
           {t('screens.actions.back')}
         </Button>
-        <Button 
-          type="submit" 
+        <Button
+          type="submit"
           isLoading={loading}
           className="w-full sm:w-auto min-w-[140px] order-1 sm:order-2"
           loadingText={t('common.loading')}
