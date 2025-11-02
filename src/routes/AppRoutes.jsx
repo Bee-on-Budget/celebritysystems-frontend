@@ -1,5 +1,6 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
+import { useAuth } from "../auth/useAuth";
 
 // Auth and layout
 import ProtectedRoute from "../auth/ProtectedRoute";
@@ -62,6 +63,14 @@ import CreateSubContract from "../features/subcontract/CreateSubContract";
 import SubContractDetails from '../features/subcontract/SubContractDetails';
 
 const AppRoutes = () => {
+  const RoleBasedIndex = () => {
+    const { user } = useAuth();
+    if (user?.role === "COMPANY") {
+      return <Navigate to="tickets" replace />;
+    }
+    return <Navigate to="dashboard" replace />;
+  };
+
   return (
     <Routes>
       {/* Public Route (only for unauthenticated users) */}
@@ -78,20 +87,55 @@ const AppRoutes = () => {
       <Route
         path="/"
         element={
-          <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
+          <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR", "COMPANY"]}>
             <Layout />
           </ProtectedRoute>
         }
       >
-        {/* Redirect root to dashboard */}
-        <Route index element={<Navigate to="dashboard" replace />} />
+        {/* Redirect root based on role */}
+        <Route index element={<RoleBasedIndex />} />
 
         {/* Core app pages */}
-        <Route path="dashboard" element={<Dashboard />} />
-        <Route path="profile" element={<Profile />} />
-        <Route path="add-system" element={<AddSystem />} />
-        <Route path="test" element={<TestPage />} />
-        <Route path="language-demo" element={<LanguageDemo />} />
+        <Route
+          path="dashboard"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="profile"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="add-system"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
+              <AddSystem />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="test"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
+              <TestPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="language-demo"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
+              <LanguageDemo />
+            </ProtectedRoute>
+          }
+        />
 
         {/* User management */}
         <Route
@@ -217,7 +261,7 @@ const AppRoutes = () => {
         <Route
           path="tickets"
           element={
-            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR", "COMPANY"]}>
               <TicketList />
             </ProtectedRoute>
           }
@@ -225,7 +269,7 @@ const AppRoutes = () => {
         <Route
           path="tickets/create"
           element={
-            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
+            <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR", "COMPANY", "COMPANY_USER"]}>
               <CreateTicket />
             </ProtectedRoute>
           }

@@ -9,20 +9,25 @@ import Select from 'react-select';
 import AsyncSelect from 'react-select/async';
 import debounce from 'lodash/debounce';
 import { DropdownInput, Input, showToast } from "../../components";
+import { useAuth } from "../../auth/useAuth";
 
 const CreateTicket = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const isCompanyUser = user?.role === 'COMPANY' || user?.role === 'COMPANY_USER';
+  const userCompanyId = user?.companyId || user?.company?.id || user?.companyID || "";
+  const userId = user?.id || user?.userId || user?.sub || undefined;
   const [formData, setFormData] = useState({
     title: "",
     serviceType: "",
     description: "",
     status: "OPEN",
-    companyId: "",
+    companyId: isCompanyUser ? userCompanyId : "",
     screenId: "",
     assignedToWorkerId: "",
     assignedBySupervisorId: "",
-    createdBy: 1,
+    createdBy: userId,
   });
   const [files, setFiles] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -70,13 +75,14 @@ const CreateTicket = () => {
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const [workerRes, supervisorRes] = await Promise.all([
-          getUsersByRole("CELEBRITY_SYSTEM_WORKER"),
-          getUsersByRole("SUPERVISOR")
-        ]);
-
-        setWorkers(workerRes || []);
-        setSupervisors(supervisorRes || []);
+        if (!isCompanyUser) {
+          const [workerRes, supervisorRes] = await Promise.all([
+            getUsersByRole("CELEBRITY_SYSTEM_WORKER"),
+            getUsersByRole("SUPERVISOR")
+          ]);
+          setWorkers(workerRes || []);
+          setSupervisors(supervisorRes || []);
+        }
 
       } catch (error) {
         showToast(t('tickets.messages.errorFetchingData'), "error")
@@ -87,7 +93,21 @@ const CreateTicket = () => {
     };
 
     fetchInitialData();
-  }, [t]);
+  }, [t, isCompanyUser]);
+
+  // Ensure company user enforced fields
+  useEffect(() => {
+    if (isCompanyUser) {
+      setFormData(prev => ({
+        ...prev,
+        status: "OPEN",
+        companyId: userCompanyId,
+        assignedToWorkerId: "",
+        assignedBySupervisorId: "",
+        createdBy: userId,
+      }));
+    }
+  }, [isCompanyUser, userCompanyId, userId]);
 
   // Load companies with search
   const loadCompanies = async (search = '') => {
@@ -228,26 +248,28 @@ const CreateTicket = () => {
           </div>
 
           {/* Company */}
-          <div className="col-span-2 md:col-span-1">
-            <label className="block text-sm font-medium text-gray-700 mb-1">{t('tickets.ticketForm.company')}</label>
-            <AsyncSelect
-              cacheOptions
-              defaultOptions
-              loadOptions={debouncedLoadCompanies}
-              value={companies.find(c => c.id === formData.companyId) ? {
-                value: formData.companyId,
-                label: companies.find(c => c.id === formData.companyId).name
-              } : null}
-              onChange={(option) => handleSelectChange('companyId', option)}
-              isClearable
-              placeholder={t('tickets.ticketForm.companyPlaceholder')}
-              noOptionsMessage={({ inputValue }) =>
-                inputValue ? t('tickets.messages.noCompaniesFound') : t('tickets.placeholders.searchCompanies')
-              }
-              styles={customStyles}
-              className="text-sm"
-            />
-          </div>
+          {!isCompanyUser ?? (
+            <div className="col-span-2 md:col-span-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('tickets.ticketForm.company')}</label>
+              <AsyncSelect
+                cacheOptions
+                defaultOptions
+                loadOptions={debouncedLoadCompanies}
+                value={companies.find(c => c.id === formData.companyId) ? {
+                  value: formData.companyId,
+                  label: companies.find(c => c.id === formData.companyId).name
+                } : null}
+                onChange={(option) => handleSelectChange('companyId', option)}
+                isClearable
+                placeholder={t('tickets.ticketForm.companyPlaceholder')}
+                noOptionsMessage={({ inputValue }) =>
+                  inputValue ? t('tickets.messages.noCompaniesFound') : t('tickets.placeholders.searchCompanies')
+                }
+                styles={customStyles}
+                className="text-sm"
+              />
+            </div>
+          )}
 
           {/* Screen */}
           <div className="col-span-2 md:col-span-1">
@@ -273,46 +295,50 @@ const CreateTicket = () => {
           </div>
 
           {/* Assigned To Worker */}
-          <div className="col-span-2 md:col-span-1">
-            <label className="block text-sm font-medium text-gray-700 mb-1">{t('tickets.ticketForm.assignedToWorker')}</label>
-            <Select
-              options={workers.map(worker => ({
-                value: worker.id,
-                label: `${worker.username} (${worker.email})`
-              }))}
-              value={workers.find(w => w.id === formData.assignedToWorkerId) ? {
-                value: formData.assignedToWorkerId,
-                label: `${workers.find(w => w.id === formData.assignedToWorkerId).username} (${workers.find(w => w.id === formData.assignedToWorkerId).email})`
-              } : null}
-              onChange={(option) => handleSelectChange('assignedToWorkerId', option)}
-              isClearable
-              placeholder={t('tickets.placeholders.selectWorker')}
-              className="react-select-container text-sm"
-              classNamePrefix="react-select"
-              styles={customStyles}
-            />
-          </div>
+          {!isCompanyUser && (
+            <div className="col-span-2 md:col-span-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('tickets.ticketForm.assignedToWorker')}</label>
+              <Select
+                options={workers.map(worker => ({
+                  value: worker.id,
+                  label: `${worker.username} (${worker.email})`
+                }))}
+                value={workers.find(w => w.id === formData.assignedToWorkerId) ? {
+                  value: formData.assignedToWorkerId,
+                  label: `${workers.find(w => w.id === formData.assignedToWorkerId).username} (${workers.find(w => w.id === formData.assignedToWorkerId).email})`
+                } : null}
+                onChange={(option) => handleSelectChange('assignedToWorkerId', option)}
+                isClearable
+                placeholder={t('tickets.placeholders.selectWorker')}
+                className="react-select-container text-sm"
+                classNamePrefix="react-select"
+                styles={customStyles}
+              />
+            </div>
+          )}
 
           {/* Assigned to Supervisor */}
-          <div className="col-span-2 md:col-span-1">
-            <label className="block text-sm font-medium text-gray-700 mb-1">{t('tickets.ticketForm.assignedBySupervisor')}</label>
-            <Select
-              options={supervisors.map(supervisor => ({
-                value: supervisor.id,
-                label: `${supervisor.username} (${supervisor.email})`
-              }))}
-              value={supervisors.find(s => s.id === formData.assignedBySupervisorId) ? {
-                value: formData.assignedBySupervisorId,
-                label: `${supervisors.find(s => s.id === formData.assignedBySupervisorId).username} (${supervisors.find(s => s.id === formData.assignedBySupervisorId).email})`
-              } : null}
-              onChange={(option) => handleSelectChange('assignedBySupervisorId', option)}
-              isClearable
-              placeholder={t('tickets.placeholders.selectSupervisor')}
-              className="react-select-container text-sm"
-              classNamePrefix="react-select"
-              styles={customStyles}
-            />
-          </div>
+          {!isCompanyUser && (
+            <div className="col-span-2 md:col-span-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('tickets.ticketForm.assignedBySupervisor')}</label>
+              <Select
+                options={supervisors.map(supervisor => ({
+                  value: supervisor.id,
+                  label: `${supervisor.username} (${supervisor.email})`
+                }))}
+                value={supervisors.find(s => s.id === formData.assignedBySupervisorId) ? {
+                  value: formData.assignedBySupervisorId,
+                  label: `${supervisors.find(s => s.id === formData.assignedBySupervisorId).username} (${supervisors.find(s => s.id === formData.assignedBySupervisorId).email})`
+                } : null}
+                onChange={(option) => handleSelectChange('assignedBySupervisorId', option)}
+                isClearable
+                placeholder={t('tickets.placeholders.selectSupervisor')}
+                className="react-select-container text-sm"
+                classNamePrefix="react-select"
+                styles={customStyles}
+              />
+            </div>
+          )}
         </div>
 
         {/* Attachments */}

@@ -169,6 +169,15 @@ export const getPendingTicketById = async (id) => {
   }
 }
 
+export const getTicketsByCompany = async (companyId) => {
+  try {
+    const response = await axios.get(`tickets/company/${companyId}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data?.message || "Faild to load tickets";
+  }
+}
+
 export const getReportById = async (id) => {
   try {
     const response = await axios.get(`tickets/${id}/worker-report`);

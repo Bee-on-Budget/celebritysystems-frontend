@@ -46,7 +46,9 @@ const Sidebar = ({ open, setOpen }) => {
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto mt-1 flex flex-col space-y-2 pr-[calc(1.5rem-8px)] pl-4 pb-4 pt-1 scrollbar-gutter-stable">
         <div className="pr-2">
-          <NavButton to={"/dashboard"} icon={<FaHome />} label={t('sidebar.home')} onClick={() => setOpen(false)} />
+          {user?.role !== "COMPANY" && (
+            <NavButton to={"/dashboard"} icon={<FaHome />} label={t('sidebar.home')} onClick={() => setOpen(false)} />
+          )}
 
           {user?.role === "ADMIN" && (
             <SidebarDropdown
@@ -61,6 +63,7 @@ const Sidebar = ({ open, setOpen }) => {
             />
           )}
 
+          {user?.role !== "COMPANY" && (
           <SidebarDropdown
             icon={FaBuilding}
             label={t('sidebar.allCompanies')}
@@ -72,7 +75,9 @@ const Sidebar = ({ open, setOpen }) => {
               { label: t('sidebar.addUser'), href: "/companies/add-user", onClick: () => setOpen(false) }
             ]}
           />
+          )}
 
+          {user?.role !== "COMPANY" && (
           <SidebarDropdown
             icon={FaDesktop}
             label={t('sidebar.allScreens')}
@@ -83,6 +88,7 @@ const Sidebar = ({ open, setOpen }) => {
               { label: t('sidebar.createScreen'), href: "/screen/AddScreen", onClick: () => setOpen(false) }
             ]}
           />
+          )}
 
           <SidebarDropdown
             icon={FaFileContract}
@@ -91,12 +97,16 @@ const Sidebar = ({ open, setOpen }) => {
             onToggle={() => handleDropdownToggle("tickets")}
             items={[
               { label: t('sidebar.allTickets'), href: "/tickets", onClick: () => setOpen(false) },
+              // Always allow Create Ticket for company users
               { label: t('sidebar.createTicket'), href: "/tickets/create", onClick: () => setOpen(false) },
-              { label: t('sidebar.pendingTickets'), href: "/tickets/pending", onClick: () => setOpen(false) },
-              { label: t('sidebar.resolvedTickets'), href: "/tickets/resolved", onClick: () => setOpen(false) },
+              ...(user?.role !== "COMPANY" && user?.role !== "COMPANY_USER" ? [
+                { label: t('sidebar.pendingTickets'), href: "/tickets/pending", onClick: () => setOpen(false) },
+                { label: t('sidebar.resolvedTickets'), href: "/tickets/resolved", onClick: () => setOpen(false) },
+              ] : []),
             ]}
           />
 
+          {user?.role !== "COMPANY" && (
           <SidebarDropdown
             icon={FaFileContract}
             label={t('sidebar.allContracts')}
@@ -107,7 +117,9 @@ const Sidebar = ({ open, setOpen }) => {
               { label: t('sidebar.createContract'), href: "/contracts/create", onClick: () => setOpen(false) }
             ]}
           />
+          )}
 
+          {user?.role !== "COMPANY" && (
           <SidebarDropdown
             icon={FaFileContract}
             label={t('sidebar.allSubcontracts')}
@@ -118,7 +130,9 @@ const Sidebar = ({ open, setOpen }) => {
               { label: t('sidebar.createSubcontract'), href: "/subcontract/create", onClick: () => setOpen(false) }
             ]}
           />
+          )}
 
+          {user?.role !== "COMPANY" && (
           <SidebarDropdown
             icon={FaFileContract}
             label={t('reports.title')}
@@ -129,6 +143,7 @@ const Sidebar = ({ open, setOpen }) => {
               { label: t('reports.reportSummaryTab'), href: "/reports-summary", onClick: () => setOpen(false) },
             ]}
           />
+          )}
         </div>
       </nav>
     </div>

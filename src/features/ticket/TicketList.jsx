@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DataList, Pagination } from '../../components';
-import { getAllTickets } from '../../api/services/TicketService';
+import { getAllTickets, getTicketsByCompany } from '../../api/services/TicketService';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../../auth/useAuth';
 
 const TicketList = () => {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const [tickets, setTickets] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -14,24 +16,42 @@ const TicketList = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [totalTickets, setTotalTickets] = useState(0);
   const [pageSize, setPageSize] = useState(10);
+  const [isCompanyScoped, setIsCompanyScoped] = useState(false);
   const navigate = useNavigate();
 
   const fetchTickets = useCallback(async (page = 0) => {
     setIsLoading(true);
     try {
-      const data = await getAllTickets({ page, size: pageSize });
-      setTickets(data || []);
-      setFiltered(data || []);
-      setTotalPages(data.totalPages);
-      setTotalTickets(data.totalElements);
-      setCurrentPage(data.pageNumber);
-      setPageSize(data.pageSize);
+      const role = user?.role;
+      const isCompanyUser = role === 'COMPANY' || role === 'COMPANY_USER';
+      const companyId = user?.companyId || user?.company?.id || user?.companyID;
+
+      if (isCompanyUser && companyId) {
+        const list = await getTicketsByCompany(companyId);
+        const items = Array.isArray(list) ? list : (list?.data || []);
+        setTickets(items);
+        setFiltered(items);
+        setIsCompanyScoped(true);
+        setTotalPages(1);
+        setTotalTickets(items.length);
+        setCurrentPage(0);
+      } else {
+        const data = await getAllTickets({ page, size: pageSize });
+        const items = Array.isArray(data) ? data : (data?.content || data?.data || []);
+        setTickets(items || []);
+        setFiltered(items || []);
+        setIsCompanyScoped(false);
+        setTotalPages(data?.totalPages || 0);
+        setTotalTickets(data?.totalElements || (items?.length || 0));
+        setCurrentPage(data?.pageNumber || 0);
+        if (data?.pageSize) setPageSize(data.pageSize);
+      }
     } catch (e) {
       setError(t('tickets.messages.errorFetchingTickets'));
     } finally {
       setIsLoading(false);
     }
-  }, [pageSize, t]);
+  }, [pageSize, t, user]);
 
   useEffect(() => {
     fetchTickets(currentPage);
@@ -120,7 +140,7 @@ const TicketList = () => {
     >
       {renderTicketItem(filtered)}
       {
-        tickets.length > pageSize && <Pagination
+        !isCompanyScoped && tickets.length > pageSize && <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           totalItems={totalTickets}
