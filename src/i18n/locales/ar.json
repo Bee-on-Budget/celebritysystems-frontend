@@ -446,7 +446,11 @@
       "noModulesAdded": "لم يتم إضافة وحدات بعد",
       "addFirstModule": "أضف وحدتك الأولى",
       "moduleForCabinet": "وحدة للخزانة",
-      "noCabinetsAvailable": "لا توجد خزانات متاحة. يرجى إضافة خزانات في الخطوة السابقة."
+      "noCabinetsAvailable": "لا توجد خزانات متاحة. يرجى إضافة خزانات في الخطوة السابقة.",
+      "cabinsByWidth": "كمية العرض للخزانة",
+      "cabinsByHeight": "كمية الارتفاع للخزانة",
+      "moduleByWidth": "كمية العرض للوحدة",
+      "moduleByHeight": "كمية الارتفاع للوحدة"
     },
     "options": {
       "indoor": "داخلية",
@@ -517,7 +521,9 @@
       "moduleByHeightRequired": "كمية الارتفاع للوحدة مطلوبة",
       "moduleByHeightPositive": "كمية الارتفاع للوحدة يجب أن تكون أكبر من 0",
       "pixelWidthRequired": "العرض بالبكسل للوحدة مطلوب",
-      "pixelHeightRequired": "الارتفاع بالبكسل للوحدة مطلوب"
+      "pixelHeightRequired": "الارتفاع بالبكسل للوحدة مطلوب",
+      "cabinsByHeightRequired": "كمية الارتفاع للخزانة مطلوبة",
+      "cabinsByWidthRequired": "كمية العرض للخزانة مطلوبة"
     },
     "messages": {
       "screenCreated": "تم إنشاء الشاشة بنجاح",
