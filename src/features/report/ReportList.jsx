@@ -18,13 +18,14 @@ const ReportList = () => {
     setIsLoading(true);
     try {
       const data = await getAllTickets({ page, size: pageSize });
-      const resolvedTickets = data.filter(ticket => ticket.status === "RESOLVED");
+      const items = Array.isArray(data) ? data : (data?.content || data?.data || []);
+      const resolvedTickets = (items || []).filter(ticket => ticket.status === "RESOLVED");
       setTickets(resolvedTickets || []);
       setFiltered(resolvedTickets || []);
-      setTotalPages(data.totalPages);
-      setTotalTickets(data.totalElements);
-      setCurrentPage(data.pageNumber);
-      setPageSize(data.pageSize);
+      setTotalPages(data?.totalPages || 0);
+      setTotalTickets(data?.totalElements || (resolvedTickets?.length || 0));
+      setCurrentPage(data?.pageNumber ?? page);
+      if (data?.pageSize) setPageSize(data.pageSize);
     } catch (e) {
       setError("Failed to load tickets");
     } finally {
@@ -81,7 +82,7 @@ const ReportList = () => {
               <tr
                 key={ticket.id}
                 className={rowStyle}
-                onClick={() => navigate(`/reports/${ticket.id}`, { state: { ticket } })}
+                onClick={() => navigate(`/reports/${ticket.id}`, { state: { report: ticket } })}
               >
                 <td className={nameStyle}>{ticket.title}</td>
                 <td className={bodyStyle} title={ticket.description}>
@@ -119,7 +120,7 @@ const ReportList = () => {
     >
       {renderTicketItem(filtered)}
       {
-        tickets.length > pageSize && <Pagination
+        (totalPages > 1 || totalTickets > pageSize) && <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           totalItems={totalTickets}
