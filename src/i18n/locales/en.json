@@ -60,7 +60,9 @@
     "redo": "Redo",
     "selectAnOption": "Select an option",
     "chooseFile": "Choose File",
-    "unknownError": "Unknown error"
+    "unknownError": "Unknown error",
+    "confirmTitle": "Are you sure?",
+    "confirmMessage": "This action cannot be undone."
   },
   "tickets": {
     "title": "Tickets",

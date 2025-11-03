@@ -60,7 +60,9 @@
     "redo": "إعادة",
     "selectAnOption": "حدد اختيار",
     "chooseFile": "اختر ملف",
-    "unknownError": "خطأ غير معروف"
+    "unknownError": "خطأ غير معروف",
+    "confirmTitle": "هل أنت متأكد؟",
+    "confirmMessage": "لا يمكن التراجع عن هذا الإجراء."
   },
   "tickets": {
     "title": "التذاكر",
