@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { deleteSubContract } from '../../api/services/SubContractService';
 import { FiArrowLeft, FiCalendar, FiFileText, FiTrash2, FiMonitor, FiUser, FiHome, FiMoreVertical, FiEdit2, FiExternalLink, FiLock } from 'react-icons/fi';
 import { Button, Loading, showToast, ConfirmationModal } from '../../components';
 import { getScreenById } from '../../api/services/ScreenService';
 
 const SubContractDetails = () => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -44,14 +46,14 @@ const SubContractDetails = () => {
         return;
       } else {
         navigate(-1);
-        showToast("Failed to load subcontract info, please try again!", "error");
+        showToast(t('subcontracts.messages.failedToLoadInfo'), "error");
       }
     };
 
     if (id) {
       fetchSubContract();
     }
-  }, [id, subContract, location.state?.subContract, navigate]);
+  }, [id, subContract, location.state?.subContract, navigate, t]);
 
   const handleDeleteClick = () => {
     setShowDeleteModal(true);
@@ -61,16 +63,16 @@ const SubContractDetails = () => {
   const handleDeleteConfirm = async () => {
     try {
       await deleteSubContract(id);
-      showToast('Sub-Contract deleted successfully', 'success');
+      showToast(t('subcontracts.messages.subcontractDeleted'), 'success');
       navigate('/subcontract');
     } catch (err) {
-      showToast(err.message || 'Failed to delete sub-screen', 'error');
+      showToast(err.message || t('subcontracts.messages.errorDeletingSubcontract'), 'error');
     } finally {
       setShowDeleteModal(false);
     }
   };
 
-  const formatDate = (dateString) => dateString ? new Date(dateString).toLocaleDateString() : 'N/A';
+  const formatDate = (dateString) => dateString ? new Date(dateString).toLocaleDateString() : t('subcontracts.details.na');
 
   if (loading) return <Loading />;
 
@@ -82,7 +84,7 @@ const SubContractDetails = () => {
 
   if (!subContract) return (
     <div className="bg-white p-8 rounded-lg shadow-md text-center">
-      <p className="text-gray-600">Subcontract not found</p>
+      <p className="text-gray-600">{t('subcontracts.messages.subcontractNotFound')}</p>
     </div>
   );
 
@@ -93,9 +95,9 @@ const SubContractDetails = () => {
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onConfirm={handleDeleteConfirm}
-        title="Delete Subcontract"
-        message="Are you sure you want to delete this subcontract? This action cannot be undone."
-        confirmText="Delete"
+        title={t('subcontracts.confirmations.deleteTitle')}
+        message={t('subcontracts.confirmations.deleteMessage')}
+        confirmText={t('subcontracts.confirmations.deleteConfirm')}
         danger={true}
       />
 
@@ -110,8 +112,8 @@ const SubContractDetails = () => {
             size='sm'
             className="flex-shrink-0"
           >
-            <span className="hidden sm:inline">Back to Subcontracts</span>
-            <span className="sm:hidden">Back</span>
+            <span className="hidden sm:inline">{t('subcontracts.actions.backToSubcontracts')}</span>
+            <span className="sm:hidden">{t('subcontracts.actions.back')}</span>
           </Button>
 
           {/* Desktop Action Buttons */}
@@ -122,7 +124,7 @@ const SubContractDetails = () => {
               icon={<FiEdit2 />}
               size="sm"
             >
-              Edit
+              {t('subcontracts.actions.edit')}
             </Button>
             <Button
               onClick={handleDeleteClick}
@@ -130,7 +132,7 @@ const SubContractDetails = () => {
               icon={<FiTrash2 />}
               size="sm"
             >
-              Delete
+              {t('subcontracts.actions.delete')}
             </Button>
           </div>
 
@@ -154,14 +156,14 @@ const SubContractDetails = () => {
                   className="w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 border-b border-gray-100"
                 >
                   <FiEdit2 />
-                  Edit Subcontract
+                  {t('subcontracts.editSubcontract')}
                 </button>
                 <button
                   onClick={handleDeleteClick}
                   className="w-full px-4 py-3 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
                 >
                   <FiTrash2 />
-                  Delete Subcontract
+                  {t('subcontracts.confirmations.deleteTitle')}
                 </button>
               </div>
             )}
@@ -174,19 +176,19 @@ const SubContractDetails = () => {
         <div className="bg-primary bg-opacity-10 p-4 md:p-6 border-b border-gray-100">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
             <div>
-              <h1 className="text-xl md:text-2xl font-bold text-primary break-words">Subcontract #{subContract.id}</h1>
+              <h1 className="text-xl md:text-2xl font-bold text-primary break-words">{t('subcontracts.details.subcontractInfo')} #{subContract.id}</h1>
               <div className="flex flex-wrap gap-2 mt-2">
                 <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full flex items-center">
                   <FiMonitor className="mr-1" />
-                  Subcontract ID: {subContract.id}
+                  {t('subcontracts.details.subcontractId')}: {subContract.id}
                 </span>
                 <span className="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full flex items-center">
                   <FiCalendar className="mr-1" />
-                  Created: {formatDate(subContract.createdAt)}
+                  {t('subcontracts.details.created')}: {formatDate(subContract.createdAt)}
                 </span>
                 <span className="px-3 py-1 bg-purple-100 text-purple-800 text-sm rounded-full flex items-center">
                   <FiCalendar className="mr-1" />
-                  Expires: {formatDate(subContract.expiredAt)}
+                  {t('subcontracts.details.expires')}: {formatDate(subContract.expiredAt)}
                 </span>
               </div>
             </div>
@@ -198,7 +200,7 @@ const SubContractDetails = () => {
           {/* Basic Information Section */}
           <div className="mb-6 md:mb-8">
             <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-3 md:mb-4 pb-2 border-b border-gray-100">
-              Subcontract Information
+              {t('subcontracts.details.subcontractInfo')}
             </h2>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
@@ -208,23 +210,23 @@ const SubContractDetails = () => {
                   <div className="p-2 bg-blue-100 rounded-lg mr-3">
                     <FiHome className="text-blue-600 text-lg md:text-xl" />
                   </div>
-                  <h3 className="text-base font-semibold text-dark">Main Company</h3>
+                  <h3 className="text-base font-semibold text-dark">{t('subcontracts.details.mainCompany')}</h3>
                 </div>
                 <div className="space-y-2 md:space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-sm text-dark-light">Company Name:</span>
-                    <span className="text-sm font-medium text-dark break-words text-right max-w-[50%]">{subContract.mainCompany?.name || 'N/A'}</span>
+                    <span className="text-sm text-dark-light">{t('subcontracts.details.companyName')}:</span>
+                    <span className="text-sm font-medium text-dark break-words text-right max-w-[50%]">{subContract.mainCompany?.name || t('subcontracts.details.na')}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-dark-light">Email:</span>
-                    <span className="text-sm font-medium text-dark break-words text-right max-w-[50%]">{subContract.mainCompany?.email || 'N/A'}</span>
+                    <span className="text-sm text-dark-light">{t('subcontracts.details.email')}:</span>
+                    <span className="text-sm font-medium text-dark break-words text-right max-w-[50%]">{subContract.mainCompany?.email || t('subcontracts.details.na')}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-dark-light">Phone:</span>
-                    <span className="text-sm font-medium text-dark break-words text-right max-w-[50%]">{subContract.mainCompany?.phone || 'N/A'}</span>
+                    <span className="text-sm text-dark-light">{t('subcontracts.details.phone')}:</span>
+                    <span className="text-sm font-medium text-dark break-words text-right max-w-[50%]">{subContract.mainCompany?.phone || t('subcontracts.details.na')}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-dark-light">Location:</span>
+                    <span className="text-sm text-dark-light">{t('subcontracts.details.location')}:</span>
                     {subContract.mainCompany?.location ? (
                       <a
                         href={subContract.mainCompany.location}
@@ -232,18 +234,18 @@ const SubContractDetails = () => {
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 text-primary hover:text-primary-hover font-medium transition-colors text-sm"
                       >
-                        View on Maps
+                        {t('subcontracts.details.viewOnMaps')}
                         <FiExternalLink className="text-xs" />
                       </a>
                     ) : (
-                      <span className="text-sm font-medium text-dark">N/A</span>
+                      <span className="text-sm font-medium text-dark">{t('subcontracts.details.na')}</span>
                     )}
                   </div>
                   <div className="pt-2 md:pt-3 border-t border-gray-100">
                     <div className="flex justify-between">
-                      <span className="text-xs text-dark-light">Status:</span>
+                      <span className="text-xs text-dark-light">{t('subcontracts.details.status')}:</span>
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${subContract.mainCompany?.activated ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                        {subContract.mainCompany?.activated ? 'Active' : 'Inactive'}
+                        {subContract.mainCompany?.activated ? t('subcontracts.details.active') : t('subcontracts.details.inactive')}
                       </span>
                     </div>
                   </div>
@@ -256,23 +258,23 @@ const SubContractDetails = () => {
                   <div className="p-2 bg-green-100 rounded-lg mr-3">
                     <FiUser className="text-green-600 text-lg md:text-xl" />
                   </div>
-                  <h3 className="text-base font-semibold text-dark">Controller Company</h3>
+                  <h3 className="text-base font-semibold text-dark">{t('subcontracts.details.controllerCompany')}</h3>
                 </div>
                 <div className="space-y-2 md:space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-sm text-dark-light">Company Name:</span>
-                    <span className="text-sm font-medium text-dark break-words text-right max-w-[50%]">{subContract.controllerCompany?.name || 'N/A'}</span>
+                    <span className="text-sm text-dark-light">{t('subcontracts.details.companyName')}:</span>
+                    <span className="text-sm font-medium text-dark break-words text-right max-w-[50%]">{subContract.controllerCompany?.name || t('subcontracts.details.na')}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-dark-light">Email:</span>
-                    <span className="text-sm font-medium text-dark break-words text-right max-w-[50%]">{subContract.controllerCompany?.email || 'N/A'}</span>
+                    <span className="text-sm text-dark-light">{t('subcontracts.details.email')}:</span>
+                    <span className="text-sm font-medium text-dark break-words text-right max-w-[50%]">{subContract.controllerCompany?.email || t('subcontracts.details.na')}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-dark-light">Phone:</span>
-                    <span className="text-sm font-medium text-dark break-words text-right max-w-[50%]">{subContract.controllerCompany?.phone || 'N/A'}</span>
+                    <span className="text-sm text-dark-light">{t('subcontracts.details.phone')}:</span>
+                    <span className="text-sm font-medium text-dark break-words text-right max-w-[50%]">{subContract.controllerCompany?.phone || t('subcontracts.details.na')}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-dark-light">Location:</span>
+                    <span className="text-sm text-dark-light">{t('subcontracts.details.location')}:</span>
                     {subContract.controllerCompany?.location ? (
                       <a
                         href={subContract.controllerCompany.location}
@@ -280,18 +282,18 @@ const SubContractDetails = () => {
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 text-primary hover:text-primary-hover font-medium transition-colors text-sm"
                       >
-                        View on Maps
+                        {t('subcontracts.details.viewOnMaps')}
                         <FiExternalLink className="text-xs" />
                       </a>
                     ) : (
-                      <span className="text-sm font-medium text-dark">N/A</span>
+                      <span className="text-sm font-medium text-dark">{t('subcontracts.details.na')}</span>
                     )}
                   </div>
                   <div className="pt-2 md:pt-3 border-t border-gray-100">
                     <div className="flex justify-between">
-                      <span className="text-xs text-dark-light">Status:</span>
+                      <span className="text-xs text-dark-light">{t('subcontracts.details.status')}:</span>
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${subContract.controllerCompany?.activated ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                        {subContract.controllerCompany?.activated ? 'Active' : 'Inactive'}
+                        {subContract.controllerCompany?.activated ? t('subcontracts.details.active') : t('subcontracts.details.inactive')}
                       </span>
                     </div>
                   </div>
@@ -304,41 +306,41 @@ const SubContractDetails = () => {
                   <div className="p-2 bg-purple-100 rounded-lg mr-3">
                     <FiFileText className="text-purple-600 text-lg md:text-xl" />
                   </div>
-                  <h3 className="text-base font-semibold text-dark">Contract Details</h3>
+                  <h3 className="text-base font-semibold text-dark">{t('subcontracts.details.contractDetails')}</h3>
                 </div>
                 <div className="space-y-2 md:space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-sm text-dark-light">Contract Info:</span>
-                    <span className="text-sm font-medium text-dark break-words text-right max-w-[50%]">{subContract.contract?.info || 'N/A'}</span>
+                    <span className="text-sm text-dark-light">{t('subcontracts.details.contractInfo')}:</span>
+                    <span className="text-sm font-medium text-dark break-words text-right max-w-[50%]">{subContract.contract?.info || t('subcontracts.details.na')}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-dark-light">Start Date:</span>
+                    <span className="text-sm text-dark-light">{t('subcontracts.details.startDate')}:</span>
                     <span className="text-sm font-medium text-dark">
                       {formatDate(subContract.contract?.startContractAt)}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-dark-light">Expiry Date:</span>
+                    <span className="text-sm text-dark-light">{t('subcontracts.details.expiryDate')}:</span>
                     <span className="text-sm font-medium text-dark">
                       {formatDate(subContract.contract?.expiredAt)}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-dark-light">Duration Type:</span>
+                    <span className="text-sm text-dark-light">{t('subcontracts.details.durationType')}:</span>
                     <span className="text-sm font-medium text-dark">
-                      {subContract.contract?.durationType || 'N/A'}
+                      {subContract.contract?.durationType || t('subcontracts.details.na')}
                     </span>
                   </div>
                   <div className="pt-2 md:pt-3 border-t border-gray-100">
                     <div className="flex justify-between">
-                      <span className="text-xs text-dark-light">Days Remaining:</span>
+                      <span className="text-xs text-dark-light">{t('subcontracts.details.daysRemaining')}:</span>
                       <span className={`text-xs font-medium ${subContract.expiredAt && new Date(subContract.expiredAt) < new Date()
                         ? 'text-red-600'
                         : 'text-green-600'
                         }`}>
                         {subContract.expiredAt
                           ? Math.ceil((new Date(subContract.expiredAt) - new Date()) / (1000 * 60 * 60 * 24))
-                          : 'N/A'}
+                          : t('subcontracts.details.na')}
                       </span>
                     </div>
                   </div>
@@ -350,22 +352,22 @@ const SubContractDetails = () => {
           {/* Screens Section */}
           <div className="mb-6 md:mb-8">
             <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-3 md:mb-4 pb-2 border-b border-gray-100">
-              Screens ({screens.length || 0})
+              {t('subcontracts.details.screens')} ({screens.length || 0})
             </h2>
 
             {screenLoading ? (
               <div className="bg-gray-50 p-4 rounded-lg text-center">
-                <p className="text-gray-500">Loading screen details...</p>
+                <p className="text-gray-500">{t('subcontracts.messages.loadingScreenDetails')}</p>
               </div>
             ) : screens.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Screen Type</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Solution Type</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Resolution</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('subcontracts.details.name')}</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('subcontracts.details.screenType')}</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('subcontracts.details.solutionType')}</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('subcontracts.details.resolution')}</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
@@ -374,17 +376,17 @@ const SubContractDetails = () => {
                         <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                           <div className="flex items-center">
                             <FiMonitor className="mr-2 text-blue-500" />
-                            {screen.name || 'N/A'}
+                            {screen.name || t('subcontracts.details.na')}
                           </div>
                         </td>
                         <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {screen.screenType || 'N/A'}
+                          {screen.screenType || t('subcontracts.details.na')}
                         </td>
                         <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {screen.solutionType || 'N/A'}
+                          {screen.solutionType || t('subcontracts.details.na')}
                         </td>
                         <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {screen.resolution || 'N/A'}
+                          {screen.resolution || t('subcontracts.details.na')}
                         </td>
                       </tr>
                     ))}
@@ -393,24 +395,24 @@ const SubContractDetails = () => {
               </div>
             ) : (
               <div className="bg-gray-50 p-4 rounded-lg text-center">
-                <p className="text-gray-500">No screens associated with this contract</p>
+                <p className="text-gray-500">{t('subcontracts.messages.noScreensAssociated')}</p>
               </div>
             )}
           </div>
           {/* Main Company Users Section */}
           <div className="mb-6 md:mb-8">
             <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-3 md:mb-4 pb-2 border-b border-gray-100">
-              Main Company Users ({subContract.mainCompany?.userList?.length || 0})
+              {t('subcontracts.details.mainCompanyUsers')} ({subContract.mainCompany?.userList?.length || 0})
             </h2>
             {subContract.mainCompany?.userList?.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Full Name</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Permissions</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('subcontracts.details.username')}</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('subcontracts.details.fullName')}</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('subcontracts.details.email')}</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('subcontracts.details.permissions')}</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
@@ -419,22 +421,22 @@ const SubContractDetails = () => {
                         <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                           <div className="flex items-center">
                             <FiUser className="mr-2 text-indigo-500" />
-                            {user.username || 'N/A'}
+                            {user.username || t('subcontracts.details.na')}
                           </div>
                         </td>
                         <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {user.fullName || 'N/A'}
+                          {user.fullName || t('subcontracts.details.na')}
                         </td>
                         <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {user.email || 'N/A'}
+                          {user.email || t('subcontracts.details.na')}
                         </td>
                         <td className="px-4 py-4 whitespace-nowrap">
                           <div className="flex flex-col sm:flex-row gap-2">
                             <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.canRead ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                              {user.canRead ? 'Can Read' : 'No Read'}
+                              {user.canRead ? t('subcontracts.details.canRead') : t('subcontracts.details.noRead')}
                             </span>
                             <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.canEdit ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                              {user.canEdit ? 'Can Edit' : 'No Edit'}
+                              {user.canEdit ? t('subcontracts.details.canEdit') : t('subcontracts.details.noEdit')}
                             </span>
                           </div>
                         </td>
@@ -445,25 +447,24 @@ const SubContractDetails = () => {
               </div>
             ) : (
               <div className="bg-gray-50 p-4 rounded-lg text-center">
-                <p className="text-gray-500">No users found for the main company</p>
+                <p className="text-gray-500">{t('subcontracts.messages.noUsersFound')} {t('subcontracts.details.mainCompany')}</p>
               </div>
             )}
           </div>
-          ---
           {/* Controller Company Users Section */}
           <div className="mb-6 md:mb-8">
             <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-3 md:mb-4 pb-2 border-b border-gray-100">
-              Controller Company Users ({subContract.controllerCompany?.userList?.length || 0})
+              {t('subcontracts.details.controllerCompanyUsers')} ({subContract.controllerCompany?.userList?.length || 0})
             </h2>
             {subContract.controllerCompany?.userList?.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Full Name</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Permissions</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('subcontracts.details.username')}</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('subcontracts.details.fullName')}</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('subcontracts.details.email')}</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('subcontracts.details.permissions')}</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
@@ -472,22 +473,22 @@ const SubContractDetails = () => {
                         <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                           <div className="flex items-center">
                             <FiUser className="mr-2 text-indigo-500" />
-                            {user.username || 'N/A'}
+                            {user.username || t('subcontracts.details.na')}
                           </div>
                         </td>
                         <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {user.fullName || 'N/A'}
+                          {user.fullName || t('subcontracts.details.na')}
                         </td>
                         <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {user.email || 'N/A'}
+                          {user.email || t('subcontracts.details.na')}
                         </td>
                         <td className="px-4 py-4 whitespace-nowrap">
                           <div className="flex flex-col sm:flex-row gap-2">
                             <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.canRead ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                              {user.canRead ? 'Can Read' : 'No Read'}
+                              {user.canRead ? t('subcontracts.details.canRead') : t('subcontracts.details.noRead')}
                             </span>
                             <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.canEdit ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                              {user.canEdit ? 'Can Edit' : 'No Edit'}
+                              {user.canEdit ? t('subcontracts.details.canEdit') : t('subcontracts.details.noEdit')}
                             </span>
                           </div>
                         </td>
@@ -498,24 +499,23 @@ const SubContractDetails = () => {
               </div>
             ) : (
               <div className="bg-gray-50 p-4 rounded-lg text-center">
-                <p className="text-gray-500">No users found for the controller company</p>
+                <p className="text-gray-500">{t('subcontracts.messages.noUsersFound')} {t('subcontracts.details.controllerCompany')}</p>
               </div>
             )}
           </div>
-          ---
           {/* Contract Permissions Section */}
           <div>
             <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-3 md:mb-4 pb-2 border-b border-gray-100">
-              Contract Permissions ({subContract.contract?.accountPermissions?.length || 0})
+              {t('subcontracts.details.contractPermissions')} ({subContract.contract?.accountPermissions?.length || 0})
             </h2>
             {subContract.contract?.accountPermissions?.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Can Read</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Can Edit</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('subcontracts.details.name')}</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('subcontracts.details.canRead')}</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('subcontracts.details.canEdit')}</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
@@ -524,17 +524,17 @@ const SubContractDetails = () => {
                         <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                           <div className="flex items-center">
                             <FiLock className="mr-2 text-red-500" />
-                            {permission.name || 'N/A'}
+                            {permission.name || t('subcontracts.details.na')}
                           </div>
                         </td>
                         <td className="px-4 py-4 whitespace-nowrap">
                           <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${permission.canRead ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                            {permission.canRead ? 'Yes' : 'No'}
+                            {permission.canRead ? t('subcontracts.details.yes') : t('subcontracts.details.no')}
                           </span>
                         </td>
                         <td className="px-4 py-4 whitespace-nowrap">
                           <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${permission.canEdit ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                            {permission.canEdit ? 'Yes' : 'No'}
+                            {permission.canEdit ? t('subcontracts.details.yes') : t('subcontracts.details.no')}
                           </span>
                         </td>
                       </tr>
@@ -544,7 +544,7 @@ const SubContractDetails = () => {
               </div>
             ) : (
               <div className="bg-gray-50 p-4 rounded-lg text-center">
-                <p className="text-gray-500">No permissions set for this contract</p>
+                <p className="text-gray-500">{t('subcontracts.messages.noPermissionsSet')}</p>
               </div>
             )}
           </div>
