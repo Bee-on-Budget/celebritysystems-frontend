@@ -89,7 +89,7 @@ const CreateContract = () => {
       
       return screensData.map(screen => ({
         value: screen.id,
-        label: `${screen.name} (${screen.location})`
+        label: screen.name
       }));
     } catch (error) {
       console.error('Error loading screens:', error);
@@ -255,7 +255,7 @@ const CreateContract = () => {
                 .filter(screen => form.screenIds.includes(screen.id))
                 .map(screen => ({
                   value: screen.id,
-                  label: `${screen.name} (${screen.location})`
+                  label: screen.name
                 }))}
               onChange={handleScreenChange}
               onInputChange={newValue => setScreenSearch(newValue)}
