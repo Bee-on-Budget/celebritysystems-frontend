@@ -223,7 +223,7 @@ const CreateSubContract = () => {
                 disabled={!selectedMainCompany}
                 options={
                   searchedContracts.map(contract =>
-                    `ID: ${contract.id} - ${contract.info || 'Unnamed Contract'}`
+                    (contract.info || 'Unnamed Contract')
                   )
                 }
               />
