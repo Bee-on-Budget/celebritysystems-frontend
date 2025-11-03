@@ -63,10 +63,11 @@ export const updateSubContract = async (id, subContractData) => {
 // DELETE endpoint
 export const deleteSubContract = async (id) => {
     try {
-        const response = await api.delete(`/subcontracts/${id}`);
+        const response = await api.delete(`/subcontract/${id}`);
         return response.data;
     } catch (error) {
-        throw error.response?.data?.message || "Error deleting subcontract";
+        const errorMessage = error.response?.data?.message || error.message || "Error deleting subcontract";
+        throw new Error(errorMessage);
     }
 };
 

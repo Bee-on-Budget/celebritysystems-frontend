@@ -62,11 +62,17 @@ const SubContractDetails = () => {
 
   const handleDeleteConfirm = async () => {
     try {
+      if (!id) {
+        showToast(t('subcontracts.messages.errorDeletingSubcontract'), 'error');
+        setShowDeleteModal(false);
+        return;
+      }
       await deleteSubContract(id);
       showToast(t('subcontracts.messages.subcontractDeleted'), 'success');
       navigate('/subcontract');
     } catch (err) {
-      showToast(err.message || t('subcontracts.messages.errorDeletingSubcontract'), 'error');
+      const errorMessage = err instanceof Error ? err.message : (typeof err === 'string' ? err : err?.message);
+      showToast(errorMessage || t('subcontracts.messages.errorDeletingSubcontract'), 'error');
     } finally {
       setShowDeleteModal(false);
     }
