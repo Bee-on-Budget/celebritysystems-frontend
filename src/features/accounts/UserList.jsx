@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { getAllUsers, updateUser, deleteUser, resetUserPassword } from "../../api/services/UserService";
+import { updateUser, deleteUser, resetUserPassword, getUsersPaginated } from "../../api/services/UserService";
 import { getAllCompanies } from "../../api/services/CompanyService";
-import MultiSearchBar from "../../components/MultiSearchBar";
+import { DataList, Pagination } from "../../components";
 import UserTable from "./UserTable";
 import { filterUsersByRole, searchUsers } from "./userUtils";
 import { showToast } from "../../components/ToastNotifier";
@@ -12,6 +12,14 @@ const UserList = () => {
   const [users, setUsers] = useState([]);
   const [companies, setCompanies] = useState([]);
   const [filtered, setFiltered] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [pageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalItems, setTotalItems] = useState(0);
+  const [hasNext, setHasNext] = useState(false);
+  const [hasPrevious, setHasPrevious] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [editingUserId, setEditingUserId] = useState(null);
   const [selectedRoleFilter, setSelectedRoleFilter] = useState("ALL");
   const [editFormData, setEditFormData] = useState({
@@ -30,22 +38,37 @@ const UserList = () => {
   ];
 
   const fetchData = useCallback(async () => {
+    setLoading(true);
+    setError("");
     try {
       const [usersRes, companiesRes] = await Promise.all([
-        getAllUsers(),
+        getUsersPaginated(currentPage, pageSize),
         getAllCompanies()
       ]);
 
-      setUsers(usersRes);
-      setCompanies(companiesRes.data);
-      setFiltered(filterUsersByRole(usersRes, selectedRoleFilter));
+      const pageUsers = Array.isArray(usersRes?.content) ? usersRes.content : [];
+      setUsers(pageUsers);
+      setCompanies(companiesRes?.data || []);
+      setFiltered(filterUsersByRole(pageUsers, selectedRoleFilter));
+      setTotalPages(usersRes?.totalPages ?? 0);
+      setTotalItems(usersRes?.totalElements ?? 0);
+      setCurrentPage(usersRes?.number ?? 0);
+      setHasNext(!usersRes?.last);
+      setHasPrevious(!usersRes?.first);
     } catch (error) {
       console.error("Error fetching data:", error);
       setUsers([]);
       setFiltered([]);
       setCompanies([]);
+      setTotalPages(0);
+      setTotalItems(0);
+      setHasNext(false);
+      setHasPrevious(false);
+      setError(typeof error === 'string' ? error : (error?.message || 'Failed to load users'));
+    } finally {
+      setLoading(false);
     }
-  }, [selectedRoleFilter]);
+  }, [selectedRoleFilter, currentPage, pageSize]);
 
   useEffect(() => {
     fetchData();
@@ -134,53 +157,66 @@ const UserList = () => {
   };
 
   return (
-    <div className="my-2">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <h1 className="text-2xl font-semibold">{t('navigation.users')}</h1>
-        <div className="flex gap-4 w-full sm:w-auto">
-          <div className="w-full sm:w-64">
-            <MultiSearchBar
-              onSearch={handleSearch}
-              onSelectResult={handleResultClick}
-              onClear={handleClearSearch}
-            />
-          </div>
-          <div className="w-full sm:w-48">
-            <select
-              value={selectedRoleFilter}
-              onChange={handleRoleFilterChange}
-              className="border rounded px-3 py-2 w-full text-sm"
-            >
-              <option value="ALL">{t('accounts.allTypes')}</option>
-              {roleOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
+    <DataList
+      title={t('navigation.users')}
+      error={error}
+      isLoading={loading}
+      label={t('navigation.users')}
+      onSearch={handleSearch}
+      onResultClick={handleResultClick}
+      onClearSearch={handleClearSearch}
+      totalElements={totalItems}
+    >
+      {/* Filters */}
+      <div className="flex items-center justify-end gap-2 mb-4">
+        <select
+          value={selectedRoleFilter}
+          onChange={handleRoleFilterChange}
+          className="border rounded px-3 py-2 w-full sm:w-48 text-sm"
+        >
+          <option value="ALL">{t('accounts.allTypes')}</option>
+          {roleOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
       </div>
 
-      <div className="bg-white shadow rounded overflow-hidden mt-5">
-        {filtered.length === 0 ? (
-          <p className="p-4 text-gray-500">No users found.</p>
-        ) : (
-          <UserTable
-            users={filtered}
-            companies={companies}
-            editingUserId={editingUserId}
-            editFormData={editFormData}
-            handleEditFormChange={handleEditFormChange}
-            handleEditClick={handleEditClick}
-            handleSaveEdit={handleSaveEdit}
-            handleCancelEdit={handleCancelEdit}
-            handleDelete={handleDelete}
-            handleResetPassword={handleResetPassword}
-          />
-        )}
+      {/* Users Table */}
+      <div className="bg-white shadow rounded overflow-hidden">
+        <UserTable
+          users={filtered}
+          companies={companies}
+          editingUserId={editingUserId}
+          editFormData={editFormData}
+          handleEditFormChange={handleEditFormChange}
+          handleEditClick={handleEditClick}
+          handleSaveEdit={handleSaveEdit}
+          handleCancelEdit={handleCancelEdit}
+          handleDelete={handleDelete}
+          handleResetPassword={handleResetPassword}
+        />
       </div>
-    </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && totalItems > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={totalItems}
+          itemsPerPage={pageSize}
+          hasNext={hasNext}
+          hasPrevious={hasPrevious}
+          onPageChange={(newPage) => {
+            if (newPage >= 0 && newPage < totalPages) {
+              setCurrentPage(newPage);
+            }
+          }}
+          className="mt-8"
+        />
+      )}
+    </DataList>
   );
 };
 
