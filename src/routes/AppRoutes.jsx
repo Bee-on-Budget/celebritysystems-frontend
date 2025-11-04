@@ -1,6 +1,5 @@
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-import { useAuth } from "../auth/useAuth";
+import { Routes, Route } from "react-router-dom";
 
 // Auth and layout
 import ProtectedRoute from "../auth/ProtectedRoute";
@@ -63,14 +62,6 @@ import CreateSubContract from "../features/subcontract/CreateSubContract";
 import SubContractDetails from '../features/subcontract/SubContractDetails';
 
 const AppRoutes = () => {
-  const RoleBasedIndex = () => {
-    const { user } = useAuth();
-    if (user?.role === "COMPANY") {
-      return <Navigate to="tickets" replace />;
-    }
-    return <Navigate to="dashboard" replace />;
-  };
-
   return (
     <Routes>
       {/* Public Route (only for unauthenticated users) */}
@@ -92,9 +83,6 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       >
-        {/* Redirect root based on role */}
-        <Route index element={<RoleBasedIndex />} />
-
         {/* Core app pages */}
         <Route
           path="dashboard"
