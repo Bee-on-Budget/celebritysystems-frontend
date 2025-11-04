@@ -61,8 +61,8 @@ const Header = ({ setSidebarOpen }) => {
             </div>
           </div>
 
-          {/* Right section */}
-          <div className="flex items-center space-x-4 gap-4">
+          {/* Right section (hidden on mobile; actions moved to sidebar footer) */}
+          <div className="hidden md:flex items-center space-x-4 gap-4">
             {/* Language Switcher */}
             <LanguageSwitcher />
 

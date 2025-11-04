@@ -1,15 +1,24 @@
 import React, { useState } from 'react';
-import { FaFileContract, FaHome, FaBars, FaUsers, FaBuilding, FaDesktop } from "react-icons/fa";
+import { FaFileContract, FaHome, FaBars, FaUsers, FaBuilding, FaDesktop, FaSignOutAlt } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import CompanyLogo from '../../CompanyLogo';
 import NavButton from '../../NavButton';
 import SidebarDropdown from './SidebarDropdown';
 import { useAuth } from '../../../auth/useAuth';
+import Button from '../../Button';
+import LanguageSwitcher from '../../LanguageSwitcher';
+import { motion, AnimatePresence } from "framer-motion";
 
 const Sidebar = ({ open, setOpen }) => {
   const [openDropdowns, setOpenDropdowns] = useState({});
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const { t, i18n } = useTranslation();
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const isRtl = i18n.dir() === "rtl";
+
+  const handleLogout = () => setShowLogoutConfirm(true);
+  const confirmLogout = () => { logout(); setShowLogoutConfirm(false); };
+  const cancelLogout = () => setShowLogoutConfirm(false);
 
   const handleDropdownToggle = (key) => {
     setOpenDropdowns((prev) => ({
@@ -146,6 +155,51 @@ const Sidebar = ({ open, setOpen }) => {
           )}
         </div>
       </nav>
+
+      {/* Mobile footer actions (move header buttons here) */}
+      <div className="md:hidden border-t border-dark/40 px-4 py-3 flex items-center justify-between relative gap-1">
+        <LanguageSwitcher />
+        <div className="relative">
+          <Button
+            icon={<FaSignOutAlt />}
+            size='sm'
+            variant='text'
+            onClick={handleLogout}
+          >
+            {t('auth.logout')}
+          </Button>
+          <AnimatePresence>
+            {showLogoutConfirm && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+                className={`absolute ${isRtl ? "left" : "right"}-0 bottom-full mb-2 w-56 bg-white rounded-md shadow-lg overflow-hidden z-50 border border-gray-200`}
+              >
+                <div className="p-4">
+                  <p className="mb-3 font-medium text-dark">{t('auth.logoutMessage')}</p>
+                  <div className="flex justify-start space-x-2">
+                    <Button
+                      onClick={cancelLogout}
+                      size='sm'
+                      variant='ghost'
+                    >
+                      {t('common.cancel')}
+                    </Button>
+                    <Button
+                      onClick={confirmLogout}
+                      size='sm'
+                    >
+                      {t('auth.ok')}
+                    </Button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
     </div>
   );
 };
