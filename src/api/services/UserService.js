@@ -39,3 +39,14 @@ export const resetUserPassword = async (id, newPassword) => {
         throw error.response?.data || error.response?.data?.message || "Error resetting password";
     }
 };
+
+export const getUsersPaginated = async (page = 0, size = 10) => {
+    try {
+        const response = await axios.get(`${API_URL}/paginated`, {
+            params: { page, size }
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data?.message || "Error fetching users (paginated)";
+    }
+};
