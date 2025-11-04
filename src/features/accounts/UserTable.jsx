@@ -35,7 +35,7 @@ const UserTable = ({
             <UserRow
               key={user.id}
               user={user}
-              companies={companies}
+              // companies={companies}
               editingUserId={editingUserId}
               editFormData={editFormData}
               handleEditFormChange={handleEditFormChange}

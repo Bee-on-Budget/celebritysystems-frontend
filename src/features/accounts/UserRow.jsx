@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { FaTrash, FaEdit, FaSave, FaTimes, FaKey } from "react-icons/fa";
 import Button from "../../components/Button";
 import { roleColors } from "./constants";
-import { getUserCompany } from "./userUtils";
+// import { getUserCompany } from "./userUtils";
 import { showToast } from "../../components/ToastNotifier";
 import { useTranslation } from "react-i18next";
 
 const UserRow = ({
   user,
-  companies,
+  // companies,
   editingUserId,
   editFormData,
   handleEditFormChange,
@@ -107,7 +107,8 @@ const UserRow = ({
           )}
         </td>
         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-          {getUserCompany(user.id, companies || [])}
+          {/* {getUserCompany(user.id, companies || [])} */}
+          {user.companyName ? user.companyName : 'Celebrity Systems'}
         </td>
         <td className="px-6 py-4 whitespace-nowrap">
           {isEditing ? (
