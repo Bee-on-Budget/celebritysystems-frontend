@@ -6,7 +6,9 @@ const PublicRoute = ({ children }) => {
     const { user, loading } = useAuth();
     if (loading) return <Loading />;
 
-    return !user ? children : <Navigate to="/dashboard" replace />;
+    return !user ? children : user.role === "COMPANY" ?
+        <Navigate to="/tickets" replace />
+        : <Navigate to="/dashboard" replace />;
 };
 
 export default PublicRoute;
