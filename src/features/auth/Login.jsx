@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { login } from "../../api/auth";
 import { useAuth } from "../../auth/useAuth";
+import { decodeToken } from "../../utils/token";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
 import Logo from "../../assets/logo.png";
@@ -21,7 +22,17 @@ const Login = () => {
     try {
       const response = await login({ email, password });
       authLogin(response.data.token);
-      navigate("/dashboard");
+      
+      // Decode token to get user role for redirect
+      const decoded = decodeToken(response.data.token);
+      const userRole = decoded?.role;
+      
+      // Redirect based on user role
+      if (userRole === "COMPANY") {
+        navigate("/tickets");
+      } else {
+        navigate("/dashboard");
+      }
     } catch (err) {
       setError(err.response?.data?.message || t('auth.messages.loginFailed'));
     }
