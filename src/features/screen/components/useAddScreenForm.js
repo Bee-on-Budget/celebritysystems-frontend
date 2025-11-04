@@ -210,7 +210,6 @@ const useAddScreenForm = () => {
         newErrors.location = t('screens.validation.validMapsLink');
       }
       // if (!form.pixelScreen) newErrors.pixelScreen = t('screens.validation.pixelScreenRequired');
-      if (!form.batchScreen) newErrors.batchScreen = t('screens.validation.batchScreenRequired');
       if (!form.solutionTypeInScreen) newErrors.solutionTypeInScreen = t('screens.validation.solutionRequired');
       if (form.fan && !form.fanQuantity) {
         newErrors.fanQuantity = t('screens.validation.fanQuantityRequired');
@@ -218,17 +217,6 @@ const useAddScreenForm = () => {
         newErrors.fanQuantity = t('screens.validation.fanQuantityNonNegative');
       }
 
-      // Dimentions validation
-      if (!form.screenWidth) newErrors.screenWidth = t('screens.validation.screenWidthRequired');
-      if (!form.screenHeight) newErrors.screenHeight = t('screens.validation.screenHeightRequired');
-
-      // Pixel Pitch validation
-      if (!form.irregularPixelPitch) {
-        if (!form.pixelPitch) newErrors.pixelPitch = t('screens.validation.pixelPitchRequired');
-      } else {
-        if (!form.pixelPitchWidth) newErrors.pixelPitchWidth = t('screens.validation.pixelPitchWidthRequired');
-        if (!form.pixelPitchHeight) newErrors.pixelPitchHeight = t('screens.validation.pixelPitchHeightRequired');
-      }
 
       // Power Supply validation
       if (form.powerSupply && !form.powerSupplyQuantity) {
@@ -375,6 +363,22 @@ const useAddScreenForm = () => {
         if (!cabinet.moduleDto.moduleBatchNumber)
           newErrors[`moduleDto_${index}_moduleBatchNumber`] = t('screens.validation.batchNumberRequired');
       });
+    }
+
+    // Resolution step validation (final step)
+    if ((form.solutionTypeInScreen === 'MODULE_SOLUTION' && currentStep === 4) ||
+        (form.solutionTypeInScreen === 'CABINET_SOLUTION' && currentStep === 5)) {
+      if (!form.batchScreen) newErrors.batchScreen = t('screens.validation.batchScreenRequired');
+
+      if (!form.screenWidth) newErrors.screenWidth = t('screens.validation.screenWidthRequired');
+      if (!form.screenHeight) newErrors.screenHeight = t('screens.validation.screenHeightRequired');
+
+      if (!form.irregularPixelPitch) {
+        if (!form.pixelPitch) newErrors.pixelPitch = t('screens.validation.pixelPitchRequired');
+      } else {
+        if (!form.pixelPitchWidth) newErrors.pixelPitchWidth = t('screens.validation.pixelPitchWidthRequired');
+        if (!form.pixelPitchHeight) newErrors.pixelPitchHeight = t('screens.validation.pixelPitchHeightRequired');
+      }
     }
 
     setErrors(newErrors);

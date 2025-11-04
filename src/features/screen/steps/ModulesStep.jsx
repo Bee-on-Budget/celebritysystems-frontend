@@ -2,7 +2,7 @@ import React from 'react';
 import { Input, Button } from '../../../components';
 import { useTranslation } from 'react-i18next';
 
-const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, loading }) => {
+const ModulesStep = ({ form, errors, onChange, onBack, onNext, addModule, removeModule, loading }) => {
   const { t } = useTranslation();
   // const checkboxStyle = "w-4 h-4 sm:w-5 sm:h-5 text-primary bg-gray-100 border-gray-300 rounded-sm focus:ring-primary-focus focus:border-primary focus:ring-1 accent-primary checked:border-primary";
 
@@ -138,11 +138,11 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
             {t('screens.actions.back')}
           </Button>
           <Button 
-            type="submit" 
-            isLoading={loading}
+            type="button" 
+            onClick={onNext}
             className="w-full sm:w-auto min-w-[140px] order-1 sm:order-2"
           >
-            {t('screens.actions.createScreen')}
+            {t('screens.actions.nextResolution')}
           </Button>
         </div>
       </div>
@@ -254,12 +254,11 @@ const ModulesStep = ({ form, errors, onChange, onBack, addModule, removeModule, 
           {t('screens.actions.back')}
         </Button>
         <Button
-          type="submit"
-          isLoading={loading}
+          type="button"
+          onClick={onNext}
           className="w-full sm:w-auto min-w-[140px] order-1 sm:order-2"
-          loadingText={t('common.loading')}
         >
-          {t('screens.actions.createScreen')}
+          {t('screens.actions.nextResolution')}
         </Button>
       </div>
     </div>

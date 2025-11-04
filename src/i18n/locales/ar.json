@@ -367,12 +367,14 @@
       "screen": "الشاشة",
       "cables": "الكابلات",
       "cabinets": "الخزانات",
-      "modules": "الوحدات"
+      "modules": "الوحدات",
+      "resolution": "الدقة"
     },
     "actions": {
       "nextCables": "التالي: الكابلات",
       "nextCabinets": "التالي: الخزانات",
       "nextModules": "التالي: الوحدات",
+      "nextResolution": "التالي: الدقة",
       "addCabinet": "إضافة خزانة",
       "addModule": "أضافة وحدة",
       "createScreen": "أنشاء شاشة",

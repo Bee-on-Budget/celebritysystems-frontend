@@ -189,17 +189,11 @@ const CabinetsStep = ({
           {t('screens.actions.back')}
         </Button>
         <Button
-          type={form.solutionTypeInScreen === "MODULE_SOLUTION" ? "submit" : "button"}
+          type="button"
           onClick={onNext}
-          isLoading={loading}
           className="w-full sm:w-auto min-w-[140px] order-1 sm:order-2"
-          loadingText={t('common.loading')}
         >
-          {
-            form.solutionTypeInScreen === "MODULE_SOLUTION" ?
-              t('screens.actions.createScreen') :
-              t('screens.actions.nextModules')
-          }
+          {t('screens.actions.nextModules')}
         </Button>
       </div>
     </div>

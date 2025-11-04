@@ -1,11 +1,11 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { Input, Button, DropdownInput, CustomCheckbox } from "../../../components";
+import { Input, Button, DropdownInput } from "../../../components";
 import { FileInput, SectionContainer } from '../components';
 
 const ScreenStep = ({ form, errors, onChange, onNext }) => {
   const { t } = useTranslation();
-  const [irregularPixelPitch, setIrregularPixelPitch] = useState(form.irregularPixelPitch || false);
+  // const [irregularPixelPitch, setIrregularPixelPitch] = useState(form.irregularPixelPitch || false);
   const connectionFileRef = useRef(null);
   const configFileRef = useRef(null);
   const versionFileRef = useRef(null);
@@ -21,21 +21,21 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
   ];
 
   // Keep local state in sync with form state
-  useEffect(() => {
-    setIrregularPixelPitch(form.irregularPixelPitch || false);
-  }, [form.irregularPixelPitch]);
+  // useEffect(() => {
+  //   setIrregularPixelPitch(form.irregularPixelPitch || false);
+  // }, [form.irregularPixelPitch]);
 
-  const onIrregularChange = () => {
-    const newValue = !irregularPixelPitch;
-    setIrregularPixelPitch(newValue);
-    onChange({
-      target: {
-        name: 'irregularPixelPitch',
-        checked: newValue,
-        type: 'checkbox'
-      }
-    });
-  }
+  // const onIrregularChange = () => {
+  //   const newValue = !irregularPixelPitch;
+  //   setIrregularPixelPitch(newValue);
+  //   onChange({
+  //     target: {
+  //       name: 'irregularPixelPitch',
+  //       checked: newValue,
+  //       type: 'checkbox'
+  //     }
+  //   });
+  // }
 
   return (
     <div className="space-y-4 sm:space-y-6 max-w-4xl mx-auto">
@@ -108,19 +108,6 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
         />
       </div>
 
-      {/* Screen batchScreen */}
-      <div className="space-y-2">
-        <Input
-          label={t('screens.screenForm.batchScreen')}
-          name="batchScreen"
-          placeholder={t('screens.screenForm.batchScreenPlaceholder')}
-          value={form.batchScreen}
-          onChange={onChange}
-          error={errors.batchScreen}
-          required
-        />
-      </div>
-
       {/* Screen Description */}
       <div className="space-y-2">
         <label className="block text-sm font-medium capitalize text-dark">
@@ -136,73 +123,6 @@ const ScreenStep = ({ form, errors, onChange, onNext }) => {
         />
       </div>
 
-      {/* Dimensions */}
-      <SectionContainer title={t('screens.screenForm.dimensions')}>
-        <div className="space-y-3 sm:space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-            <Input
-              label={t('screens.screenForm.screenWidth')}
-              name="screenWidth"
-              value={form.screenWidth}
-              error={errors.screenWidth}
-              onChange={onChange}
-              required
-            />
-            <Input
-              label={t('screens.screenForm.screenHeight')}
-              name="screenHeight"
-              value={form.screenHeight}
-              error={errors.screenHeight}
-              onChange={onChange}
-              required
-            />
-          </div>
-        </div>
-      </SectionContainer>
-
-      {/* Pixel Pitch */}
-      <SectionContainer title={t('screens.screenForm.dimensions')}>
-        <div className="space-y-3 sm:space-y-4">
-          <CustomCheckbox
-            name="irregularPixelPitch"
-            label={t('screens.screenForm.irregularPixelPitch')}
-            checked={irregularPixelPitch}
-            onChange={onIrregularChange}
-          />
-          {
-            !irregularPixelPitch && <Input
-              label={t('screens.screenForm.pixelPitch')}
-              name="pixelPitch"
-              value={form.pixelPitch}
-              error={errors.pixelPitch}
-              onChange={onChange}
-              required
-            />
-          }
-
-          {
-            irregularPixelPitch && <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              <Input
-                label={t('screens.screenForm.pixelPitchWidth')}
-                name="pixelPitchWidth"
-                value={form.pixelPitchWidth}
-                error={errors.pixelPitchWidth}
-                onChange={onChange}
-                required
-              />
-              <Input
-                label={t('screens.screenForm.pixelPitchHeight')}
-                name="pixelPitchHeight"
-                value={form.pixelPitchHeight}
-                error={errors.pixelPitchHeight}
-                onChange={onChange}
-                required
-              />
-            </div>
-          }
-
-        </div>
-      </SectionContainer>
 
       {/* Power Supply */}
       <SectionContainer title={t('screens.screenForm.powerSupply')}>

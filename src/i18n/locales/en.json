@@ -367,12 +367,14 @@
       "screen": "Screen",
       "cables": "Cables",
       "cabinets": "Cabinets",
-      "modules": "Modules"
+      "modules": "Modules",
+      "resolution": "Resolution"
     },
     "actions": {
       "nextCables": "Next: Cables",
       "nextCabinets": "Next: Cabinets",
       "nextModules": "Next: Modules",
+      "nextResolution": "Next: Resolution",
       "addCabinet": "Add Cabinet",
       "addModule": "Add Module",
       "createScreen": "Create Screen",

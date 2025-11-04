@@ -6,6 +6,7 @@ import ScreenStep from './steps/ScreenStep';
 import CablesStep from './steps/CablesStep';
 import CabinetsStep from './steps/CabinetsStep';
 import ModulesStep from './steps/ModulesStep';
+import ResolutionStep from './steps/ResolutionStep';
 
 const AddScreen = () => {
   const { t } = useTranslation();
@@ -43,6 +44,12 @@ const AddScreen = () => {
         <StepIndicator
           stepNumber={form.solutionTypeInScreen === "CABINET_SOLUTION" ? 4 : 3}
           title={t('screens.steps.modules')}
+          currentStep={step}
+          isRtl={isRtl}
+        />
+        <StepIndicator
+          stepNumber={form.solutionTypeInScreen === "CABINET_SOLUTION" ? 5 : 4}
+          title={t('screens.steps.resolution')}
           currentStep={step}
           isRtl={isRtl}
         />
@@ -85,11 +92,21 @@ const AddScreen = () => {
             errors={errors}
             onChange={handleChange}
             onBack={prevStep}
+            onNext={nextStep}
             addModule={addModule}
             removeModule={removeModule}
             loading={loading}
           />
         )}
+        {(step === 5 && form.solutionTypeInScreen === "CABINET_SOLUTION") || (step === 4 && form.solutionTypeInScreen === "MODULE_SOLUTION") ? (
+          <ResolutionStep
+            form={form}
+            errors={errors}
+            onChange={handleChange}
+            onBack={prevStep}
+            loading={loading}
+          />
+        ) : null}
       </form>
     </div>
   );
