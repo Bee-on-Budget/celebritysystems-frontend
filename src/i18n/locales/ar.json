@@ -861,6 +861,8 @@
     "personalInfo": "المعلومات الشخصية",
     "accountSettings": "إعدادات الحساب",
     "changePassword": "تغيير كلمة المرور",
+    "userInfo": "المستخدم",
+    "companyType": "نوع الشركة",
     "profileForm": {
       "username": "اسم المستخدم",
       "email": "البريد الإلكتروني",
@@ -876,7 +878,10 @@
       "profileUpdated": "تم تحديث الملف الشخصي بنجاح",
       "passwordChanged": "تم تغيير كلمة المرور بنجاح",
       "errorUpdatingProfile": "خطأ في تحديث الملف الشخصي",
-      "errorChangingPassword": "خطأ في تغيير كلمة المرور"
+      "errorChangingPassword": "خطأ في تغيير كلمة المرور",
+      "userNotFound": "لم يتم العثور على المستخدم",
+      "companyNotFound": "لم يتم العثور على معلومات الشركة",
+      "errorLoadingCompany": "خطأ في تحميل معلومات الشركة"
     }
   },
   "auth": {

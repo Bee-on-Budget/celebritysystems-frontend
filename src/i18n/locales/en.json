@@ -861,6 +861,8 @@
     "personalInfo": "Personal Information",
     "accountSettings": "Account Settings",
     "changePassword": "Change Password",
+    "userInfo": "User",
+    "companyType": "Company Type",
     "profileForm": {
       "username": "Username",
       "email": "Email",
@@ -876,7 +878,10 @@
       "profileUpdated": "Profile updated successfully",
       "passwordChanged": "Password changed successfully",
       "errorUpdatingProfile": "Error updating profile",
-      "errorChangingPassword": "Error changing password"
+      "errorChangingPassword": "Error changing password",
+      "userNotFound": "User not found",
+      "companyNotFound": "Company information not found",
+      "errorLoadingCompany": "Error loading company information"
     }
   },
   "auth": {

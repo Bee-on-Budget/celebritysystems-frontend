@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaFileContract, FaHome, FaBars, FaUsers, FaBuilding, FaDesktop, FaSignOutAlt } from "react-icons/fa";
+import { FaFileContract, FaHome, FaBars, FaUsers, FaBuilding, FaDesktop, FaSignOutAlt, FaUser } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import CompanyLogo from '../../CompanyLogo';
 import NavButton from '../../NavButton';
@@ -57,6 +57,10 @@ const Sidebar = ({ open, setOpen }) => {
         <div className="pr-2">
           {user?.role !== "COMPANY" && (
             <NavButton to={"/dashboard"} icon={<FaHome />} label={t('sidebar.home')} onClick={() => setOpen(false)} />
+          )}
+
+          {user?.role === "COMPANY" && (
+            <NavButton to={"/profile"} icon={<FaUser />} label={t('profile.title')} onClick={() => setOpen(false)} />
           )}
 
           {user?.role === "ADMIN" && (
