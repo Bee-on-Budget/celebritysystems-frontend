@@ -223,15 +223,17 @@ const CreateTicket = () => {
               onChange={handleChange}
               required
             />
-            <DropdownInput
-              name="serviceType"
-              value={formData.serviceType}
-              options={serviceTypes}
-              onChange={handleChange}
-              label={t('tickets.ticketForm.serviceType')}
-              // error={errors.serviceType}
-              required
-            />
+            {!isCompanyUser && (
+              <DropdownInput
+                name="serviceType"
+                value={formData.serviceType}
+                options={serviceTypes}
+                onChange={handleChange}
+                label={t('tickets.ticketForm.serviceType')}
+                // error={errors.serviceType}
+                required
+              />
+            )}
           </div>
 
           {/* Description */}
