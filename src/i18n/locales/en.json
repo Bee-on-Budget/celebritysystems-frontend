@@ -129,6 +129,7 @@
       "errorFetchingTickets": "Error fetching tickets",
       "errorFetchingTicket": "Error fetching ticket",
       "errorFetchingData": "Error fetching initial data",
+      "accessDenied": "You do not have access to this ticket",
       "confirmDelete": "Are you sure you want to delete this ticket?",
       "noTicketsFound": "No tickets found",
       "noPendingTickets": "No pending tickets found",

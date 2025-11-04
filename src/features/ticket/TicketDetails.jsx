@@ -4,21 +4,38 @@ import { useTranslation } from 'react-i18next';
 import { getTicketById, deleteTicket } from '../../api/services/TicketService';
 import { FiArrowLeft, FiDownload, FiCalendar, FiUser, FiCheckCircle, FiAlertCircle, FiTrash2 } from 'react-icons/fi';
 import { Button, Loading, showToast, ConfirmationModal } from '../../components';
+import { useAuth } from '../../auth/useAuth';
 
 const TicketDetails = () => {
   const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
+  const isCompanyUser = user?.role === 'COMPANY' || user?.role === 'COMPANY_USER';
+  const userCompanyId = user?.companyId || user?.company?.id || user?.companyID;
   const [ticket, setTicket] = useState(location.state?.ticket || null);
   const [loading, setLoading] = useState(!ticket);
   const [error, setError] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [accessDenied, setAccessDenied] = useState(false);
 
   useEffect(() => {
     const fetchTicket = async () => {
       try {
         const data = await getTicketById(id);
+        
+        // For COMPANY users, verify the ticket belongs to their company
+        if (isCompanyUser && userCompanyId) {
+          const ticketCompanyId = data?.companyId || data?.company?.id;
+          if (ticketCompanyId && ticketCompanyId !== userCompanyId) {
+            setAccessDenied(true);
+            setError(t('tickets.messages.accessDenied') || 'You do not have access to this ticket');
+            setLoading(false);
+            return;
+          }
+        }
+        
         setTicket(data);
       } catch (err) {
         setError(err.message || t('tickets.messages.errorFetchingTicket'));
@@ -29,8 +46,15 @@ const TicketDetails = () => {
 
     if (!ticket && id) {
       fetchTicket();
+    } else if (ticket && isCompanyUser && userCompanyId) {
+      // Validate ticket from location state
+      const ticketCompanyId = ticket?.companyId || ticket?.company?.id;
+      if (ticketCompanyId && ticketCompanyId !== userCompanyId) {
+        setAccessDenied(true);
+        setError(t('tickets.messages.accessDenied') || 'You do not have access to this ticket');
+      }
     }
-  }, [id, ticket, t]);
+  }, [id, ticket, t, isCompanyUser, userCompanyId]);
 
   const handleDeleteClick = () => {
     setShowDeleteModal(true);
@@ -92,9 +116,19 @@ const TicketDetails = () => {
 
   if (loading) return <Loading />;
 
-  if (error) return (
-    <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded">
-      <p>{error}</p>
+  if (accessDenied || error) return (
+    <div className="py-6 px-2 max-w-7xl mx-auto">
+      <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded mb-4">
+        <p className="font-medium">{error || t('tickets.messages.accessDenied')}</p>
+      </div>
+      <Button
+        onClick={() => navigate('/tickets')}
+        variant='text'
+        icon={<FiArrowLeft />}
+        size='sm'
+      >
+        {t('tickets.actions.backToTickets')}
+      </Button>
     </div>
   );
 
@@ -136,13 +170,15 @@ const TicketDetails = () => {
               {t('common.download')}
             </Button>
           )}
-          <Button
-            onClick={handleDeleteClick}
-            variant="danger"
-            icon={<FiTrash2 />}
-          >
-            {t('common.delete')}
-          </Button>
+          {!isCompanyUser && (
+            <Button
+              onClick={handleDeleteClick}
+              variant="danger"
+              icon={<FiTrash2 />}
+            >
+              {t('common.delete')}
+            </Button>
+          )}
         </div>
       </div>
 

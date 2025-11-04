@@ -129,6 +129,7 @@
       "errorFetchingTickets": "خطأ في جلب التذاكر",
       "errorFetchingTicket": "خطأ في جلب التذكرة",
       "errorFetchingData": "خطأ في جلب البيانات الأولية",
+      "accessDenied": "ليس لديك صلاحية للوصول إلى هذه التذكرة",
       "confirmDelete": "هل أنت متأكد من حذف هذه التذكرة؟",
       "noTicketsFound": "لم يتم العثور على تذاكر",
       "noPendingTickets": "لم يتم العثور على تذاكر معلقة",
