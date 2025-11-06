@@ -1,14 +1,11 @@
 // src/components/tickets/CreateTicket.jsx
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { createTicket, prepareTicketFormData, getUsersByRole } from "../../api/services/TicketService";
 import { searchCompanies } from "../../api/services/CompanyService";
 import { getScreens } from "../../api/services/ScreenService";
-import Select from 'react-select';
-import AsyncSelect from 'react-select/async';
-import debounce from 'lodash/debounce';
-import { DropdownInput, Input, showToast, SelectionInputDialog } from "../../components";
+import { DropdownInput, Input, showToast, SelectionInputDialog, FormsContainer, Button } from "../../components";
 import { useAuth } from "../../auth/useAuth";
 
 const CreateTicket = () => {
@@ -51,30 +48,6 @@ const CreateTicket = () => {
     { value: "CALL_BACK_SERVICE", label: t('tickets.serviceTypes.CALL_BACK_SERVICE') },
   ];
 
-
-  const customStyles = {
-    control: (provided, state) => ({
-      ...provided,
-      borderColor: state.isFocused ? "#E83D29" : provided.borderColor,
-      boxShadow: state.isFocused ? "0 0 0 1px #E83D29" : provided.boxShadow,
-      "&:hover": { borderColor: "#E83D29" },
-      minHeight: '44px',
-    }),
-    option: (provided, state) => ({
-      ...provided,
-      backgroundColor: state.isFocused ? "#E83D29" : provided.backgroundColor,
-      color: state.isFocused ? "#fff" : provided.color,
-      "&:active": {
-        backgroundColor: "#E83D29",
-        color: "#fff",
-      },
-    }),
-    singleValue: (provided) => ({
-      ...provided,
-      color: "#717274FF",
-    }),
-  }
-
   // Fetch initial data
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -113,32 +86,6 @@ const CreateTicket = () => {
     }
   }, [isCompanyUser, userCompanyId, userId]);
 
-  // Load companies with search
-  const loadCompanies = async (search = '') => {
-    if (search.length > 2) {
-      try {
-        const res = await searchCompanies(search);
-        const companiesData = Array.isArray(res) ? res : res?.content || res?.data || [];
-        setCompanies(companiesData);
-        return companiesData.map(company => ({
-          value: company.id,
-          label: company.name
-        }));
-      } catch (error) {
-        console.error("Error loading companies:", error);
-        return [];
-      }
-    }
-  };
-
-  // Debounced companies search (for AsyncSelect - keeping for screen selection)
-  const debouncedLoadCompanies = useMemo(
-    () => debounce((inputValue, callback) => {
-      loadCompanies(inputValue).then(options => callback(options));
-    }, 500),
-    []
-  );
-
   // Fetch companies for SelectionInputDialog
   const fetchCompanies = useCallback(async (searchQuery) => {
     try {
@@ -151,31 +98,6 @@ const CreateTicket = () => {
       throw error;
     }
   }, []);
-
-  // Load screens with search
-  const loadScreens = async (search = '') => {
-    try {
-      const screensRes = await getScreens({ search });
-      const screensData = Array.isArray(screensRes) ? screensRes :
-        screensRes?.content || screensRes?.data || [];
-      setScreens(screensData);
-      return screensData.map(screen => ({
-        value: screen.id,
-        label: screen.name
-      }));
-    } catch (error) {
-      console.error("Error loading screens:", error);
-      return [];
-    }
-  };
-
-  // Debounced screen search (keeping for backward compatibility if needed)
-  const debouncedLoadScreens = useMemo(
-    () => debounce((inputValue, callback) => {
-      loadScreens(inputValue).then(options => callback(options));
-    }, 500),
-    []
-  );
 
   // Fetch screens for SelectionInputDialog
   const fetchScreens = useCallback(async (searchQuery) => {
@@ -290,9 +212,11 @@ const CreateTicket = () => {
     try {
       const ticketData = prepareTicketFormData(formData, files);
       await createTicket(ticketData);
+      // Navigate after successful creation
       navigate('/tickets');
     } catch (error) {
       console.error("Error creating ticket:", error);
+      // Error toast is already shown by createTicket service
     } finally {
       setIsSubmitting(false);
     }
@@ -304,170 +228,112 @@ const CreateTicket = () => {
 
   return (
     <div className="p-4 md:p-6 max-w-7xl mx-auto">
-      <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-gray-800">{t('tickets.createTicket')}</h2>
-      <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6 bg-white p-4 md:p-6 rounded-lg shadow-md">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-          {/* Title & Service Type */}
-          <div className="col-span-2 md:col-span-1">
-            <Input
-              label={t('tickets.ticketForm.title')}
-              name={"title"}
-              value={formData.title}
-              onChange={handleChange}
-              required
-            />
-            {!isCompanyUser && (
-              <DropdownInput
-                name="serviceType"
-                value={formData.serviceType}
-                options={serviceTypes}
-                onChange={handleChange}
-                label={t('tickets.ticketForm.serviceType')}
-                // error={errors.serviceType}
-                required
-              />
-            )}
-          </div>
+      <FormsContainer
+        title={t('tickets.createTicket')}
+        actionTitle={isSubmitting ? t('tickets.messages.creatingTicket') : t('tickets.createTicket')}
+        onSubmit={handleSubmit}
+        isLoading={isSubmitting}
+        error={null}
+      >
+        {/* Title */}
+        <Input
+          label={t('tickets.ticketForm.title')}
+          name={"title"}
+          value={formData.title}
+          onChange={handleChange}
+          required
+        />
 
-          {/* Description */}
-          <div className="col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">{t('tickets.ticketForm.description')}*</label>
-            <textarea
-              className="w-full border border-gray-300 px-3 py-2 md:px-4 md:py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              rows={4}
-              required
-            />
-          </div>
+        {/* Service Type */}
+        {!isCompanyUser && (
+          <DropdownInput
+            name="serviceType"
+            value={formData.serviceType}
+            options={serviceTypes}
+            onChange={handleChange}
+            label={t('tickets.ticketForm.serviceType')}
+            required
+          />
+        )}
 
-          {/* Company */}
-          {!isCompanyUser && (
-            <div className="col-span-2 md:col-span-1">
-              <div className="relative">
-                <Input
-                  id="companyId"
-                  label={t('tickets.ticketForm.company')}
-                  value={companyDisplayValue}
-                  readOnly
-                  onClick={() => setIsCompanyDialogOpen(true)}
-                  className="cursor-pointer"
-                  placeholder={t('tickets.ticketForm.companyPlaceholder')}
-                />
-                <SelectionInputDialog
-                  isOpen={isCompanyDialogOpen}
-                  onClose={() => setIsCompanyDialogOpen(false)}
-                  fetchItems={fetchCompanies}
-                  getItemLabel={(item) => item.name || String(item)}
-                  getItemValue={(item) => item.id}
-                  onChange={(e) => {
-                    handleSelectChange('companyId', { value: e.target.value });
-                  }}
-                  value={formData.companyId}
-                  id="companyId"
-                  label={t('tickets.ticketForm.company')}
-                  searchPlaceholder={t('tickets.placeholders.searchCompanies')}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Screen */}
-          <div className="col-span-2 md:col-span-1">
-            <div className="relative">
-              <Input
-                id="screenId"
-                label={t('tickets.ticketForm.screen')}
-                value={screenDisplayValue}
-                readOnly
-                onClick={() => setIsScreenDialogOpen(true)}
-                className="cursor-pointer"
-                placeholder={t('tickets.ticketForm.screenPlaceholder')}
-              />
-              <SelectionInputDialog
-                isOpen={isScreenDialogOpen}
-                onClose={() => setIsScreenDialogOpen(false)}
-                fetchItems={fetchScreens}
-                getItemLabel={(item) => item.name || String(item)}
-                getItemValue={(item) => item.id}
-                onChange={(e) => {
-                  handleSelectChange('screenId', { value: e.target.value });
-                }}
-                value={formData.screenId}
-                id="screenId"
-                label={t('tickets.ticketForm.screen')}
-                searchPlaceholder={t('tickets.placeholders.searchScreens')}
-              />
-            </div>
-          </div>
-
-          {/* Assigned To Worker */}
-          {!isCompanyUser && (
-            <div className="col-span-2 md:col-span-1">
-              <div className="relative">
-                <Input
-                  id="assignedToWorkerId"
-                  label={t('tickets.ticketForm.assignedToWorker')}
-                  value={workerDisplayValue}
-                  readOnly
-                  onClick={() => setIsWorkerDialogOpen(true)}
-                  className="cursor-pointer"
-                  placeholder={t('tickets.placeholders.selectWorker')}
-                />
-                <SelectionInputDialog
-                  isOpen={isWorkerDialogOpen}
-                  onClose={() => setIsWorkerDialogOpen(false)}
-                  fetchItems={fetchWorkers}
-                  getItemLabel={(item) => item.username || item.fullName || item.email || String(item)}
-                  getItemValue={(item) => item.id}
-                  onChange={(e) => {
-                    handleSelectChange('assignedToWorkerId', { value: e.target.value });
-                  }}
-                  value={formData.assignedToWorkerId}
-                  id="assignedToWorkerId"
-                  label={t('tickets.ticketForm.assignedToWorker')}
-                  searchPlaceholder="Search by username, name, or email..."
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Assigned to Supervisor */}
-          {!isCompanyUser && (
-            <div className="col-span-2 md:col-span-1">
-              <div className="relative">
-                <Input
-                  id="assignedBySupervisorId"
-                  label={t('tickets.ticketForm.assignedBySupervisor')}
-                  value={supervisorDisplayValue}
-                  readOnly
-                  onClick={() => setIsSupervisorDialogOpen(true)}
-                  className="cursor-pointer"
-                  placeholder={t('tickets.placeholders.selectSupervisor')}
-                />
-                <SelectionInputDialog
-                  isOpen={isSupervisorDialogOpen}
-                  onClose={() => setIsSupervisorDialogOpen(false)}
-                  fetchItems={fetchSupervisors}
-                  getItemLabel={(item) => item.username || item.fullName || item.email || String(item)}
-                  getItemValue={(item) => item.id}
-                  onChange={(e) => {
-                    handleSelectChange('assignedBySupervisorId', { value: e.target.value });
-                  }}
-                  value={formData.assignedBySupervisorId}
-                  id="assignedBySupervisorId"
-                  label={t('tickets.ticketForm.assignedBySupervisor')}
-                  searchPlaceholder="Search by username, name, or email..."
-                />
-              </div>
-            </div>
-          )}
+        {/* Description */}
+        <div className="col-span-2">
+          <label className="block text-sm font-medium text-dark mb-1">
+            {t('tickets.ticketForm.description')} <span className="text-red-500">*</span>
+          </label>
+          <textarea
+            className={`w-full px-4 py-2 mt-2 border rounded focus:outline-none focus:ring-2 ${
+              "border-gray-300 focus:ring-primary"
+            }`}
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            rows={4}
+            required
+          />
         </div>
+
+        {/* Company */}
+        {!isCompanyUser && (
+          <div className="relative">
+            <Input
+              id="companyId"
+              label={t('tickets.ticketForm.company')}
+              value={companyDisplayValue}
+              readOnly
+              onClick={() => setIsCompanyDialogOpen(true)}
+              className="cursor-pointer"
+              placeholder={t('tickets.ticketForm.companyPlaceholder')}
+            />
+          </div>
+        )}
+
+        {/* Screen */}
+        <div className="relative">
+          <Input
+            id="screenId"
+            label={t('tickets.ticketForm.screen')}
+            value={screenDisplayValue}
+            readOnly
+            onClick={() => setIsScreenDialogOpen(true)}
+            className="cursor-pointer"
+            placeholder={t('tickets.ticketForm.screenPlaceholder')}
+          />
+        </div>
+
+        {/* Assigned To Worker */}
+        {!isCompanyUser && (
+          <div className="relative">
+            <Input
+              id="assignedToWorkerId"
+              label={t('tickets.ticketForm.assignedToWorker')}
+              value={workerDisplayValue}
+              readOnly
+              onClick={() => setIsWorkerDialogOpen(true)}
+              className="cursor-pointer"
+              placeholder={t('tickets.placeholders.selectWorker')}
+            />
+          </div>
+        )}
+
+        {/* Assigned to Supervisor */}
+        {!isCompanyUser && (
+          <div className="relative">
+            <Input
+              id="assignedBySupervisorId"
+              label={t('tickets.ticketForm.assignedBySupervisor')}
+              value={supervisorDisplayValue}
+              readOnly
+              onClick={() => setIsSupervisorDialogOpen(true)}
+              className="cursor-pointer"
+              placeholder={t('tickets.placeholders.selectSupervisor')}
+            />
+          </div>
+        )}
 
         {/* Attachments */}
         <div className="col-span-2">
-          <label className="block text-sm font-medium text-gray-700 mb-1">{t('tickets.ticketForm.attachments')}</label>
+          <label className="block text-sm font-medium text-dark mb-1">{t('tickets.ticketForm.attachments')}</label>
           <div className="mt-1 flex justify-center px-4 pt-4 pb-5 border-2 border-gray-300 border-dashed rounded-md">
             <div className="space-y-1 text-center">
               <svg className="mx-auto h-10 w-10 text-gray-400 hidden sm:block" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
@@ -502,45 +368,65 @@ const CreateTicket = () => {
             </div>
           </div>
         </div>
+      </FormsContainer>
 
-        {/* Buttons */}
-        <div className="flex flex-col-reverse sm:flex-row justify-end space-y-3 space-y-reverse sm:space-y-0 sm:space-x-3 pt-4">
-          <button
-            type="button"
-            onClick={() => navigate("/tickets")}
-            className="mt-3 sm:mt-0 px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
-            {t('common.cancel')}
-          </button>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className={`px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${isSubmitting ? "opacity-70 cursor-not-allowed" : ""}`}
-          >
-            {isSubmitting ? t('tickets.messages.creatingTicket') : t('tickets.createTicket')}
-          </button>
-        </div>
-      </form>
-
-      <style jsx global>{`
-        .react-select-container .react-select__control {
-          border: 1px solid #d1d5db;
-          min-height: 44px;
-          font-size: 16px; /* Prevents zoom on iOS */
-        }
-        .react-select-container .react-select__control--is-focused {
-          border-color: #3b82f6;
-          box-shadow: 0 0 0 1px #3b82f6;
-        }
-        @media (max-width: 768px) {
-          .react-select-container .react-select__control {
-            min-height: 48px; /* Larger touch target on mobile */
-          }
-          .react-select-container .react-select__menu {
-            font-size: 16px; /* Prevents zoom on iOS */
-          }
-        }
-      `}</style>
+      {/* Selection Dialogs */}
+      <SelectionInputDialog
+        isOpen={isCompanyDialogOpen}
+        onClose={() => setIsCompanyDialogOpen(false)}
+        fetchItems={fetchCompanies}
+        getItemLabel={(item) => item.name || String(item)}
+        getItemValue={(item) => item.id}
+        onChange={(e) => {
+          handleSelectChange('companyId', { value: e.target.value });
+        }}
+        value={formData.companyId}
+        id="companyId"
+        label={t('tickets.ticketForm.company')}
+        searchPlaceholder={t('tickets.placeholders.searchCompanies')}
+      />
+      <SelectionInputDialog
+        isOpen={isScreenDialogOpen}
+        onClose={() => setIsScreenDialogOpen(false)}
+        fetchItems={fetchScreens}
+        getItemLabel={(item) => item.name || String(item)}
+        getItemValue={(item) => item.id}
+        onChange={(e) => {
+          handleSelectChange('screenId', { value: e.target.value });
+        }}
+        value={formData.screenId}
+        id="screenId"
+        label={t('tickets.ticketForm.screen')}
+        searchPlaceholder={t('tickets.placeholders.searchScreens')}
+      />
+      <SelectionInputDialog
+        isOpen={isWorkerDialogOpen}
+        onClose={() => setIsWorkerDialogOpen(false)}
+        fetchItems={fetchWorkers}
+        getItemLabel={(item) => item.username || item.fullName || item.email || String(item)}
+        getItemValue={(item) => item.id}
+        onChange={(e) => {
+          handleSelectChange('assignedToWorkerId', { value: e.target.value });
+        }}
+        value={formData.assignedToWorkerId}
+        id="assignedToWorkerId"
+        label={t('tickets.ticketForm.assignedToWorker')}
+        searchPlaceholder="Search by username, name, or email..."
+      />
+      <SelectionInputDialog
+        isOpen={isSupervisorDialogOpen}
+        onClose={() => setIsSupervisorDialogOpen(false)}
+        fetchItems={fetchSupervisors}
+        getItemLabel={(item) => item.username || item.fullName || item.email || String(item)}
+        getItemValue={(item) => item.id}
+        onChange={(e) => {
+          handleSelectChange('assignedBySupervisorId', { value: e.target.value });
+        }}
+        value={formData.assignedBySupervisorId}
+        id="assignedBySupervisorId"
+        label={t('tickets.ticketForm.assignedBySupervisor')}
+        searchPlaceholder="Search by username, name, or email..."
+      />
     </div>
   );
 };
