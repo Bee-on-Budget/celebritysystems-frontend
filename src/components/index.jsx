@@ -15,6 +15,7 @@ import Pagination from "./Pagination";
 import ConfirmationModal from "./ConfirmationModal";
 import CustomCheckbox from "./CustomCheckbox";
 import LanguageSwitcher from "./LanguageSwitcher";
+import SelectionInputDialog from "./SelectionInputDialog";
 
 export {
   Button,
@@ -34,4 +35,5 @@ export {
   ConfirmationModal,
   CustomCheckbox,
   LanguageSwitcher,
+  SelectionInputDialog,
 };
