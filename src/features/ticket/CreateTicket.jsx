@@ -192,17 +192,35 @@ const CreateTicket = () => {
   // Handle file changes
   const handleFileChange = (e) => {
     const selected = Array.from(e.target.files);
-    const validFiles = selected.filter(file =>
-      file.size <= MAX_FILE_SIZE_MB * 1024 * 1024 &&
-      ALLOWED_TYPES.includes(file.type)
-    );
-    setFiles(prev => [...prev, ...validFiles]);
+    const errors = [];
+    const validFiles = [];
+
+    selected.forEach((file) => {
+      if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+        errors.push(`${file.name}: ${t('tickets.messages.fileSizeExceeded')}`);
+      } else if (!ALLOWED_TYPES.includes(file.type)) {
+        errors.push(`${file.name}: ${t('tickets.messages.invalidFileType')}`);
+      } else {
+        validFiles.push(file);
+      }
+    });
+
+    if (errors.length > 0) {
+      errors.forEach(error => showToast(error, "error"));
+    }
+
+    if (validFiles.length > 0) {
+      setFiles(prev => [...prev, ...validFiles]);
+    }
+
+    // Reset input to allow selecting the same file again
+    e.target.value = '';
   };
 
   // Remove file
-  // const handleRemoveFile = (index) => {
-  //   setFiles(prev => prev.filter((_, i) => i !== index));
-  // };
+  const handleRemoveFile = (index) => {
+    setFiles(prev => prev.filter((_, i) => i !== index));
+  };
 
   // Form submission
   const handleSubmit = async (e) => {
@@ -333,14 +351,16 @@ const CreateTicket = () => {
 
         {/* Attachments */}
         <div className="col-span-2">
-          <label className="block text-sm font-medium text-dark mb-1">{t('tickets.ticketForm.attachments')}</label>
-          <div className="mt-1 flex justify-center px-4 pt-4 pb-5 border-2 border-gray-300 border-dashed rounded-md">
-            <div className="space-y-1 text-center">
+          <label className="block text-sm font-medium text-dark mb-1">
+            {t('tickets.ticketForm.attachments')}
+          </label>
+          <div className="mt-2 flex justify-center px-4 pt-4 pb-5 border-2 border-gray-300 border-dashed rounded-md hover:border-gray-400 transition-colors">
+            <div className="space-y-2 text-center w-full">
               <svg className="mx-auto h-10 w-10 text-gray-400 hidden sm:block" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
                 <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-              <div className="flex flex-col sm:flex-row text-sm text-gray-600 justify-center items-center">
-                <label className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500">
+              <div className="flex flex-col sm:flex-row text-sm text-gray-600 justify-center items-center gap-2">
+                <label className="relative cursor-pointer bg-white rounded-md font-medium text-primary hover:text-primary-hover px-3 py-1.5 border border-primary transition-colors">
                   <span>{t('tickets.ticketForm.uploadFiles')}</span>
                   <input
                     type="file"
@@ -350,19 +370,29 @@ const CreateTicket = () => {
                     accept=".png,.jpg,.jpeg,.pdf"
                   />
                 </label>
-                <p className="pl-1">{t('tickets.ticketForm.dragAndDrop')}</p>
+                <p className="text-sm text-gray-500">{t('tickets.ticketForm.dragAndDrop')}</p>
               </div>
               <p className="text-xs text-gray-500">
                 {t('tickets.ticketForm.fileTypes')}
               </p>
               {files.length > 0 && (
-                <div className="mt-2">
-                  <p className="text-sm font-medium">{t('tickets.ticketForm.selectedFiles')}</p>
-                  <ul className="text-sm text-gray-500">
+                <div className="mt-4 space-y-2">
+                  <p className="text-sm font-medium text-dark">{t('tickets.ticketForm.selectedFiles')}</p>
+                  <div className="space-y-1">
                     {files.map((file, index) => (
-                      <li key={index} className="truncate max-w-xs">{file.name}</li>
+                      <div key={index} className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded border border-gray-200">
+                        <span className="text-sm text-gray-700 truncate flex-1">{file.name}</span>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveFile(index)}
+                          className="ml-2 text-red-500 hover:text-red-700 text-sm font-medium"
+                          aria-label={`Remove ${file.name}`}
+                        >
+                          {t('common.remove')}
+                        </button>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 </div>
               )}
             </div>
