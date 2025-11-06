@@ -1,5 +1,5 @@
 // src/components/tickets/CreateTicket.jsx
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { createTicket, prepareTicketFormData, getUsersByRole } from "../../api/services/TicketService";
@@ -8,7 +8,7 @@ import { getScreens } from "../../api/services/ScreenService";
 import Select from 'react-select';
 import AsyncSelect from 'react-select/async';
 import debounce from 'lodash/debounce';
-import { DropdownInput, Input, showToast } from "../../components";
+import { DropdownInput, Input, showToast, SelectionInputDialog } from "../../components";
 import { useAuth } from "../../auth/useAuth";
 
 const CreateTicket = () => {
@@ -36,6 +36,10 @@ const CreateTicket = () => {
   const [workers, setWorkers] = useState([]);
   const [supervisors, setSupervisors] = useState([]);
   const [fetching, setFetching] = useState(true);
+  const [isCompanyDialogOpen, setIsCompanyDialogOpen] = useState(false);
+  const [isScreenDialogOpen, setIsScreenDialogOpen] = useState(false);
+  const [isWorkerDialogOpen, setIsWorkerDialogOpen] = useState(false);
+  const [isSupervisorDialogOpen, setIsSupervisorDialogOpen] = useState(false);
 
   const MAX_FILE_SIZE_MB = 10;
   const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'application/pdf'];
@@ -127,13 +131,26 @@ const CreateTicket = () => {
     }
   };
 
-  // Debounced companies search
+  // Debounced companies search (for AsyncSelect - keeping for screen selection)
   const debouncedLoadCompanies = useMemo(
     () => debounce((inputValue, callback) => {
       loadCompanies(inputValue).then(options => callback(options));
     }, 500),
     []
   );
+
+  // Fetch companies for SelectionInputDialog
+  const fetchCompanies = useCallback(async (searchQuery) => {
+    try {
+      const res = await searchCompanies(searchQuery);
+      const companiesData = Array.isArray(res) ? res : res?.content || res?.data || [];
+      setCompanies(companiesData);
+      return companiesData;
+    } catch (error) {
+      console.error("Error fetching companies:", error);
+      throw error;
+    }
+  }, []);
 
   // Load screens with search
   const loadScreens = async (search = '') => {
@@ -152,13 +169,65 @@ const CreateTicket = () => {
     }
   };
 
-  // Debounced screen search
+  // Debounced screen search (keeping for backward compatibility if needed)
   const debouncedLoadScreens = useMemo(
     () => debounce((inputValue, callback) => {
       loadScreens(inputValue).then(options => callback(options));
     }, 500),
     []
   );
+
+  // Fetch screens for SelectionInputDialog
+  const fetchScreens = useCallback(async (searchQuery) => {
+    try {
+      const screensRes = await getScreens({ search: searchQuery });
+      const screensData = Array.isArray(screensRes) ? screensRes :
+        screensRes?.content || screensRes?.data || [];
+      setScreens(screensData);
+      return screensData;
+    } catch (error) {
+      console.error("Error fetching screens:", error);
+      throw error;
+    }
+  }, []);
+
+  // Fetch workers for SelectionInputDialog
+  const fetchWorkers = useCallback(async (searchQuery) => {
+    try {
+      const allWorkers = await getUsersByRole("CELEBRITY_SYSTEM_WORKER");
+      const workersArray = Array.isArray(allWorkers) ? allWorkers : [];
+      
+      // Filter workers based on search query
+      const query = searchQuery.toLowerCase();
+      return workersArray.filter(worker => 
+        worker.username?.toLowerCase().includes(query) ||
+        worker.fullName?.toLowerCase().includes(query) ||
+        worker.email?.toLowerCase().includes(query)
+      );
+    } catch (error) {
+      console.error("Error fetching workers:", error);
+      throw error;
+    }
+  }, []);
+
+  // Fetch supervisors for SelectionInputDialog
+  const fetchSupervisors = useCallback(async (searchQuery) => {
+    try {
+      const allSupervisors = await getUsersByRole("SUPERVISOR");
+      const supervisorsArray = Array.isArray(allSupervisors) ? allSupervisors : [];
+      
+      // Filter supervisors based on search query
+      const query = searchQuery.toLowerCase();
+      return supervisorsArray.filter(supervisor => 
+        supervisor.username?.toLowerCase().includes(query) ||
+        supervisor.fullName?.toLowerCase().includes(query) ||
+        supervisor.email?.toLowerCase().includes(query)
+      );
+    } catch (error) {
+      console.error("Error fetching supervisors:", error);
+      throw error;
+    }
+  }, []);
 
   // Handle form field changes
   const handleChange = (e) => {
@@ -173,6 +242,30 @@ const CreateTicket = () => {
       [name]: selectedOption?.value || ""
     }));
   };
+
+  // Get selected company display value
+  const selectedCompany = companies.find(c => c.id === formData.companyId);
+  const companyDisplayValue = selectedCompany 
+    ? selectedCompany.name || ""
+    : "";
+
+  // Get selected screen display value
+  const selectedScreen = screens.find(s => s.id === formData.screenId);
+  const screenDisplayValue = selectedScreen 
+    ? selectedScreen.name || ""
+    : "";
+
+  // Get selected worker display value
+  const selectedWorker = workers.find(w => w.id === formData.assignedToWorkerId);
+  const workerDisplayValue = selectedWorker 
+    ? selectedWorker.username || selectedWorker.fullName || ""
+    : "";
+
+  // Get selected supervisor display value
+  const selectedSupervisor = supervisors.find(s => s.id === formData.assignedBySupervisorId);
+  const supervisorDisplayValue = selectedSupervisor 
+    ? selectedSupervisor.username || selectedSupervisor.fullName || ""
+    : "";
 
   // Handle file changes
   const handleFileChange = (e) => {
@@ -250,95 +343,124 @@ const CreateTicket = () => {
           </div>
 
           {/* Company */}
-          {!isCompanyUser ?? (
+          {!isCompanyUser && (
             <div className="col-span-2 md:col-span-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('tickets.ticketForm.company')}</label>
-              <AsyncSelect
-                cacheOptions
-                defaultOptions
-                loadOptions={debouncedLoadCompanies}
-                value={companies.find(c => c.id === formData.companyId) ? {
-                  value: formData.companyId,
-                  label: companies.find(c => c.id === formData.companyId).name
-                } : null}
-                onChange={(option) => handleSelectChange('companyId', option)}
-                isClearable
-                placeholder={t('tickets.ticketForm.companyPlaceholder')}
-                noOptionsMessage={({ inputValue }) =>
-                  inputValue ? t('tickets.messages.noCompaniesFound') : t('tickets.placeholders.searchCompanies')
-                }
-                styles={customStyles}
-                className="text-sm"
-              />
+              <div className="relative">
+                <Input
+                  id="companyId"
+                  label={t('tickets.ticketForm.company')}
+                  value={companyDisplayValue}
+                  readOnly
+                  onClick={() => setIsCompanyDialogOpen(true)}
+                  className="cursor-pointer"
+                  placeholder={t('tickets.ticketForm.companyPlaceholder')}
+                />
+                <SelectionInputDialog
+                  isOpen={isCompanyDialogOpen}
+                  onClose={() => setIsCompanyDialogOpen(false)}
+                  fetchItems={fetchCompanies}
+                  getItemLabel={(item) => item.name || String(item)}
+                  getItemValue={(item) => item.id}
+                  onChange={(e) => {
+                    handleSelectChange('companyId', { value: e.target.value });
+                  }}
+                  value={formData.companyId}
+                  id="companyId"
+                  label={t('tickets.ticketForm.company')}
+                  searchPlaceholder={t('tickets.placeholders.searchCompanies')}
+                />
+              </div>
             </div>
           )}
 
           {/* Screen */}
           <div className="col-span-2 md:col-span-1">
-            <label className="block text-sm font-medium text-gray-700 mb-1">{t('tickets.ticketForm.screen')}</label>
-            <AsyncSelect
-              cacheOptions
-              defaultOptions
-              loadOptions={debouncedLoadScreens}
-              value={screens.find(s => s.id === formData.screenId) ? {
-                value: formData.screenId,
-                label: screens.find(s => s.id === formData.screenId).name
-              } : null}
-              onChange={(option) => handleSelectChange('screenId', option)}
-              isClearable
-              placeholder={t('tickets.ticketForm.screenPlaceholder')}
-              noOptionsMessage={({ inputValue }) =>
-                inputValue ? t('tickets.messages.noScreensFound') : t('tickets.placeholders.searchScreens')
-              }
-              className="react-select-container text-sm"
-              classNamePrefix="react-select"
-              styles={customStyles}
-            />
+            <div className="relative">
+              <Input
+                id="screenId"
+                label={t('tickets.ticketForm.screen')}
+                value={screenDisplayValue}
+                readOnly
+                onClick={() => setIsScreenDialogOpen(true)}
+                className="cursor-pointer"
+                placeholder={t('tickets.ticketForm.screenPlaceholder')}
+              />
+              <SelectionInputDialog
+                isOpen={isScreenDialogOpen}
+                onClose={() => setIsScreenDialogOpen(false)}
+                fetchItems={fetchScreens}
+                getItemLabel={(item) => item.name || String(item)}
+                getItemValue={(item) => item.id}
+                onChange={(e) => {
+                  handleSelectChange('screenId', { value: e.target.value });
+                }}
+                value={formData.screenId}
+                id="screenId"
+                label={t('tickets.ticketForm.screen')}
+                searchPlaceholder={t('tickets.placeholders.searchScreens')}
+              />
+            </div>
           </div>
 
           {/* Assigned To Worker */}
           {!isCompanyUser && (
             <div className="col-span-2 md:col-span-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('tickets.ticketForm.assignedToWorker')}</label>
-              <Select
-                options={workers.map(worker => ({
-                  value: worker.id,
-                  label: `${worker.username} (${worker.email})`
-                }))}
-                value={workers.find(w => w.id === formData.assignedToWorkerId) ? {
-                  value: formData.assignedToWorkerId,
-                  label: `${workers.find(w => w.id === formData.assignedToWorkerId).username} (${workers.find(w => w.id === formData.assignedToWorkerId).email})`
-                } : null}
-                onChange={(option) => handleSelectChange('assignedToWorkerId', option)}
-                isClearable
-                placeholder={t('tickets.placeholders.selectWorker')}
-                className="react-select-container text-sm"
-                classNamePrefix="react-select"
-                styles={customStyles}
-              />
+              <div className="relative">
+                <Input
+                  id="assignedToWorkerId"
+                  label={t('tickets.ticketForm.assignedToWorker')}
+                  value={workerDisplayValue}
+                  readOnly
+                  onClick={() => setIsWorkerDialogOpen(true)}
+                  className="cursor-pointer"
+                  placeholder={t('tickets.placeholders.selectWorker')}
+                />
+                <SelectionInputDialog
+                  isOpen={isWorkerDialogOpen}
+                  onClose={() => setIsWorkerDialogOpen(false)}
+                  fetchItems={fetchWorkers}
+                  getItemLabel={(item) => item.username || item.fullName || item.email || String(item)}
+                  getItemValue={(item) => item.id}
+                  onChange={(e) => {
+                    handleSelectChange('assignedToWorkerId', { value: e.target.value });
+                  }}
+                  value={formData.assignedToWorkerId}
+                  id="assignedToWorkerId"
+                  label={t('tickets.ticketForm.assignedToWorker')}
+                  searchPlaceholder="Search by username, name, or email..."
+                />
+              </div>
             </div>
           )}
 
           {/* Assigned to Supervisor */}
           {!isCompanyUser && (
             <div className="col-span-2 md:col-span-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('tickets.ticketForm.assignedBySupervisor')}</label>
-              <Select
-                options={supervisors.map(supervisor => ({
-                  value: supervisor.id,
-                  label: `${supervisor.username} (${supervisor.email})`
-                }))}
-                value={supervisors.find(s => s.id === formData.assignedBySupervisorId) ? {
-                  value: formData.assignedBySupervisorId,
-                  label: `${supervisors.find(s => s.id === formData.assignedBySupervisorId).username} (${supervisors.find(s => s.id === formData.assignedBySupervisorId).email})`
-                } : null}
-                onChange={(option) => handleSelectChange('assignedBySupervisorId', option)}
-                isClearable
-                placeholder={t('tickets.placeholders.selectSupervisor')}
-                className="react-select-container text-sm"
-                classNamePrefix="react-select"
-                styles={customStyles}
-              />
+              <div className="relative">
+                <Input
+                  id="assignedBySupervisorId"
+                  label={t('tickets.ticketForm.assignedBySupervisor')}
+                  value={supervisorDisplayValue}
+                  readOnly
+                  onClick={() => setIsSupervisorDialogOpen(true)}
+                  className="cursor-pointer"
+                  placeholder={t('tickets.placeholders.selectSupervisor')}
+                />
+                <SelectionInputDialog
+                  isOpen={isSupervisorDialogOpen}
+                  onClose={() => setIsSupervisorDialogOpen(false)}
+                  fetchItems={fetchSupervisors}
+                  getItemLabel={(item) => item.username || item.fullName || item.email || String(item)}
+                  getItemValue={(item) => item.id}
+                  onChange={(e) => {
+                    handleSelectChange('assignedBySupervisorId', { value: e.target.value });
+                  }}
+                  value={formData.assignedBySupervisorId}
+                  id="assignedBySupervisorId"
+                  label={t('tickets.ticketForm.assignedBySupervisor')}
+                  searchPlaceholder="Search by username, name, or email..."
+                />
+              </div>
             </div>
           )}
         </div>
