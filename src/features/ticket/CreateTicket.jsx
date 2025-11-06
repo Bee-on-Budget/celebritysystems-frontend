@@ -196,8 +196,8 @@ const CreateTicket = () => {
 
     try {
       const ticketData = prepareTicketFormData(formData, files);
-      const response = await createTicket(ticketData);
-      navigate(`/tickets/${response.id}`);
+      await createTicket(ticketData);
+      navigate('/tickets');
     } catch (error) {
       console.error("Error creating ticket:", error);
     } finally {
