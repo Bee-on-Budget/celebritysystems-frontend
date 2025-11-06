@@ -77,30 +77,30 @@ const Sidebar = ({ open, setOpen }) => {
           )}
 
           {user?.role !== "COMPANY" && (
-          <SidebarDropdown
-            icon={FaBuilding}
-            label={t('sidebar.allCompanies')}
-            isOpen={openDropdowns["companies"]}
-            onToggle={() => handleDropdownToggle("companies")}
-            items={[
-              { label: t('sidebar.allCompanies'), href: "/companies", onClick: () => setOpen(false) },
-              { label: t('sidebar.createCompany'), href: "/companies/create", onClick: () => setOpen(false) },
-              { label: t('sidebar.addUser'), href: "/companies/add-user", onClick: () => setOpen(false) }
-            ]}
-          />
+            <SidebarDropdown
+              icon={FaBuilding}
+              label={t('sidebar.allCompanies')}
+              isOpen={openDropdowns["companies"]}
+              onToggle={() => handleDropdownToggle("companies")}
+              items={[
+                { label: t('sidebar.allCompanies'), href: "/companies", onClick: () => setOpen(false) },
+                { label: t('sidebar.createCompany'), href: "/companies/create", onClick: () => setOpen(false) },
+                { label: t('sidebar.addUser'), href: "/companies/add-user", onClick: () => setOpen(false) }
+              ]}
+            />
           )}
 
           {user?.role !== "COMPANY" && (
-          <SidebarDropdown
-            icon={FaDesktop}
-            label={t('sidebar.allScreens')}
-            isOpen={openDropdowns["screens"]}
-            onToggle={() => handleDropdownToggle("screens")}
-            items={[
-              { label: t('sidebar.allScreens'), href: "/screen", onClick: () => setOpen(false) },
-              { label: t('sidebar.createScreen'), href: "/screen/AddScreen", onClick: () => setOpen(false) }
-            ]}
-          />
+            <SidebarDropdown
+              icon={FaDesktop}
+              label={t('sidebar.allScreens')}
+              isOpen={openDropdowns["screens"]}
+              onToggle={() => handleDropdownToggle("screens")}
+              items={[
+                { label: t('sidebar.allScreens'), href: "/screen", onClick: () => setOpen(false) },
+                { label: t('sidebar.createScreen'), href: "/screen/AddScreen", onClick: () => setOpen(false) }
+              ]}
+            />
           )}
 
           <SidebarDropdown
@@ -119,43 +119,47 @@ const Sidebar = ({ open, setOpen }) => {
             ]}
           />
 
-          {user?.role !== "COMPANY" && (
-          <SidebarDropdown
-            icon={FaFileContract}
-            label={t('sidebar.allContracts')}
-            isOpen={openDropdowns["contracts"]}
-            onToggle={() => handleDropdownToggle("contracts")}
-            items={[
-              { label: t('sidebar.allContracts'), href: "/contracts", onClick: () => setOpen(false) },
-              { label: t('sidebar.createContract'), href: "/contracts/create", onClick: () => setOpen(false) }
-            ]}
-          />
+          {user?.role === "COMPANY" && (
+            <NavButton to={"/company-reports"} icon={<FaFileContract />} label={t('sidebar.createTicket')} onClick={() => setOpen(false)} />
           )}
 
           {user?.role !== "COMPANY" && (
-          <SidebarDropdown
-            icon={FaFileContract}
-            label={t('sidebar.allSubcontracts')}
-            isOpen={openDropdowns["subcontracts"]}
-            onToggle={() => handleDropdownToggle("subcontracts")}
-            items={[
-              { label: t('sidebar.allSubcontracts'), href: "/subcontract", onClick: () => setOpen(false) },
-              { label: t('sidebar.createSubcontract'), href: "/subcontract/create", onClick: () => setOpen(false) }
-            ]}
-          />
+            <SidebarDropdown
+              icon={FaFileContract}
+              label={t('sidebar.allContracts')}
+              isOpen={openDropdowns["contracts"]}
+              onToggle={() => handleDropdownToggle("contracts")}
+              items={[
+                { label: t('sidebar.allContracts'), href: "/contracts", onClick: () => setOpen(false) },
+                { label: t('sidebar.createContract'), href: "/contracts/create", onClick: () => setOpen(false) }
+              ]}
+            />
           )}
 
           {user?.role !== "COMPANY" && (
-          <SidebarDropdown
-            icon={FaFileContract}
-            label={t('reports.title')}
-            isOpen={openDropdowns['reports']}
-            onToggle={() => handleDropdownToggle("reports")}
-            items={[
-              { label: t('reports.allReports'), href: "/reports", onClick: () => setOpen(false) },
-              { label: t('reports.reportSummaryTab'), href: "/reports-summary", onClick: () => setOpen(false) },
-            ]}
-          />
+            <SidebarDropdown
+              icon={FaFileContract}
+              label={t('sidebar.allSubcontracts')}
+              isOpen={openDropdowns["subcontracts"]}
+              onToggle={() => handleDropdownToggle("subcontracts")}
+              items={[
+                { label: t('sidebar.allSubcontracts'), href: "/subcontract", onClick: () => setOpen(false) },
+                { label: t('sidebar.createSubcontract'), href: "/subcontract/create", onClick: () => setOpen(false) }
+              ]}
+            />
+          )}
+
+          {user?.role !== "COMPANY" && (
+            <SidebarDropdown
+              icon={FaFileContract}
+              label={t('reports.title')}
+              isOpen={openDropdowns['reports']}
+              onToggle={() => handleDropdownToggle("reports")}
+              items={[
+                { label: t('reports.allReports'), href: "/reports", onClick: () => setOpen(false) },
+                { label: t('reports.reportSummaryTab'), href: "/reports-summary", onClick: () => setOpen(false) },
+              ]}
+            />
           )}
         </div>
       </nav>

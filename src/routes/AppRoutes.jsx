@@ -49,6 +49,7 @@ import TicketDetails from "../features/ticket/TicketDetails";
 import PendingTicketsList from "../features/ticket/PendingTicketsList";
 import PendingTicketDetails from "../features/ticket/PendingTicketDetails";
 import ResolvedTickets from "../features/ticket/ResolvedTickets";
+import TicketReportList from "../features/ticket/ReportList";
 
 // Report management
 import ReportList from "../features/report/ReportList";
@@ -267,6 +268,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR", "COMPANY"]}>
               <TicketDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="company-reports"
+          element={
+            <ProtectedRoute allowedRoles={["COMPANY"]}>
+              <TicketReportList />
             </ProtectedRoute>
           }
         />
