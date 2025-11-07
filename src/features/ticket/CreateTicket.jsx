@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { createTicket, prepareTicketFormData, getUsersByRole } from "../../api/services/TicketService";
 import { searchCompanies } from "../../api/services/CompanyService";
 import { getScreens } from "../../api/services/ScreenService";
-import { DropdownInput, Input, showToast, SelectionInputDialog, FormsContainer, Button } from "../../components";
+import { DropdownInput, Input, showToast, SelectionInputDialog, FormsContainer } from "../../components";
 import { useAuth } from "../../auth/useAuth";
 
 const CreateTicket = () => {
@@ -26,7 +26,7 @@ const CreateTicket = () => {
     assignedBySupervisorId: "",
     createdBy: userId,
   });
-  const [files, setFiles] = useState([]);
+  const [file, setFile] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [companies, setCompanies] = useState([]);
   const [screens, setScreens] = useState([]);
@@ -191,35 +191,33 @@ const CreateTicket = () => {
 
   // Handle file changes
   const handleFileChange = (e) => {
-    const selected = Array.from(e.target.files);
-    const errors = [];
-    const validFiles = [];
+    const selectedFile = e.target.files?.[0];
+    
+    if (!selectedFile) return;
 
-    selected.forEach((file) => {
-      if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
-        errors.push(`${file.name}: ${t('tickets.messages.fileSizeExceeded')}`);
-      } else if (!ALLOWED_TYPES.includes(file.type)) {
-        errors.push(`${file.name}: ${t('tickets.messages.invalidFileType')}`);
-      } else {
-        validFiles.push(file);
-      }
-    });
-
-    if (errors.length > 0) {
-      errors.forEach(error => showToast(error, "error"));
+    // Validate file
+    if (selectedFile.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+      showToast(`${selectedFile.name}: ${t('tickets.messages.fileSizeExceeded')}`, "error");
+      e.target.value = '';
+      return;
     }
 
-    if (validFiles.length > 0) {
-      setFiles(prev => [...prev, ...validFiles]);
+    if (!ALLOWED_TYPES.includes(selectedFile.type)) {
+      showToast(`${selectedFile.name}: ${t('tickets.messages.invalidFileType')}`, "error");
+      e.target.value = '';
+      return;
     }
 
+    // Set the single file
+    setFile(selectedFile);
+    
     // Reset input to allow selecting the same file again
     e.target.value = '';
   };
 
   // Remove file
-  const handleRemoveFile = (index) => {
-    setFiles(prev => prev.filter((_, i) => i !== index));
+  const handleRemoveFile = () => {
+    setFile(null);
   };
 
   // Form submission
@@ -228,7 +226,7 @@ const CreateTicket = () => {
     setIsSubmitting(true);
 
     try {
-      const ticketData = prepareTicketFormData(formData, files);
+      const ticketData = prepareTicketFormData(formData, file ? [file] : []);
       await createTicket(ticketData);
       // Navigate after successful creation
       navigate('/tickets');
@@ -364,7 +362,6 @@ const CreateTicket = () => {
                   <span>{t('tickets.ticketForm.uploadFiles')}</span>
                   <input
                     type="file"
-                    multiple
                     className="sr-only"
                     onChange={handleFileChange}
                     accept=".png,.jpg,.jpeg,.pdf"
@@ -375,23 +372,19 @@ const CreateTicket = () => {
               <p className="text-xs text-gray-500">
                 {t('tickets.ticketForm.fileTypes')}
               </p>
-              {files.length > 0 && (
-                <div className="mt-4 space-y-2">
-                  <p className="text-sm font-medium text-dark">{t('tickets.ticketForm.selectedFiles')}</p>
-                  <div className="space-y-1">
-                    {files.map((file, index) => (
-                      <div key={index} className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded border border-gray-200">
-                        <span className="text-sm text-gray-700 truncate flex-1">{file.name}</span>
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveFile(index)}
-                          className="ml-2 text-red-500 hover:text-red-700 text-sm font-medium"
-                          aria-label={`Remove ${file.name}`}
-                        >
-                          {t('common.remove')}
-                        </button>
-                      </div>
-                    ))}
+              {file && (
+                <div className="mt-4">
+                  <p className="text-sm font-medium text-dark mb-2">{t('tickets.ticketForm.selectedFiles')}</p>
+                  <div className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded border border-gray-200">
+                    <span className="text-sm text-gray-700 truncate flex-1">{file.name}</span>
+                    <button
+                      type="button"
+                      onClick={handleRemoveFile}
+                      className="ml-2 text-red-500 hover:text-red-700 text-sm font-medium"
+                      aria-label={`Remove ${file.name}`}
+                    >
+                      {t('common.remove')}
+                    </button>
                   </div>
                 </div>
               )}
