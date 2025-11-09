@@ -55,7 +55,7 @@ import TicketReportList from "../features/ticket/ReportList";
 import ReportList from "../features/report/ReportList";
 import ReportDetails from "../features/report/ReportDetails";
 import CreateReport from "../features/report/CreateReport";
-import ReportSummary from "../features/report/ReportSummary"
+import ReportSummary from "../features/report/ReportSummary";
 
 // Sub-Contract management
 import SubcontractList from "../features/subcontract/SubcontractList";
@@ -196,7 +196,7 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="screen/AddScreen"
+          path="screen/add"
           element={
             <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
               <AddScreen />

@@ -98,7 +98,7 @@ const Sidebar = ({ open, setOpen }) => {
               onToggle={() => handleDropdownToggle("screens")}
               items={[
                 { label: t('sidebar.allScreens'), href: "/screen", onClick: () => setOpen(false) },
-                { label: t('sidebar.createScreen'), href: "/screen/AddScreen", onClick: () => setOpen(false) }
+                { label: t('sidebar.createScreen'), href: "/screen/add", onClick: () => setOpen(false) }
               ]}
             />
           )}
