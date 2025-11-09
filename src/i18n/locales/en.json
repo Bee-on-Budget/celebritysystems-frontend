@@ -581,7 +581,7 @@
       "accountName": "Account Name",
       "accountNamePlaceholder": "Enter account name (optional)",
       "durationType": "Duration Type",
-      "contractValue": "Contract Value ($)",
+      "contractValue": "Contract Value (USD)",
       "contractValuePlaceholder": "Enter contract value",
       "accountPermissions": "Account Permissions",
       "accountIdentifierPlaceholder": "Account email or username",

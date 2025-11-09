@@ -8,6 +8,7 @@ import { Loading } from '../../components';
 import { FaShoppingCart, FaCreditCard, FaUser, FaTicketAlt } from "react-icons/fa";
 import { useEffect } from "react";
 import dashboardServices from "../../api/services/DashboardServices";
+import { formatCurrency } from '../../utils/formatUtils';
 
 const customFeeds = [
   {
@@ -107,7 +108,7 @@ const Dashboard = () => {
           />
           <StatsCard 
             label={t('dashboard.stats.totalContracts')} 
-            value={`AED ${revenue}`} 
+            value={formatCurrency(revenue)} 
             color="blue" 
             icon={<FaShoppingCart />} 
           />

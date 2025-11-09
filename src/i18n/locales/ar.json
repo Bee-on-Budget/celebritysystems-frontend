@@ -581,7 +581,7 @@
       "accountName": "اسم الحساب",
       "accountNamePlaceholder": "أدخل اسم الحساب (اختياري)",
       "durationType": "نوع المدة",
-      "contractValue": "قيمة العقد ($)",
+      "contractValue": "قيمة العقد (USD)",
       "contractValuePlaceholder": "أدخل قيمة العقد",
       "accountPermissions": "صلاحيات الحساب",
       "accountIdentifierPlaceholder": "بريد إلكتروني أو اسم مستخدم للحساب",

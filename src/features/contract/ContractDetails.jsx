@@ -5,6 +5,7 @@ import { getContractById, deleteContract, getCompanyById } from '../../api/servi
 import { FiArrowLeft, FiCalendar, FiDollarSign, FiFileText, FiTrash2, FiBriefcase, FiEdit2, FiMoreVertical, FiMonitor } from 'react-icons/fi';
 import { Button, Loading, showToast, ConfirmationModal } from '../../components';
 import { getScreenById } from '../../api/services/ScreenService';
+import { formatCurrency as formatCurrencyUtil } from '../../utils/formatUtils';
 
 const ContractDetails = () => {
     const { t } = useTranslation();
@@ -74,7 +75,7 @@ const ContractDetails = () => {
 
     const formatDate = (dateString) => dateString ? new Date(dateString).toLocaleDateString() : t('common.notAvailable');
     const formatDateTime = (dateString) => dateString ? new Date(dateString).toLocaleString() : t('common.notAvailable');
-    const formatCurrency = (value) => value ? `$${value.toLocaleString()}` : t('common.notAvailable');
+    const formatCurrency = (value) => formatCurrencyUtil(value, t('common.notAvailable'));
 
     if (loading) return <Loading />;
 

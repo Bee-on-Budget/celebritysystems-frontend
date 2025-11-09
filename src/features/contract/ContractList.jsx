@@ -3,6 +3,7 @@ import { DataList, Pagination } from '../../components';
 import { getAllContracts } from '../../api/services/ContractService';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { formatCurrency } from '../../utils/formatUtils';
 
 const ContractList = () => {
   const { t } = useTranslation();
@@ -61,7 +62,6 @@ const ContractList = () => {
   };
 
   const formatDate = (dateString) => dateString ? new Date(dateString).toLocaleDateString() : 'N/A';
-  const formatCurrency = (value) => value ? `$${value.toLocaleString()}` : 'N/A';
 
   const renderContractItem = (list) => {
     const headerStyle = "px-3 py-2 text-start text-sm font-medium text-gray-500 uppercase tracking-wider";

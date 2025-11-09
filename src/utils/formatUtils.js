@@ -16,3 +16,15 @@ export const formatResolution = (resolution) => {
     }
     return `${num} pixels`;
 };
+
+export const formatCurrency = (value, fallback = 'N/A') => {
+    if (!value && value !== 0) return fallback;
+    
+    // Format as USD using Intl.NumberFormat
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+    }).format(value);
+};
