@@ -4,6 +4,7 @@ import { Calendar, BarChart3, Filter, Eye, Settings } from 'lucide-react';
 import { Button, Loading, showToast } from '../../components';
 import { getReportsDashboardSummary } from '../../api/services/ReportingService';
 import { FaDownload, FaSyncAlt } from 'react-icons/fa';
+import { generateReportSummaryPDF } from './components/ReportSummaryPDF';
 
 const ComponentSummaryDashboard = () => {
   const { t } = useTranslation();
@@ -91,60 +92,19 @@ const ComponentSummaryDashboard = () => {
     loadInitialValues();
   };
 
-  const handleExport = () => {
+  const handleExport = async () => {
     try {
-      // Build CSV rows
-      const header = [
-        'Component Name',
-        'Total Changes',
-        'Screens Monitored'
-      ];
-
-      const rows = filteredComponents.map((component) => {
-        const screensMonitored = Object.keys(component.changesPerScreen || {}).length;
-        return [
-          `"${(component.componentName || '').replace(/"/g, '""')}"`,
-          component.totalChanges ?? 0,
-          screensMonitored
-        ];
-      });
-
-      // Optional summary block at the top
-      const metadataLines = [
-        ['Report Type', reportData.reportType || 'Component Summary'],
-        ['Start Date', reportData.startDate || startDate || ''],
-        ['End Date', reportData.endDate || endDate || ''],
-        ['Overall Total Changes', reportData.totalCounts?.overallTotal ?? 0],
-        [] // empty line separator
-      ];
-
-      const csvArray = [
-        ...metadataLines,
-        header,
-        ...rows
-      ];
-
-      const csvContent = csvArray
-        .map((line) => line.join(','))
-        .join('\n');
-
-      const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      const start = (reportData.startDate || startDate || '').toString();
-      const end = (reportData.endDate || endDate || '').toString();
-      const fileName = `component_summary_${start}_${end}.csv`.replace(/\s+/g, '_');
-      link.href = url;
-      link.setAttribute('download', fileName);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-
-      showToast(t('reports.reportSummary.exportSuccess'));
+      await generateReportSummaryPDF(
+        reportData,
+        filteredComponents,
+        startDate,
+        endDate,
+        formatDate
+      );
+      showToast(t('reports.reportSummary.exportSuccess') || 'Report exported successfully');
     } catch (error) {
       console.error('Export failed:', error);
-      showToast(t('reports.reportSummary.exportFailed'));
+      showToast(t('reports.reportSummary.exportFailed') || 'Failed to export report');
     }
   };
 
