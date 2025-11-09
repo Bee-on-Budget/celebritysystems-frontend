@@ -39,6 +39,9 @@ const ResolutionStep = ({ form, errors, onChange, onBack, loading }) => {
             <Input
               label={t('screens.screenForm.screenWidth')}
               name="screenWidth"
+              type="number"
+              min="0"
+              step="0.01"
               value={form.screenWidth}
               error={errors.screenWidth}
               onChange={onChange}
@@ -47,6 +50,9 @@ const ResolutionStep = ({ form, errors, onChange, onBack, loading }) => {
             <Input
               label={t('screens.screenForm.screenHeight')}
               name="screenHeight"
+              type="number"
+              min="0"
+              step="0.01"
               value={form.screenHeight}
               error={errors.screenHeight}
               onChange={onChange}
@@ -68,6 +74,9 @@ const ResolutionStep = ({ form, errors, onChange, onBack, loading }) => {
             <Input
               label={t('screens.screenForm.pixelPitch')}
               name="pixelPitch"
+              type="number"
+              min="0"
+              step="0.01"
               value={form.pixelPitch}
               error={errors.pixelPitch}
               onChange={onChange}
@@ -79,6 +88,9 @@ const ResolutionStep = ({ form, errors, onChange, onBack, loading }) => {
               <Input
                 label={t('screens.screenForm.pixelPitchWidth')}
                 name="pixelPitchWidth"
+                type="number"
+                min="0"
+                step="0.01"
                 value={form.pixelPitchWidth}
                 error={errors.pixelPitchWidth}
                 onChange={onChange}
@@ -87,6 +99,9 @@ const ResolutionStep = ({ form, errors, onChange, onBack, loading }) => {
               <Input
                 label={t('screens.screenForm.pixelPitchHeight')}
                 name="pixelPitchHeight"
+                type="number"
+                min="0"
+                step="0.01"
                 value={form.pixelPitchHeight}
                 error={errors.pixelPitchHeight}
                 onChange={onChange}
