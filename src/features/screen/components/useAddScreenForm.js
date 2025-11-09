@@ -346,7 +346,7 @@ const useAddScreenForm = () => {
       }
     }
 
-    if (currentStep === 4) {
+    if (currentStep === 4 && form.solutionTypeInScreen === "CABINET_SOLUTION") {
       form.cabinets.forEach((cabinet, index) => {
         if (!cabinet.moduleDto.moduleByWidth)
           newErrors[`moduleDto_${index}_moduleByWidth`] = t('screens.validation.moduleByWidthRequired');
@@ -370,14 +370,35 @@ const useAddScreenForm = () => {
         (form.solutionTypeInScreen === 'CABINET_SOLUTION' && currentStep === 5)) {
       if (!form.batchScreen) newErrors.batchScreen = t('screens.validation.batchScreenRequired');
 
-      if (!form.screenWidth) newErrors.screenWidth = t('screens.validation.screenWidthRequired');
-      if (!form.screenHeight) newErrors.screenHeight = t('screens.validation.screenHeightRequired');
+      if (!form.screenWidth) {
+        newErrors.screenWidth = t('screens.validation.screenWidthRequired');
+      } else if (Number(form.screenWidth) < 0) {
+        newErrors.screenWidth = t('screens.validation.screenWidthNonNegative');
+      }
+
+      if (!form.screenHeight) {
+        newErrors.screenHeight = t('screens.validation.screenHeightRequired');
+      } else if (Number(form.screenHeight) < 0) {
+        newErrors.screenHeight = t('screens.validation.screenHeightNonNegative');
+      }
 
       if (!form.irregularPixelPitch) {
-        if (!form.pixelPitch) newErrors.pixelPitch = t('screens.validation.pixelPitchRequired');
+        if (!form.pixelPitch) {
+          newErrors.pixelPitch = t('screens.validation.pixelPitchRequired');
+        } else if (Number(form.pixelPitch) < 0) {
+          newErrors.pixelPitch = t('screens.validation.pixelPitchNonNegative');
+        }
       } else {
-        if (!form.pixelPitchWidth) newErrors.pixelPitchWidth = t('screens.validation.pixelPitchWidthRequired');
-        if (!form.pixelPitchHeight) newErrors.pixelPitchHeight = t('screens.validation.pixelPitchHeightRequired');
+        if (!form.pixelPitchWidth) {
+          newErrors.pixelPitchWidth = t('screens.validation.pixelPitchWidthRequired');
+        } else if (Number(form.pixelPitchWidth) < 0) {
+          newErrors.pixelPitchWidth = t('screens.validation.pixelPitchWidthNonNegative');
+        }
+        if (!form.pixelPitchHeight) {
+          newErrors.pixelPitchHeight = t('screens.validation.pixelPitchHeightRequired');
+        } else if (Number(form.pixelPitchHeight) < 0) {
+          newErrors.pixelPitchHeight = t('screens.validation.pixelPitchHeightNonNegative');
+        }
       }
     }
 
