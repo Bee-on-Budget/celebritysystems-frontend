@@ -132,14 +132,22 @@ const ModulesStep = ({ form, errors, onChange, onBack, onNext, addModule, remove
           <Button 
             type="button" 
             variant="ghost" 
-            onClick={onBack}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onBack();
+            }}
             className="w-full sm:w-auto min-w-[100px] order-2 sm:order-1"
           >
             {t('screens.actions.back')}
           </Button>
           <Button 
             type="button" 
-            onClick={onNext}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onNext();
+            }}
             className="w-full sm:w-auto min-w-[140px] order-1 sm:order-2"
           >
             {t('screens.actions.nextResolution')}
@@ -248,14 +256,22 @@ const ModulesStep = ({ form, errors, onChange, onBack, onNext, addModule, remove
         <Button
           type="button"
           variant="ghost"
-          onClick={onBack}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onBack();
+          }}
           className="w-full sm:w-auto min-w-[100px] order-2 sm:order-1"
         >
           {t('screens.actions.back')}
         </Button>
         <Button
           type="button"
-          onClick={onNext}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onNext();
+          }}
           className="w-full sm:w-auto min-w-[140px] order-1 sm:order-2"
         >
           {t('screens.actions.nextResolution')}

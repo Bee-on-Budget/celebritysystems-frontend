@@ -86,7 +86,7 @@ const AddScreen = () => {
             loading={loading}
           />
         )}
-        {(step === 4 || (step === 3 && form.solutionTypeInScreen === "MODULE_SOLUTION")) && (
+        {((step === 3 && form.solutionTypeInScreen === "MODULE_SOLUTION") || (step === 4 && form.solutionTypeInScreen === "CABINET_SOLUTION")) && (
           <ModulesStep
             form={form}
             errors={errors}
@@ -98,7 +98,7 @@ const AddScreen = () => {
             loading={loading}
           />
         )}
-        {(step === 5 && form.solutionTypeInScreen === "CABINET_SOLUTION") || (step === 4 && form.solutionTypeInScreen === "MODULE_SOLUTION") ? (
+        {((step === 4 && form.solutionTypeInScreen === "MODULE_SOLUTION") || (step === 5 && form.solutionTypeInScreen === "CABINET_SOLUTION")) && (
           <ResolutionStep
             form={form}
             errors={errors}
@@ -106,7 +106,7 @@ const AddScreen = () => {
             onBack={prevStep}
             loading={loading}
           />
-        ) : null}
+        )}
       </form>
     </div>
   );
