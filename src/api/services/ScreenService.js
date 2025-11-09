@@ -240,3 +240,47 @@ export const getScreenWithoutContracts = async () => {
         throw error.response?.data?.message || "Error fetching screens";
     }
 }
+
+export const downloadScreenFile = async (screenId, fileType) => {
+    try {
+        // API returns a URL (e.g., S3 presigned URL) instead of blob
+        const response = await api.get(`/screens/${screenId}/download/${fileType}`);
+        
+        // Extract the download URL from the response
+        const downloadUrl = response.data?.url || response.data || response.data?.downloadUrl;
+        
+        if (!downloadUrl) {
+            throw new Error("No download URL received from server");
+        }
+        
+        // Extract filename from URL or use default
+        let filename = `screen_${screenId}_${fileType}`;
+        try {
+            // Try to extract filename from URL path
+            const urlPath = new URL(downloadUrl).pathname;
+            const pathParts = urlPath.split('/');
+            const lastPart = pathParts[pathParts.length - 1];
+            if (lastPart && lastPart.includes('.')) {
+                // Remove query parameters if any
+                filename = lastPart.split('?')[0];
+            }
+        } catch (e) {
+            // If URL parsing fails, use default filename
+            console.warn('Could not extract filename from URL, using default');
+        }
+        
+        // Create a temporary link and trigger download
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.setAttribute('download', filename);
+        link.setAttribute('target', '_blank');
+        link.setAttribute('rel', 'noopener noreferrer');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        return true;
+    } catch (error) {
+        throw new Error(error.response?.data?.message || error.message || "Error downloading file");
+    }
+}

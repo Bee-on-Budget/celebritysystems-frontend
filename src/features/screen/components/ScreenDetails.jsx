@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { deleteScreen } from '../../../api/services/ScreenService';
-import { FiArrowLeft, FiTrash2 } from 'react-icons/fi';
+import { deleteScreen, downloadScreenFile } from '../../../api/services/ScreenService';
+import { FiArrowLeft, FiTrash2, FiDownload } from 'react-icons/fi';
 import { Button, Loading, showToast } from '../../../components';
 
 const ScreenDetails = () => {
@@ -42,6 +42,16 @@ const ScreenDetails = () => {
         showToast(err.message || 'Failed to delete screen. Please try again.', 'error');
         console.error('Error deleting screen:', err);
       }
+    }
+  };
+
+  const handleDownloadFile = async (fileType) => {
+    try {
+      await downloadScreenFile(id, fileType);
+      showToast(`File downloaded successfully.`, 'success');
+    } catch (err) {
+      showToast(err.message || `Failed to download ${fileType} file. Please try again.`, 'error');
+      console.error(`Error downloading ${fileType} file:`, err);
     }
   };
 
@@ -361,6 +371,39 @@ const ScreenDetails = () => {
                   <span>Spare: {screen.spareMediaQuantity || 0}</span>
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Files Section */}
+          <div className="mt-8">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-100">
+              Files
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Button
+                onClick={() => handleDownloadFile('connection')}
+                variant="outline"
+                icon={<FiDownload />}
+                className="w-full"
+              >
+                Download Connection File
+              </Button>
+              <Button
+                onClick={() => handleDownloadFile('config')}
+                variant="outline"
+                icon={<FiDownload />}
+                className="w-full"
+              >
+                Download Config File
+              </Button>
+              <Button
+                onClick={() => handleDownloadFile('version')}
+                variant="outline"
+                icon={<FiDownload />}
+                className="w-full"
+              >
+                Download Version File
+              </Button>
             </div>
           </div>
         </div>
