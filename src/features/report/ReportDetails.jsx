@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { getReportById, deleteReport } from '../../api/services/TicketService';
-import { FiArrowLeft, FiCalendar, FiFileText, FiTrash2, FiEdit2, FiCheckSquare, FiAlertTriangle, FiClipboard, FiImage, FiMoreVertical } from 'react-icons/fi';
+import { getReportById, deleteReport, updateReportById } from '../../api/services/TicketService';
+import { FiArrowLeft, FiCalendar, FiFileText, FiTrash2, FiEdit2, FiCheckSquare, FiAlertTriangle, FiClipboard, FiImage, FiMoreVertical, FiSave, FiX } from 'react-icons/fi';
 import { Button, Loading, showToast, ConfirmationModal } from '../../components';
 import ReportPDF from './components/ReportPDF';
 
@@ -14,6 +14,12 @@ const ReportDetails = () => {
     const [error, setError] = useState('');
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [isUpdating, setIsUpdating] = useState(false);
+    const [editData, setEditData] = useState({
+        defectsFound: '',
+        solutionsProvided: ''
+    });
 
     useEffect(() => {
         const fetchReport = async () => {
@@ -46,6 +52,64 @@ const ReportDetails = () => {
             showToast(err.message || 'Failed to delete report', 'error');
         } finally {
             setShowDeleteModal(false);
+        }
+    };
+
+    const handleEditClick = () => {
+        setIsEditing(true);
+        setEditData({
+            defectsFound: report.defectsFound || '',
+            solutionsProvided: report.solutionsProvided || ''
+        });
+        setShowMobileMenu(false);
+    };
+
+    const handleCancelEdit = () => {
+        setIsEditing(false);
+        setEditData({
+            defectsFound: '',
+            solutionsProvided: ''
+        });
+    };
+
+    const handleSaveUpdate = async () => {
+        if (!report.ticketId) {
+            showToast('Ticket ID is missing', 'error');
+            return;
+        }
+
+        setIsUpdating(true);
+        try {
+            // Prepare update data with all required fields
+            const updateData = {
+                date: report.reportDate || new Date().toISOString().split('T')[0],
+                checklist: typeof report.checklist === 'string' 
+                    ? report.checklist 
+                    : JSON.stringify(report.checklist || {}),
+                dateTime: report.dateTime || new Date().toISOString(),
+                defectsFound: editData.defectsFound || '',
+                solutionsProvided: editData.solutionsProvided || '',
+                technicianSignatures: report.technicianSignatures || '',
+                solutionImage: report.solutionImage || ''
+            };
+
+            const updatedReport = await updateReportById(report.ticketId, updateData);
+            
+            // Update local state with the updated report
+            setReport({
+                ...report,
+                ...updatedReport,
+                defectsFound: editData.defectsFound,
+                solutionsProvided: editData.solutionsProvided
+            });
+            
+            setIsEditing(false);
+            showToast('Report updated successfully', 'success');
+        } catch (err) {
+            console.error('Error updating report:', err);
+            showToast(err.message || 'Failed to update report', 'error');
+        } finally {
+            setIsUpdating(false);
         }
     };
 
@@ -96,22 +160,47 @@ const ReportDetails = () => {
 
                     {/* Desktop Action Buttons */}
                     <div className="hidden sm:flex items-center gap-2">
-                        <Button
-                            onClick={() => navigate(`/reports/${id}/edit`, { state: { report } })}
-                            variant='primary'
-                            icon={<FiEdit2 />}
-                            size="sm"
-                        >
-                            Edit
-                        </Button>
-                        <Button
-                            onClick={handleDeleteClick}
-                            variant='danger'
-                            icon={<FiTrash2 />}
-                            size="sm"
-                        >
-                            Delete
-                        </Button>
+                        {!isEditing ? (
+                            <>
+                                <Button
+                                    onClick={handleEditClick}
+                                    variant='primary'
+                                    icon={<FiEdit2 />}
+                                    size="sm"
+                                >
+                                    Edit
+                                </Button>
+                                <Button
+                                    onClick={handleDeleteClick}
+                                    variant='danger'
+                                    icon={<FiTrash2 />}
+                                    size="sm"
+                                >
+                                    Delete
+                                </Button>
+                            </>
+                        ) : (
+                            <>
+                                <Button
+                                    onClick={handleSaveUpdate}
+                                    variant='primary'
+                                    icon={<FiSave />}
+                                    size="sm"
+                                    disabled={isUpdating}
+                                >
+                                    {isUpdating ? 'Saving...' : 'Save'}
+                                </Button>
+                                <Button
+                                    onClick={handleCancelEdit}
+                                    variant='secondary'
+                                    icon={<FiX />}
+                                    size="sm"
+                                    disabled={isUpdating}
+                                >
+                                    Cancel
+                                </Button>
+                            </>
+                        )}
                         <ReportPDF report={report} />
                     </div>
 
@@ -125,13 +214,10 @@ const ReportDetails = () => {
                         </button>
 
                         {/* Mobile Dropdown Menu */}
-                        {showMobileMenu && (
+                        {showMobileMenu && !isEditing && (
                             <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
                                 <button
-                                    onClick={() => {
-                                        navigate(`/reports/${id}/edit`, { state: { report } });
-                                        setShowMobileMenu(false);
-                                    }}
+                                    onClick={handleEditClick}
                                     className="w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 border-b border-gray-100"
                                 >
                                     <FiEdit2 />
@@ -147,6 +233,28 @@ const ReportDetails = () => {
                                 <div className="w-full px-4 py-3 border-b border-gray-100">
                                     <ReportPDF report={report} />
                                 </div>
+                            </div>
+                        )}
+                        
+                        {/* Mobile Edit Buttons */}
+                        {isEditing && (
+                            <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                                <button
+                                    onClick={handleSaveUpdate}
+                                    disabled={isUpdating}
+                                    className="w-full px-4 py-3 text-left text-sm text-green-600 hover:bg-green-50 flex items-center gap-2 border-b border-gray-100 disabled:opacity-50"
+                                >
+                                    <FiSave />
+                                    {isUpdating ? 'Saving...' : 'Save Changes'}
+                                </button>
+                                <button
+                                    onClick={handleCancelEdit}
+                                    disabled={isUpdating}
+                                    className="w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 disabled:opacity-50"
+                                >
+                                    <FiX />
+                                    Cancel
+                                </button>
                             </div>
                         )}
                     </div>
@@ -307,11 +415,20 @@ const ReportDetails = () => {
                                 </div>
                                 <h3 className="text-base font-semibold text-dark">Defects Found</h3>
                             </div>
-                            <div className="bg-gray-50 p-3 md:p-4 rounded min-h-[120px] md:min-h-[150px]">
-                                <p className="text-sm text-gray-700 whitespace-pre-wrap break-words">
-                                    {report.defectsFound || 'No defects reported'}
-                                </p>
-                            </div>
+                            {isEditing ? (
+                                <textarea
+                                    value={editData.defectsFound}
+                                    onChange={(e) => setEditData(prev => ({ ...prev, defectsFound: e.target.value }))}
+                                    className="w-full bg-gray-50 p-3 md:p-4 rounded min-h-[120px] md:min-h-[150px] text-sm text-gray-700 border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none resize-y"
+                                    placeholder="Enter defects found..."
+                                />
+                            ) : (
+                                <div className="bg-gray-50 p-3 md:p-4 rounded min-h-[120px] md:min-h-[150px]">
+                                    <p className="text-sm text-gray-700 whitespace-pre-wrap break-words">
+                                        {report.defectsFound || 'No defects reported'}
+                                    </p>
+                                </div>
+                            )}
                         </div>
 
                         <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 md:p-5">
@@ -321,11 +438,20 @@ const ReportDetails = () => {
                                 </div>
                                 <h3 className="text-base font-semibold text-dark">Solutions Provided</h3>
                             </div>
-                            <div className="bg-gray-50 p-3 md:p-4 rounded min-h-[120px] md:min-h-[150px]">
-                                <p className="text-sm text-gray-700 whitespace-pre-wrap break-words">
-                                    {report.solutionsProvided || 'No solutions documented'}
-                                </p>
-                            </div>
+                            {isEditing ? (
+                                <textarea
+                                    value={editData.solutionsProvided}
+                                    onChange={(e) => setEditData(prev => ({ ...prev, solutionsProvided: e.target.value }))}
+                                    className="w-full bg-gray-50 p-3 md:p-4 rounded min-h-[120px] md:min-h-[150px] text-sm text-gray-700 border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none resize-y"
+                                    placeholder="Enter solutions provided..."
+                                />
+                            ) : (
+                                <div className="bg-gray-50 p-3 md:p-4 rounded min-h-[120px] md:min-h-[150px]">
+                                    <p className="text-sm text-gray-700 whitespace-pre-wrap break-words">
+                                        {report.solutionsProvided || 'No solutions documented'}
+                                    </p>
+                                </div>
+                            )}
                         </div>
                     </div>
 

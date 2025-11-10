@@ -132,3 +132,12 @@ export const searchContractsByCompanyName = async (companyName) => {
     throw error.response?.data?.message || "Error searching contracts by company name";
   }
 };
+
+export const getActiveScreensByCompany = async (companyId) => {
+  try {
+    const response = await axios.get(`${CONTRACT_API_URL}/company/${companyId}/screens/active`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data?.message || "Error fetching active screens for company";
+  }
+};
