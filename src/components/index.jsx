@@ -16,6 +16,7 @@ import ConfirmationModal from "./ConfirmationModal";
 import CustomCheckbox from "./CustomCheckbox";
 import LanguageSwitcher from "./LanguageSwitcher";
 import SelectionInputDialog from "./SelectionInputDialog";
+import MultiSelectionInputDialog from "./MultiSelectionInputDialog";
 
 export {
   Button,
@@ -36,4 +37,5 @@ export {
   CustomCheckbox,
   LanguageSwitcher,
   SelectionInputDialog,
+  MultiSelectionInputDialog,
 };
