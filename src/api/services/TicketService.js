@@ -189,7 +189,7 @@ export const getReportById = async (id) => {
 
 export const updateReportById = async (id, data) => {
   try {
-    const response = await axios.put(`tickets/${id}/worker-report`, data);
+    const response = await axios.patch(`tickets/${id}/worker-report`, data);
     return response.data;
   } catch (error) {
     throw error.response?.data?.message || "Faild to update the report";
@@ -202,5 +202,82 @@ export const deleteReport = async (id) => {
     return response.data;
   } catch (error) {
     throw error.response?.data?.message || "Faild to update the report";
+  }
+}
+
+export const downloadTicketImage = async (ticketId) => {
+  try {
+    console.log(`Downloading ticket image for ticket ID: ${ticketId}`);
+    const response = await axios.get(`${TICKET_API_URL}/${ticketId}/image/download`, {
+      responseType: 'blob',
+      headers: {
+        'Accept': 'application/octet-stream, image/*'
+      }
+    });
+    
+    console.log('Response received:', {
+      status: response.status,
+      statusText: response.statusText,
+      dataType: typeof response.data,
+      dataSize: response.data?.size,
+      contentType: response.headers['content-type']
+    });
+    
+    // Validate response
+    if (!response.data) {
+      throw new Error("No data received from server");
+    }
+    
+    if (response.data.size === 0) {
+      throw new Error("Empty file received from server");
+    }
+    
+    return response.data;
+  } catch (error) {
+    console.error('Error downloading ticket image:', {
+      message: error.message,
+      response: error.response,
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      data: error.response?.data
+    });
+    
+    // Try to extract error message from blob response if it's an error JSON
+    let errorMessage = "Failed to download ticket image";
+    if (error.response?.data) {
+      try {
+        // If the response is a blob but contains JSON error, convert it
+        if (error.response.data instanceof Blob) {
+          const text = await error.response.data.text();
+          try {
+            const jsonError = JSON.parse(text);
+            errorMessage = jsonError.message || errorMessage;
+          } catch (parseError) {
+            // If it's not JSON, use status text or default message
+            errorMessage = error.response.statusText || errorMessage;
+          }
+        } else {
+          errorMessage = error.response.data.message || errorMessage;
+        }
+      } catch (e) {
+        // If parsing fails, use default message
+        errorMessage = error.response?.statusText || error.message || errorMessage;
+      }
+    } else {
+      errorMessage = error.message || errorMessage;
+    }
+    
+    throw new Error(errorMessage);
+  }
+}
+
+export const downloadTicketAttachment = async (ticketId) => {
+  try {
+    const response = await axios.get(`${TICKET_API_URL}/${ticketId}/attachment/download`, {
+      responseType: 'blob'
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data?.message || "Failed to download ticket attachment";
   }
 }
