@@ -64,11 +64,16 @@
     "confirmTitle": "هل أنت متأكد؟",
     "confirmMessage": "لا يمكن التراجع عن هذا الإجراء.",
     "selectItem": "اختر عنصر",
+    "selectItems": "اختر العناصر",
+    "itemSelected": "عنصر محدد",
+    "itemsSelected": "عناصر محددة",
+    "done": "تم",
     "typeToSearch": "اكتب للبحث...",
     "typeAtLeast3Characters": "اكتب 3 أحرف على الأقل للبحث",
     "typeAtLeast3CharactersToSearch": "اكتب 3 أحرف على الأقل للبحث",
     "noResultsFound": "لم يتم العثور على نتائج",
-    "errorFetchingData": "خطأ في جلب البيانات"
+    "errorFetchingData": "خطأ في جلب البيانات",
+    "notAvailable": "غير متوفر"
   },
   "tickets": {
     "title": "التذاكر",
@@ -626,6 +631,17 @@
       "noScreensFound": "لم يتم العثور على شاشات",
       "typingToSearchScreens": "ابدأ بالكتابة للبحت عن الشاشات"
     },
+    "validation": {
+      "fillRequiredFields": "يرجى ملء جميع الحقول المطلوبة",
+      "infoRequired": "معلومات العقد مطلوبة",
+      "startDateRequired": "تاريخ البدء مطلوب",
+      "endDateRequired": "تاريخ الانتهاء مطلوب",
+      "endDateAfterStartDate": "يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء",
+      "companyRequired": "الشركة مطلوبة",
+      "contractValueRequired": "قيمة العقد مطلوبة",
+      "contractValuePositive": "يجب أن تكون قيمة العقد رقماً موجباً",
+      "accountIdentifierRequired": "معرف الحساب مطلوب"
+    },
     "details": {
       "untitledContract": "عقد بدون عنوان",
       "contractId": "رقم العقد",
@@ -654,15 +670,18 @@
       "accountPermissions": "صلاحيات الحساب",
       "noPermissionsSet": "لم يتم تعيين صلاحيات لهذا العقد"
     },
+    "actions": {
+      "backToContracts": "الرجوع إلى العقود",
+      "editContract": "تعديل العقد",
+      "deleteContract": "حذف العقد",
+      "saveChanges": "حفظ التعديلات",
+      "cancel": "إلغاء"
+    },
     "table": {
       "name": "اسم العقد",
       "account": "الحساب",
       "value": "القيمة",
       "expiryDate": "تاريخ الانتهاء"
-    },
-    "actions": {
-      "saveChanges": "حفظ التعديلات",
-      "cancel": "إلغاء"
     }
   },
   "subcontracts": {

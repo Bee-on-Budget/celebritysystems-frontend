@@ -64,11 +64,16 @@
     "confirmTitle": "Are you sure?",
     "confirmMessage": "This action cannot be undone.",
     "selectItem": "Select Item",
+    "selectItems": "Select Items",
+    "itemSelected": "item selected",
+    "itemsSelected": "items selected",
+    "done": "Done",
     "typeToSearch": "Type to search...",
     "typeAtLeast3Characters": "Type at least 3 characters to search",
     "typeAtLeast3CharactersToSearch": "Type at least 3 characters to search",
     "noResultsFound": "No results found",
-    "errorFetchingData": "Error fetching data"
+    "errorFetchingData": "Error fetching data",
+    "notAvailable": "Not available"
   },
   "tickets": {
     "title": "Tickets",
@@ -626,6 +631,17 @@
       "noScreensFound": "No screens found",
       "typingToSearchScreens": "Start typing to search screens"
     },
+    "validation": {
+      "fillRequiredFields": "Please fill in all required fields",
+      "infoRequired": "Contract information is required",
+      "startDateRequired": "Start date is required",
+      "endDateRequired": "End date is required",
+      "endDateAfterStartDate": "End date must be after start date",
+      "companyRequired": "Company is required",
+      "contractValueRequired": "Contract value is required",
+      "contractValuePositive": "Contract value must be a positive number",
+      "accountIdentifierRequired": "Account identifier is required"
+    },
     "details": {
       "untitledContract": "Untitled Contract",
       "contractId": "Contract ID",
@@ -654,15 +670,18 @@
       "accountPermissions": "Account Permissions",
       "noPermissionsSet": "No permissions set for this contract"
     },
+    "actions": {
+      "backToContracts": "Back to Contracts",
+      "editContract": "Edit Contract",
+      "deleteContract": "Delete Contract",
+      "saveChanges": "Save Changes",
+      "cancel": "Cancel"
+    },
     "table": {
       "name": "Contract Name",
       "account": "Account",
       "value": "Value",
       "expiryDate": "Expiry Date"
-    },
-    "actions": {
-      "saveChanges": "Save Changes",
-      "cancel": "Cancel"
     }
   },
   "subcontracts": {
