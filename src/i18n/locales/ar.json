@@ -73,7 +73,9 @@
     "typeAtLeast3CharactersToSearch": "اكتب 3 أحرف على الأقل للبحث",
     "noResultsFound": "لم يتم العثور على نتائج",
     "errorFetchingData": "خطأ في جلب البيانات",
-    "notAvailable": "غير متوفر"
+    "notAvailable": "غير متوفر",
+    "canEdit": "يمكن التعديل",
+    "canRead": "يمكن القراءة"
   },
   "tickets": {
     "title": "التذاكر",

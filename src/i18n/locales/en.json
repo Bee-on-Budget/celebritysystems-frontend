@@ -73,7 +73,9 @@
     "typeAtLeast3CharactersToSearch": "Type at least 3 characters to search",
     "noResultsFound": "No results found",
     "errorFetchingData": "Error fetching data",
-    "notAvailable": "Not available"
+    "notAvailable": "Not available",
+    "canEdit": "Can edit",
+    "canRead": "Can read"
   },
   "tickets": {
     "title": "Tickets",

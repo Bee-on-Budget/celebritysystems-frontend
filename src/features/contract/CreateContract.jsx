@@ -1,15 +1,12 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
-import { showToast } from '../../components/ToastNotifier';
+import { showToast, SelectionInputDialog, DropdownInput, MultiSelectionInputDialog } from '../../components';
 import { createContract } from '../../api/services/ContractService';
-import { getAllCompanies } from '../../api/services/CompanyService';
+import { searchCompanies } from '../../api/services/CompanyService';
 import { getScreens } from '../../api/services/ScreenService';
-import Select from 'react-select';
-import AsyncSelect from 'react-select/async';
-import debounce from 'lodash/debounce';
 
 const CreateContract = () => {
   const { t } = useTranslation();
@@ -27,46 +24,53 @@ const CreateContract = () => {
     accountPermissions: [] 
   });
 
-  const [companies, setCompanies] = useState([]);
-  const [screens, setScreens] = useState([]);
+  // Options for dropdowns
+  const supplyTypeOptions = [
+    { value: 'CELEBRITY_SYSTEMS', label: t('contracts.supplyTypes.CELEBRITY_SYSTEMS') },
+    { value: 'THIRD_PARTY', label: t('contracts.supplyTypes.THIRD_PARTY') }
+  ];
+
+  const operatorTypeOptions = [
+    { value: 'OWNER', label: t('contracts.operatorTypes.OWNER') },
+    { value: 'THIRD_PARTY', label: t('contracts.operatorTypes.THIRD_PARTY') }
+  ];
+
+  const durationTypeOptions = [
+    { value: 'WEEKLY', label: t('contracts.durationTypes.WEEKLY') },
+    { value: 'TWO_WEEKLY', label: t('contracts.durationTypes.TWO_WEEKLY') },
+    { value: 'MONTHLY', label: t('contracts.durationTypes.MONTHLY') },
+    { value: 'BIMONTHLY', label: t('contracts.durationTypes.BIMONTHLY') },
+    { value: 'QUARTERLY', label: t('contracts.durationTypes.QUARTERLY') },
+    { value: 'TWICE_A_YEAR', label: t('contracts.durationTypes.TWICE_A_YEAR') }
+  ];
+
+  const [selectedCompany, setSelectedCompany] = useState(null);
+  const [selectedScreens, setSelectedScreens] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [fetching, setFetching] = useState(true);
-  const [screenPage, setScreenPage] = useState(0);
-  const [screenSearch, setScreenSearch] = useState('');
+  const [isCompanyDialogOpen, setIsCompanyDialogOpen] = useState(false);
+  const [isScreensDialogOpen, setIsScreensDialogOpen] = useState(false);
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchInitialData = async () => {
-      try {
-        const companiesRes = await getAllCompanies();
-        let companiesData = [];
-        if (Array.isArray(companiesRes)) {
-          companiesData = companiesRes;
-        } else if (companiesRes?.content) {
-          companiesData = companiesRes.content;
-        } else if (companiesRes?.data) {
-          companiesData = companiesRes.data;
-        } else {
-          console.error('Unexpected companies response format:', companiesRes);
-          showToast(t('contracts.messages.unexpectedDataFormat'), 'warning');
-        }
-        setCompanies(companiesData);
-      } catch (error) {
-        console.error('Error fetching companies:', error);
-        showToast(t('contracts.messages.errorLoadingCompanies'), 'error');
-      } finally {
-        setFetching(false);
-      }
-    };
-    fetchInitialData();
-  }, [t]);
+  // Fetch companies for SelectionInputDialog
+  const fetchCompanies = useCallback(async (searchQuery) => {
+    try {
+      const res = await searchCompanies(searchQuery);
+      const companiesData = Array.isArray(res) ? res : res?.content || res?.data || [];
+      return companiesData;
+    } catch (error) {
+      console.error("Error fetching companies:", error);
+      throw error;
+    }
+  }, []);
 
-  const loadScreens = useCallback(async (search = '', page = 0) => {
+  // Fetch screens for MultiSelectionInputDialog
+  const fetchScreens = useCallback(async (searchQuery) => {
     try {
       const screensRes = await getScreens({ 
-        page, 
-        size: 20,
-        search 
+        page: 0, 
+        size: 50,
+        search: searchQuery 
       });
       
       let screensData = [];
@@ -81,50 +85,76 @@ const CreateContract = () => {
         return [];
       }
       
-      if (page === 0) {
-        setScreens(screensData);
-      } else {
-        setScreens(prev => [...prev, ...screensData]);
-      }
-      
-      return screensData.map(screen => ({
-        value: screen.id,
-        label: screen.name
-      }));
+      return screensData;
     } catch (error) {
       console.error('Error loading screens:', error);
       showToast(t('screens.messages.errorLoadingScreens'), 'error');
-      return [];
+      throw error;
     }
   }, [t]);
 
-  const debouncedLoadScreens = useMemo(
-    () => debounce((inputValue, callback) => {
-      loadScreens(inputValue, 0).then(options => callback(options));
-    }, 500),
-    [loadScreens]
-  );
-
-  const handleScreenMenuScrollToBottom = useCallback(() => {
-    const newPage = screenPage + 1;
-    loadScreens(screenSearch, newPage);
-    setScreenPage(newPage);
-  }, [screenPage, screenSearch, loadScreens]);
-
-  const handleScreenChange = (selectedOptions) => {
+  const handleScreenChange = (e) => {
+    const selectedIds = Array.isArray(e.target.value) ? e.target.value : [];
     setForm(prev => ({
       ...prev,
-      screenIds: selectedOptions ? selectedOptions.map(opt => opt.value) : []
+      screenIds: selectedIds
     }));
+    
+    // Update selected screens for display
+    if (selectedIds.length > 0) {
+      // We'll fetch the screen names when dialog closes
+      // For now, just update the count
+    } else {
+      setSelectedScreens([]);
+    }
+    
+    // Clear error when screens are selected
+    if (errors.screenIds) {
+      setErrors(prev => ({ ...prev, screenIds: null }));
+    }
   };
 
-  const handleCompanyChange = (selectedOption) => {
-    setForm(prev => ({ ...prev, companyId: selectedOption?.value || '' }));
+  const handleScreenConfirm = useCallback(async (selectedIds) => {
+    // Fetch screen details for selected IDs to display names
+    if (selectedIds.length > 0) {
+      try {
+        const allScreens = await fetchScreens('');
+        const selected = allScreens.filter(screen => 
+          selectedIds.includes(String(screen.id))
+        );
+        setSelectedScreens(selected);
+      } catch (error) {
+        console.error('Error fetching selected screens:', error);
+      }
+    } else {
+      setSelectedScreens([]);
+    }
+  }, [fetchScreens]);
+
+  const handleCompanyChange = (e) => {
+    setForm(prev => ({ ...prev, companyId: e.target.value || '' }));
+    // Clear error when company is selected
+    if (errors.companyId) {
+      setErrors(prev => ({ ...prev, companyId: null }));
+    }
   };
+
+  const handleCompanySelect = (item, value, label) => {
+    setSelectedCompany(item);
+  };
+
+  // Get selected company display value
+  const companyDisplayValue = selectedCompany 
+    ? selectedCompany.name || ""
+    : "";
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: null }));
+    }
   };
 
   const handleAddAccountPermission = () => {
@@ -148,16 +178,80 @@ const CreateContract = () => {
       ...prev,
       accountPermissions: updatedPermissions
     }));
+    // Clear error when user starts typing
+    const errorKey = `accountPermissions_${index}_accountIdentifier`;
+    if (errors[errorKey] && field === 'accountIdentifier') {
+      setErrors(prev => ({ ...prev, [errorKey]: null }));
+    }
   };
 
   const handleRemoveAccountPermission = (index) => {
     const updated = [...form.accountPermissions];
     updated.splice(index, 1);
     setForm(prev => ({ ...prev, accountPermissions: updated }));
+    // Clear related errors
+    const errorKey = `accountPermissions_${index}_accountIdentifier`;
+    if (errors[errorKey]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[errorKey];
+        return newErrors;
+      });
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Validate info
+    if (!form.info.trim()) {
+      newErrors.info = t('contracts.validation.infoRequired');
+    }
+
+    // Validate start date
+    if (!form.startContractAt) {
+      newErrors.startContractAt = t('contracts.validation.startDateRequired');
+    }
+
+    // Validate end date
+    if (!form.expiredAt) {
+      newErrors.expiredAt = t('contracts.validation.endDateRequired');
+    } else if (form.startContractAt && new Date(form.expiredAt) <= new Date(form.startContractAt)) {
+      newErrors.expiredAt = t('contracts.validation.endDateAfterStartDate');
+    }
+
+    // Validate company
+    if (!form.companyId) {
+      newErrors.companyId = t('contracts.validation.companyRequired');
+    }
+
+    // Validate contract value
+    if (!form.contractValue) {
+      newErrors.contractValue = t('contracts.validation.contractValueRequired');
+    } else if (isNaN(parseFloat(form.contractValue)) || parseFloat(form.contractValue) < 0) {
+      newErrors.contractValue = t('contracts.validation.contractValuePositive');
+    }
+
+    // Validate account permissions if any exist
+    form.accountPermissions.forEach((perm, index) => {
+      if (!perm.accountIdentifier.trim()) {
+        newErrors[`accountPermissions_${index}_accountIdentifier`] = t('contracts.validation.accountIdentifierRequired');
+      }
+    });
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate form before submission
+    if (!validateForm()) {
+      showToast(t('contracts.validation.fillRequiredFields'), 'error');
+      return;
+    }
+
     setLoading(true);
     try {
       await createContract({
@@ -182,8 +276,6 @@ const CreateContract = () => {
   };
   
 
-  if (fetching) return <div className="p-4">{t('common.loading')}</div>;
-
   return (
     <div className="max-w-4xl mx-auto mt-8 p-4">
       <h1 className="text-2xl font-semibold mb-6">{t('contracts.createContract')}</h1>
@@ -194,6 +286,7 @@ const CreateContract = () => {
           name="info"
           value={form.info}
           onChange={handleChange}
+          error={errors.info}
           required
         />
 
@@ -204,6 +297,7 @@ const CreateContract = () => {
             type="date"
             value={form.startContractAt}
             onChange={handleChange}
+            error={errors.startContractAt}
             required
           />
           <Input
@@ -212,6 +306,7 @@ const CreateContract = () => {
             type="date"
             value={form.expiredAt}
             onChange={handleChange}
+            error={errors.expiredAt}
             required
           />
         </div>
@@ -227,45 +322,30 @@ const CreateContract = () => {
 
           <div>
             <label className="block mb-2 text-sm font-medium">{t('common.company')}</label>
-            <Select
-              options={companies.map(company => ({
-                value: company.id,
-                label: company.name
-              }))}
-              value={form.companyId ? {
-                value: form.companyId,
-                label: companies.find(c => c.id === form.companyId)?.name || ''
-              } : null}
-              onChange={handleCompanyChange}
-              isSearchable
+            <Input
+              name="companyId"
+              value={companyDisplayValue}
+              onChange={() => {}} // Prevent direct editing
+              onClick={() => setIsCompanyDialogOpen(true)}
               placeholder={t('contracts.contractForm.companyPlaceholder')}
-              className="react-select-container"
-              classNamePrefix="react-select"
+              readOnly
+              error={errors.companyId}
+              required
+              className="cursor-pointer"
             />
           </div>
 
           <div>
             <label className="block mb-2 text-sm font-medium">{t('contracts.contractForm.screens')}</label>
-            <AsyncSelect
-              isMulti
-              cacheOptions
-              defaultOptions
-              loadOptions={debouncedLoadScreens}
-              value={screens
-                .filter(screen => form.screenIds.includes(screen.id))
-                .map(screen => ({
-                  value: screen.id,
-                  label: screen.name
-                }))}
-              onChange={handleScreenChange}
-              onInputChange={newValue => setScreenSearch(newValue)}
-              onMenuScrollToBottom={handleScreenMenuScrollToBottom}
+            <Input
+              name="screenIds"
+              value={selectedScreens.map(s => s.name).join(', ') || ''}
+              onChange={() => {}} // Prevent direct editing
+              onClick={() => setIsScreensDialogOpen(true)}
               placeholder={t('contracts.contractForm.screensPlaceholder')}
-              noOptionsMessage={({ inputValue }) =>
-                inputValue ? t('contracts.contractForm.noScreensFound') : t('contracts.contractForm.startTypingScreens')
-              }
-              className="react-select-container"
-              classNamePrefix="react-select"
+              readOnly
+              error={errors.screenIds}
+              className="cursor-pointer"
             />
             {form.screenIds.length > 0 && (
               <div className="mt-2 text-sm text-gray-500">
@@ -276,32 +356,24 @@ const CreateContract = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block mb-2 text-sm font-medium">{t('contracts.contractForm.supplyType')}</label>
-            <select
-              className="w-full p-2 border rounded"
-              name="supplyType"
-              value={form.supplyType}
-              onChange={handleChange}
-              required
-            >
-              <option value="CELEBRITY_SYSTEMS">{t('contracts.supplyTypes.CELEBRITY_SYSTEMS')}</option>
-              <option value="THIRD_PARTY">{t('contracts.supplyTypes.THIRD_PARTY')}</option>
-            </select>
-          </div>
-          <div>
-            <label className="block mb-2 text-sm font-medium">{t('contracts.contractForm.operatorType')}</label>
-            <select
-              className="w-full p-2 border rounded"
-              name="operatorType"
-              value={form.operatorType}
-              onChange={handleChange}
-              required
-            >
-              <option value="OWNER">{t('contracts.operatorTypes.OWNER')}</option>
-              <option value="THIRD_PARTY">{t('contracts.operatorTypes.THIRD_PARTY')}</option>
-            </select>
-          </div>
+          <DropdownInput
+            name="supplyType"
+            value={form.supplyType}
+            options={supplyTypeOptions}
+            onChange={handleChange}
+            label={t('contracts.contractForm.supplyType')}
+            error={errors.supplyType}
+            required
+          />
+          <DropdownInput
+            name="operatorType"
+            value={form.operatorType}
+            options={operatorTypeOptions}
+            onChange={handleChange}
+            label={t('contracts.contractForm.operatorType')}
+            error={errors.operatorType}
+            required
+          />
         </div>
 
         <div>
@@ -313,6 +385,7 @@ const CreateContract = () => {
                 placeholder={t('contracts.contractForm.accountIdentifierPlaceholder')}
                 value={perm.accountIdentifier}
                 onChange={(e) => handleAccountPermissionChange(idx, 'accountIdentifier', e.target.value)}
+                error={errors[`accountPermissions_${idx}_accountIdentifier`]}
                 className="w-full md:w-1/2"
                 required
               />
@@ -357,32 +430,25 @@ const CreateContract = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block mb-2 text-sm font-medium">{t('contracts.contractForm.durationType')}</label>
-            <select
-              className="w-full p-2 border rounded"
-              name="durationType"
-              value={form.durationType}
-              onChange={handleChange}
-              required
-            >
-    <option value="WEEKLY">{t('contracts.durationTypes.WEEKLY')}</option>
-<option value="TWO_WEEKLY">{t('contracts.durationTypes.TWO_WEEKLY')}</option>
-<option value="MONTHLY">{t('contracts.durationTypes.MONTHLY')}</option>
-<option value="BIMONTHLY">{t('contracts.durationTypes.BIMONTHLY')}</option>
-<option value="QUARTERLY">{t('contracts.durationTypes.QUARTERLY')}</option>
-<option value="TWICE_A_YEAR">{t('contracts.durationTypes.TWICE_A_YEAR')}</option>
-
-            </select>
-          </div>
+          <DropdownInput
+            name="durationType"
+            value={form.durationType}
+            options={durationTypeOptions}
+            onChange={handleChange}
+            label={t('contracts.contractForm.durationType')}
+            error={errors.durationType}
+            required
+          />
           
           <Input
             label={t('contracts.contractForm.contractValue')}
             name="contractValue"
             type="number"
             step="0.01"
+            min="0"
             value={form.contractValue}
             onChange={handleChange}
+            error={errors.contractValue}
             required
           />
         </div>
@@ -392,19 +458,35 @@ const CreateContract = () => {
         </Button>
       </form>
 
-      <style jsx global>{`
-        .react-select-container .react-select__control {
-          border: 1px solid #d1d5db;
-          min-height: 42px;
-        }
-        .react-select-container .react-select__control--is-focused {
-          border-color: #3b82f6;
-          box-shadow: 0 0 0 1px #3b82f6;
-        }
-        .react-select-container .react-select__multi-value {
-          background-color: #e5e7eb;
-        }
-      `}</style>
+      {/* Selection Dialogs */}
+      <SelectionInputDialog
+        isOpen={isCompanyDialogOpen}
+        onClose={() => setIsCompanyDialogOpen(false)}
+        fetchItems={fetchCompanies}
+        getItemLabel={(item) => item.name || String(item)}
+        getItemValue={(item) => item.id}
+        onChange={handleCompanyChange}
+        onSelect={handleCompanySelect}
+        value={form.companyId}
+        id="companyId"
+        label={t('common.company')}
+        searchPlaceholder={t('contracts.contractForm.companyPlaceholder')}
+        required
+      />
+
+      <MultiSelectionInputDialog
+        isOpen={isScreensDialogOpen}
+        onClose={() => setIsScreensDialogOpen(false)}
+        fetchItems={fetchScreens}
+        getItemLabel={(item) => item.name || String(item)}
+        getItemValue={(item) => item.id}
+        onChange={handleScreenChange}
+        onConfirm={handleScreenConfirm}
+        value={form.screenIds || []}
+        id="screenIds"
+        label={t('contracts.contractForm.screens')}
+        searchPlaceholder={t('contracts.contractForm.screensPlaceholder')}
+      />
     </div>
   );
 };
