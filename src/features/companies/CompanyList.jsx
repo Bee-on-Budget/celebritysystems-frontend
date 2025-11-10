@@ -75,14 +75,14 @@ const CompanyList = () => {
     const rowStyle = "h-14 hover:bg-gray-100 transition cursor-pointer";
 
     return (
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto max-w-5xl">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className={`${headerStyle} w-72`}>{t('companies.companyForm.name')}</th>
+              <th className={headerStyle}>{t('companies.companyForm.name')}</th>
               <th className={headerStyle}>{t('companies.companyForm.email')}</th>
-              <th className={`${headerStyle} w-40`}>{t('companies.companyForm.phone')}</th>
-              <th className={`${headerStyle} w-32`}>{t('companies.companyForm.address')}</th>
+              <th className={headerStyle}>{t('companies.companyForm.phone')}</th>
+              <th className={headerStyle}>{t('companies.companyForm.address')}</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
