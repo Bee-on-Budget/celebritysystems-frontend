@@ -75,7 +75,7 @@ const CompanyList = () => {
     const rowStyle = "h-14 hover:bg-gray-100 transition cursor-pointer";
 
     return (
-      <div className="overflow-x-auto max-w-5xl">
+      <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
