@@ -3,8 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { getTicketsByCompany } from '../../api/services/TicketService';
 import { useAuth } from '../../auth/useAuth';
-import { DataList, Loading } from '../../components';
+import { DataList, Loading, Button, showToast } from '../../components';
 import { FiFileText, FiCalendar, FiUser, FiCheckCircle, FiAlertCircle } from 'react-icons/fi';
+import { FaDownload } from 'react-icons/fa';
+import { generateReportListPDF } from './components/ReportListPDF';
 
 const ReportList = () => {
   const { t } = useTranslation();
@@ -14,7 +16,6 @@ const ReportList = () => {
   const [filtered, setFiltered] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
 
   const userCompanyId = user?.companyId || user?.company?.id || user?.companyID;
 
@@ -49,7 +50,6 @@ const ReportList = () => {
   }, [userCompanyId, t]);
 
   const handleSearch = (term) => {
-    setSearchTerm(term);
     if (!term.trim()) {
       setFiltered(reports);
       return;
@@ -71,13 +71,22 @@ const ReportList = () => {
   };
 
   const handleClearSearch = () => {
-    setSearchTerm('');
     setFiltered(reports);
   };
 
   const handleResultClick = (result) => {
     // Navigate to ticket details
     navigate(`/tickets/${result.id}`, { state: { ticket: result } });
+  };
+
+  const handleExport = async () => {
+    try {
+      await generateReportListPDF(filtered, formatDate, t);
+      showToast(t('tickets.messages.exportSuccess') || 'Reports exported successfully');
+    } catch (error) {
+      console.error('Export failed:', error);
+      showToast(t('tickets.messages.exportFailed') || 'Failed to export reports');
+    }
   };
 
   const getStatusBadge = (status) => {
@@ -194,18 +203,37 @@ const ReportList = () => {
   }
 
   return (
-    <DataList
-      title={t('tickets.reportsList') || 'Worker Reports'}
-      label="reports"
-      error={error}
-      isLoading={isLoading}
-      onSearch={handleSearch}
-      onResultClick={handleResultClick}
-      onClearSearch={handleClearSearch}
-      totalElements={filtered.length}
-    >
-      {renderReportItem(filtered)}
-    </DataList>
+    <div className="my-2">
+      {/* Header with Export Button */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <h1 className="text-xl sm:text-2xl font-semibold text-dark">
+          {t('tickets.reportsList') || 'Worker Reports'}
+        </h1>
+        <div className="flex items-center gap-2">
+          <Button
+            onClick={handleExport}
+            icon={<FaDownload />}
+            variant="primary"
+            size="sm"
+          >
+            {t('common.export') || 'Export PDF'}
+          </Button>
+        </div>
+      </div>
+
+      <DataList
+        title=""
+        label="reports"
+        error={error}
+        isLoading={isLoading}
+        onSearch={handleSearch}
+        onResultClick={handleResultClick}
+        onClearSearch={handleClearSearch}
+        totalElements={filtered.length}
+      >
+        {renderReportItem(filtered)}
+      </DataList>
+    </div>
   );
 };
 
