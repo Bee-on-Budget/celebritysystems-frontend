@@ -40,10 +40,46 @@ export const resetUserPassword = async (id, newPassword) => {
     }
 };
 
-export const getUsersPaginated = async (page = 0, size = 10) => {
+export const getUsersPaginated = async (params = {}) => {
     try {
+        const {
+            page = 0,
+            size = 10,
+            role,         // Optional: string, array, or comma-separated string
+            companyId,    // Optional: string or number
+            search        // Optional: string
+        } = params;
+
+        // Build query parameters with required fields
+        const queryParams = {
+            page,
+            size
+        };
+
+        // Add optional role filter if provided and not empty
+        if (role !== undefined && role !== null && role !== '') {
+            if (Array.isArray(role) && role.length > 0) {
+                queryParams.role = role.join(',');
+            } else if (typeof role === 'string' && role.trim() !== '') {
+                queryParams.role = role.trim();
+            }
+        }
+
+        // Add optional companyId filter if provided and not empty
+        if (companyId !== undefined && companyId !== null && companyId !== '') {
+            queryParams.companyId = companyId;
+        }
+
+        // Add optional search query if provided and not empty
+        if (search !== undefined && search !== null && search !== '') {
+            const trimmedSearch = typeof search === 'string' ? search.trim() : String(search).trim();
+            if (trimmedSearch !== '') {
+                queryParams.search = trimmedSearch;
+            }
+        }
+
         const response = await axios.get(`${API_URL}/paginated`, {
-            params: { page, size }
+            params: queryParams
         });
         return response.data;
     } catch (error) {

@@ -1,17 +1,16 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { updateUser, deleteUser, resetUserPassword, getUsersPaginated } from "../../api/services/UserService";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
+import { updateUser, deleteUser, resetUserPassword, getUsersPaginated, getAllUsers } from "../../api/services/UserService";
 import { getAllCompanies } from "../../api/services/CompanyService";
 import { DataList, Pagination } from "../../components";
 import UserTable from "./UserTable";
-import { filterUsersByRole, searchUsers } from "./userUtils";
 import { showToast } from "../../components/ToastNotifier";
 import { useTranslation } from "react-i18next";
 
 const UserList = () => {
   const { t } = useTranslation();
-  const [users, setUsers] = useState([]);
+  const [allUsers, setAllUsers] = useState([]); // All users for search
+  const [users, setUsers] = useState([]); // Paginated/filtered users to display
   const [companies, setCompanies] = useState([]);
-  const [filtered, setFiltered] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
@@ -22,6 +21,7 @@ const UserList = () => {
   const [error, setError] = useState("");
   const [editingUserId, setEditingUserId] = useState(null);
   const [selectedRoleFilter, setSelectedRoleFilter] = useState("ALL");
+  const [searchQuery, setSearchQuery] = useState("");
   const [editFormData, setEditFormData] = useState({
     fullName: "",
     email: "",
@@ -37,19 +37,105 @@ const UserList = () => {
     { value: "SUPERVISOR", label: t("accounts.roles.SUPERVISOR") },
   ];
 
+  // Fetch all users for search functionality and companies
+  useEffect(() => {
+    const loadInitialData = async () => {
+      try {
+        const [allUsersData, companiesRes] = await Promise.all([
+          getAllUsers(),
+          getAllCompanies()
+        ]);
+        
+        const usersArray = Array.isArray(allUsersData) 
+          ? allUsersData 
+          : (allUsersData?.data || allUsersData?.content || []);
+        setAllUsers(usersArray);
+        
+        const companiesData = companiesRes?.data || companiesRes || [];
+        setCompanies(Array.isArray(companiesData) ? companiesData : []);
+      } catch (error) {
+        console.error("Error loading initial data:", error);
+        // Try to load companies separately if getAllUsers fails
+        try {
+          const companiesRes = await getAllCompanies();
+          const companiesData = companiesRes?.data || companiesRes || [];
+          setCompanies(Array.isArray(companiesData) ? companiesData : []);
+        } catch (companiesError) {
+          console.error("Error loading companies:", companiesError);
+        }
+      }
+    };
+    loadInitialData();
+  }, []);
+
+  // Filter and paginate users client-side when search is active
+  const filteredAndPaginatedUsers = useMemo(() => {
+    let filtered = allUsers;
+
+    // Apply role filter
+    if (selectedRoleFilter && selectedRoleFilter !== "ALL") {
+      filtered = filtered.filter(user => user.role === selectedRoleFilter);
+    }
+
+    // Apply search filter
+    if (searchQuery && searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      filtered = filtered.filter(user => {
+        const fullName = (user.fullName || '').toLowerCase();
+        const email = (user.email || '').toLowerCase();
+        return fullName.includes(query) || email.includes(query);
+      });
+    }
+
+    // Calculate pagination
+    const total = filtered.length;
+    const totalPagesCount = Math.ceil(total / pageSize);
+    const startIndex = currentPage * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginated = filtered.slice(startIndex, endIndex);
+
+    return {
+      users: paginated,
+      total,
+      totalPages: totalPagesCount,
+      hasNext: currentPage < totalPagesCount - 1,
+      hasPrevious: currentPage > 0
+    };
+  }, [allUsers, selectedRoleFilter, searchQuery, currentPage, pageSize]);
+
+  // Fetch paginated data when NOT searching (server-side pagination)
   const fetchData = useCallback(async () => {
+    // If search is active, use client-side filtering
+    if (searchQuery && searchQuery.trim()) {
+      setUsers(filteredAndPaginatedUsers.users);
+      setTotalPages(filteredAndPaginatedUsers.totalPages);
+      setTotalItems(filteredAndPaginatedUsers.total);
+      setHasNext(filteredAndPaginatedUsers.hasNext);
+      setHasPrevious(filteredAndPaginatedUsers.hasPrevious);
+      return;
+    }
+
     setLoading(true);
     setError("");
     try {
-      const [usersRes, companiesRes] = await Promise.all([
-        getUsersPaginated(currentPage, pageSize),
-        getAllCompanies()
-      ]);
+      // Build API params for server-side pagination (no search, only role filter)
+      const apiParams = {
+        page: currentPage,
+        size: pageSize
+      };
+
+      // Add role filter if not "ALL" and not empty
+      if (selectedRoleFilter && 
+          selectedRoleFilter !== "ALL" && 
+          typeof selectedRoleFilter === 'string' && 
+          selectedRoleFilter.trim() !== "") {
+        apiParams.role = selectedRoleFilter.trim();
+      }
+
+      const usersRes = await getUsersPaginated(apiParams);
 
       const pageUsers = Array.isArray(usersRes?.content) ? usersRes.content : [];
       setUsers(pageUsers);
-      setCompanies(companiesRes?.data || []);
-      setFiltered(filterUsersByRole(pageUsers, selectedRoleFilter));
       setTotalPages(usersRes?.totalPages ?? 0);
       setTotalItems(usersRes?.totalElements ?? 0);
       setCurrentPage(usersRes?.number ?? 0);
@@ -58,7 +144,6 @@ const UserList = () => {
     } catch (error) {
       console.error("Error fetching data:", error);
       setUsers([]);
-      setFiltered([]);
       setCompanies([]);
       setTotalPages(0);
       setTotalItems(0);
@@ -68,7 +153,7 @@ const UserList = () => {
     } finally {
       setLoading(false);
     }
-  }, [selectedRoleFilter, currentPage, pageSize]);
+  }, [selectedRoleFilter, currentPage, pageSize, searchQuery, filteredAndPaginatedUsers]);
 
   useEffect(() => {
     fetchData();
@@ -78,6 +163,16 @@ const UserList = () => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       try {
         await deleteUser(id);
+        // Refresh all users list for search
+        try {
+          const allUsersData = await getAllUsers();
+          const usersArray = Array.isArray(allUsersData) 
+            ? allUsersData 
+            : (allUsersData?.data || allUsersData?.content || []);
+          setAllUsers(usersArray);
+        } catch (error) {
+          console.error("Error refreshing all users:", error);
+        }
         fetchData();
         showToast("User deleted successfully!", "success");
       } catch (error) {
@@ -124,6 +219,16 @@ const UserList = () => {
     try {
       await updateUser(userId, editFormData);
       setEditingUserId(null);
+      // Refresh all users list for search
+      try {
+        const allUsersData = await getAllUsers();
+        const usersArray = Array.isArray(allUsersData) 
+          ? allUsersData 
+          : (allUsersData?.data || allUsersData?.content || []);
+        setAllUsers(usersArray);
+      } catch (error) {
+        console.error("Error refreshing all users:", error);
+      }
       fetchData();
       showToast("User updated successfully!", "success");
     } catch (error) {
@@ -134,26 +239,64 @@ const UserList = () => {
 
   const handleSearch = useCallback(
     async (query) => {
-      const results = searchUsers(users, query);
-      return results.map((u) => `${u.fullName} (${u.email})`);
+      // Provide autocomplete suggestions from all users
+      if (!query || query.trim() === '') {
+        return [];
+      }
+      
+      const queryLower = query.toLowerCase().trim();
+      const suggestions = allUsers
+        .filter((user) => {
+          const fullName = (user.fullName || '').toLowerCase();
+          const email = (user.email || '').toLowerCase();
+          return fullName.includes(queryLower) || email.includes(queryLower);
+        })
+        .map((u) => `${u.fullName || ''} (${u.email || ''})`.trim())
+        .filter(Boolean);
+      
+      return suggestions;
     },
-    [users]
+    [allUsers]
   );
 
   const handleResultClick = (query) => {
-    let result = searchUsers(users, query);
-    result = filterUsersByRole(result, selectedRoleFilter);
-    setFiltered(result);
+    // Extract the search term from the selected suggestion
+    // Format is usually "Full Name (email)" or just the query
+    let searchTerm = query;
+    
+    // If it's in the format "Name (email)", extract just the name for better search results
+    const match = query.match(/^(.+?)\s*\((.+?)\)$/);
+    if (match) {
+      // Use the name part for search (client-side search will search in both name and email)
+      searchTerm = match[1].trim();
+    } else {
+      // If it's just a plain query, use it as is
+      searchTerm = query.trim();
+    }
+    
+    // Set search query and reset to first page
+    if (searchTerm) {
+      setSearchQuery(searchTerm);
+      setCurrentPage(0);
+    } else {
+      // If empty, clear the search
+      setSearchQuery("");
+      setCurrentPage(0);
+    }
+    // fetchData will be called automatically via useEffect
   };
 
   const handleClearSearch = () => {
-    setFiltered(filterUsersByRole(users, selectedRoleFilter));
+    setSearchQuery("");
+    setCurrentPage(0);
+    // fetchData will be called automatically via useEffect
   };
 
   const handleRoleFilterChange = (e) => {
     const role = e.target.value;
     setSelectedRoleFilter(role);
-    setFiltered(filterUsersByRole(users, role));
+    setCurrentPage(0); // Reset to first page when filter changes
+    // fetchData will be called automatically via useEffect
   };
 
   return (
@@ -186,7 +329,7 @@ const UserList = () => {
       {/* Users Table */}
       <div className="bg-white shadow rounded overflow-hidden">
         <UserTable
-          users={filtered}
+          users={users}
           companies={companies}
           editingUserId={editingUserId}
           editFormData={editFormData}
