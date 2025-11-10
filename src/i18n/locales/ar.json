@@ -598,6 +598,7 @@
       "accountPermissions": "صلاحيات الحساب",
       "accountIdentifierPlaceholder": "بريد إلكتروني أو اسم مستخدم للحساب",
       "addAccountPermission": "إضافة صلاحية حساب",
+      "noAccountPermissions": "لم يتم إضافة صلاحيات حساب بعد",
       "read": "قراءة",
       "edit": "تعديل",
       "remove": "إزالة"

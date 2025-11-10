@@ -598,6 +598,7 @@
       "accountPermissions": "Account Permissions",
       "accountIdentifierPlaceholder": "Account email or username",
       "addAccountPermission": "Add Account Permission",
+      "noAccountPermissions": "No account permissions added yet",
       "read": "Read",
       "edit": "Edit",
       "remove": "Remove"
