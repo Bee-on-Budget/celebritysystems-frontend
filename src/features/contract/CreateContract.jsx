@@ -297,7 +297,6 @@ const CreateContract = () => {
       setLoading(false);
     }
   };
-  
 
   return (
     <>
@@ -307,7 +306,8 @@ const CreateContract = () => {
         actionTitle={t('contracts.createContract')}
         isLoading={loading}
       >
-        <div className="col-span-2 w-full">
+        {/* Full width fields on mobile, 2 columns on desktop */}
+        <div className="col-span-1 md:col-span-2 w-full">
           <Input
             label={t('contracts.contractForm.info')}
             name="info"
@@ -318,30 +318,34 @@ const CreateContract = () => {
           />
         </div>
 
-        <div className="w-full">
-          <Input
-            label={t('contracts.contractForm.startDate')}
-            name="startContractAt"
-            type="date"
-            value={form.startContractAt}
-            onChange={handleChange}
-            error={errors.startContractAt}
-            required
-          />
-        </div>
-        <div className="w-full">
-          <Input
-            label={t('contracts.contractForm.endDate')}
-            name="expiredAt"
-            type="date"
-            value={form.expiredAt}
-            onChange={handleChange}
-            error={errors.expiredAt}
-            required
-          />
+        {/* Date fields - stack on mobile, side by side on tablet+ */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full col-span-1 md:col-span-2">
+          <div className="w-full">
+            <Input
+              label={t('contracts.contractForm.startDate')}
+              name="startContractAt"
+              type="date"
+              value={form.startContractAt}
+              onChange={handleChange}
+              error={errors.startContractAt}
+              required
+            />
+          </div>
+          <div className="w-full">
+            <Input
+              label={t('contracts.contractForm.endDate')}
+              name="expiredAt"
+              type="date"
+              value={form.expiredAt}
+              onChange={handleChange}
+              error={errors.expiredAt}
+              required
+            />
+          </div>
         </div>
 
-        <div className="col-span-2 w-full">
+        {/* Account name - full width */}
+        <div className="col-span-1 md:col-span-2 w-full">
           <Input
             label={t('contracts.contractForm.accountName')}
             name="accountName"
@@ -351,70 +355,96 @@ const CreateContract = () => {
           />
         </div>
 
-        <div className="w-full">
-          <label className="block mb-2 text-sm font-medium">{t('common.company')}</label>
-          <Input
-            name="companyId"
-            value={companyDisplayValue}
-            onChange={() => {}} // Prevent direct editing
-            onClick={() => setIsCompanyDialogOpen(true)}
-            placeholder={t('contracts.contractForm.companyPlaceholder')}
-            readOnly
-            error={errors.companyId}
-            required
-            className="cursor-pointer"
-          />
+        {/* Company and Screens - stack on mobile, side by side on tablet+ */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full col-span-1 md:col-span-2">
+          <div className="w-full">
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              {t('common.company')}
+              <span className="text-red-500 ml-1">*</span>
+            </label>
+            <Input
+              name="companyId"
+              value={companyDisplayValue}
+              onChange={() => {}} // Prevent direct editing
+              onClick={() => setIsCompanyDialogOpen(true)}
+              placeholder={t('contracts.contractForm.companyPlaceholder')}
+              readOnly
+              error={errors.companyId}
+              required
+              className="cursor-pointer bg-white"
+            />
+          </div>
+
+          <div className="w-full">
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+              {t('contracts.contractForm.screens')}
+            </label>
+            <Input
+              name="screenIds"
+              value={selectedScreens.map(s => s.name).join(', ') || ''}
+              onChange={() => {}} // Prevent direct editing
+              onClick={() => setIsScreensDialogOpen(true)}
+              placeholder={t('contracts.contractForm.screensPlaceholder')}
+              readOnly
+              error={errors.screenIds}
+              className="cursor-pointer bg-white"
+            />
+            {form.screenIds.length > 0 && (
+              <div className="mt-2 text-sm text-gray-600">
+                {t('contracts.contractForm.screensSelected', { count: form.screenIds.length })}
+              </div>
+            )}
+          </div>
         </div>
 
-        <div className="w-full">
-          <label className="block mb-2 text-sm font-medium">{t('contracts.contractForm.screens')}</label>
-          <Input
-            name="screenIds"
-            value={selectedScreens.map(s => s.name).join(', ') || ''}
-            onChange={() => {}} // Prevent direct editing
-            onClick={() => setIsScreensDialogOpen(true)}
-            placeholder={t('contracts.contractForm.screensPlaceholder')}
-            readOnly
-            error={errors.screenIds}
-            className="cursor-pointer"
-          />
-          {form.screenIds.length > 0 && (
-            <div className="mt-2 text-sm text-gray-500">
-              {t('contracts.contractForm.screensSelected', { count: form.screenIds.length })}
-            </div>
-          )}
+        {/* Supply Type and Operator Type - stack on mobile, side by side on tablet+ */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full col-span-1 md:col-span-2">
+          <div className="w-full">
+            <DropdownInput
+              name="supplyType"
+              value={form.supplyType}
+              options={supplyTypeOptions}
+              onChange={handleChange}
+              label={t('contracts.contractForm.supplyType')}
+              error={errors.supplyType}
+              required
+            />
+          </div>
+          <div className="w-full">
+            <DropdownInput
+              name="operatorType"
+              value={form.operatorType}
+              options={operatorTypeOptions}
+              onChange={handleChange}
+              label={t('contracts.contractForm.operatorType')}
+              error={errors.operatorType}
+              required
+            />
+          </div>
         </div>
 
-        <div className="w-full">
-          <DropdownInput
-            name="supplyType"
-            value={form.supplyType}
-            options={supplyTypeOptions}
-            onChange={handleChange}
-            label={t('contracts.contractForm.supplyType')}
-            error={errors.supplyType}
-            required
-          />
-        </div>
-        <div className="w-full">
-          <DropdownInput
-            name="operatorType"
-            value={form.operatorType}
-            options={operatorTypeOptions}
-            onChange={handleChange}
-            label={t('contracts.contractForm.operatorType')}
-            error={errors.operatorType}
-            required
-          />
-        </div>
-
-        <div className="col-span-2 w-full">
-          <label className="block mb-3 text-sm font-semibold">{t('contracts.contractForm.accountPermissions')}</label>
+        {/* Account Permissions - full width */}
+        <div className="col-span-1 md:col-span-2 w-full">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+            <label className="block text-sm font-semibold text-gray-700">
+              {t('contracts.contractForm.accountPermissions')}
+            </label>
+            <button
+              type="button"
+              className="w-full sm:w-auto px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors text-sm font-medium flex items-center justify-center gap-2"
+              onClick={handleAddAccountPermission}
+            >
+              <span>+</span>
+              <span>{t('contracts.contractForm.addAccountPermission')}</span>
+            </button>
+          </div>
+          
           <div className="space-y-3">
             {form.accountPermissions.map((perm, idx) => (
-              <div key={idx} className="p-3 sm:p-4 border rounded-lg bg-gray-50 w-full">
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
-                  <div className="flex-1 min-w-0 w-full">
+              <div key={idx} className="p-3 sm:p-4 border border-gray-200 rounded-lg bg-gray-50/50 w-full">
+                <div className="flex flex-col gap-3 w-full">
+                  {/* Account Identifier - full width */}
+                  <div className="w-full">
                     <Input
                       type="text"
                       placeholder={t('contracts.contractForm.accountIdentifierPlaceholder')}
@@ -426,30 +456,33 @@ const CreateContract = () => {
                     />
                   </div>
                   
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 flex-shrink-0 w-full sm:w-auto">
-                    <label className="flex items-center gap-2 text-sm cursor-pointer whitespace-nowrap">
-                      <input
-                        type="checkbox"
-                        checked={perm.canRead}
-                        onChange={(e) => handleAccountPermissionChange(idx, 'canRead', e.target.checked)}
-                        className="cursor-pointer"
-                      />
-                      <span>{t('common.canRead')}</span>
-                    </label>
-                    
-                    <label className="flex items-center gap-2 text-sm cursor-pointer whitespace-nowrap">
-                      <input
-                        type="checkbox"
-                        checked={perm.canEdit}
-                        onChange={(e) => handleAccountPermissionChange(idx, 'canEdit', e.target.checked)}
-                        className="cursor-pointer"
-                      />
-                      <span>{t('common.canEdit')}</span>
-                    </label>
+                  {/* Permissions and Remove button - responsive layout */}
+                  <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between gap-3 w-full">
+                    <div className="flex flex-wrap items-center gap-4">
+                      <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer whitespace-nowrap">
+                        <input
+                          type="checkbox"
+                          checked={perm.canRead}
+                          onChange={(e) => handleAccountPermissionChange(idx, 'canRead', e.target.checked)}
+                          className="cursor-pointer w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                        />
+                        <span>{t('common.canRead')}</span>
+                      </label>
+                      
+                      <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer whitespace-nowrap">
+                        <input
+                          type="checkbox"
+                          checked={perm.canEdit}
+                          onChange={(e) => handleAccountPermissionChange(idx, 'canEdit', e.target.checked)}
+                          className="cursor-pointer w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                        />
+                        <span>{t('common.canEdit')}</span>
+                      </label>
+                    </div>
                     
                     <button
                       type="button"
-                      className="text-red-500 hover:text-red-700 text-sm font-medium px-2 py-1 whitespace-nowrap"
+                      className="text-red-600 hover:text-red-800 text-sm font-medium px-3 py-1 border border-red-200 rounded-md hover:bg-red-50 transition-colors whitespace-nowrap self-start xs:self-auto"
                       onClick={() => handleRemoveAccountPermission(idx)}
                     >
                       {t('common.remove')}
@@ -458,41 +491,42 @@ const CreateContract = () => {
                 </div>
               </div>
             ))}
+            
+            {form.accountPermissions.length === 0 && (
+              <div className="text-center py-6 text-gray-500 text-sm border-2 border-dashed border-gray-200 rounded-lg">
+                {t('contracts.contractForm.noAccountPermissions')}
+              </div>
+            )}
           </div>
-          
-          <button
-            type="button"
-            className="mt-4 w-full sm:w-auto px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors text-sm font-medium"
-            onClick={handleAddAccountPermission}
-          >
-            + {t('contracts.contractForm.addAccountPermission')}
-          </button>
         </div>
 
-        <div className="w-full">
-          <DropdownInput
-            name="durationType"
-            value={form.durationType}
-            options={durationTypeOptions}
-            onChange={handleChange}
-            label={t('contracts.contractForm.durationType')}
-            error={errors.durationType}
-            required
-          />
-        </div>
-        
-        <div className="w-full">
-          <Input
-            label={t('contracts.contractForm.contractValue')}
-            name="contractValue"
-            type="number"
-            step="0.01"
-            min="0"
-            value={form.contractValue}
-            onChange={handleChange}
-            error={errors.contractValue}
-            required
-          />
+        {/* Duration Type and Contract Value - stack on mobile, side by side on tablet+ */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full col-span-1 md:col-span-2">
+          <div className="w-full">
+            <DropdownInput
+              name="durationType"
+              value={form.durationType}
+              options={durationTypeOptions}
+              onChange={handleChange}
+              label={t('contracts.contractForm.durationType')}
+              error={errors.durationType}
+              required
+            />
+          </div>
+          
+          <div className="w-full">
+            <Input
+              label={t('contracts.contractForm.contractValue')}
+              name="contractValue"
+              type="number"
+              step="0.01"
+              min="0"
+              value={form.contractValue}
+              onChange={handleChange}
+              error={errors.contractValue}
+              required
+            />
+          </div>
         </div>
       </FormsContainer>
 
