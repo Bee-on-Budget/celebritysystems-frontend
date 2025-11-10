@@ -123,6 +123,10 @@ const Sidebar = ({ open, setOpen }) => {
             <NavButton to={"/company-reports"} icon={<FaFileContract />} label={t('sidebar.createTicket')} onClick={() => setOpen(false)} />
           )}
 
+          {(user?.role === "COMPANY" || user?.role === "COMPANY_USER") && (
+            <NavButton to={"/screen-reports"} icon={<FaFileContract />} label={t('sidebar.screenReports') || 'Screen Reports'} onClick={() => setOpen(false)} />
+          )}
+
           {user?.role !== "COMPANY" && (
             <SidebarDropdown
               icon={FaFileContract}

@@ -56,6 +56,7 @@ import ReportList from "../features/report/ReportList";
 import ReportDetails from "../features/report/ReportDetails";
 import CreateReport from "../features/report/CreateReport";
 import ReportSummary from "../features/report/ReportSummary";
+import ScreenReport from "../features/report/ScreenReport";
 
 // Sub-Contract management
 import SubcontractList from "../features/subcontract/SubcontractList";
@@ -334,6 +335,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute allowedRoles={["ADMIN", "SUPERVISOR"]}>
               <ReportSummary />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="screen-reports"
+          element={
+            <ProtectedRoute allowedRoles={["COMPANY", "COMPANY_USER"]}>
+              <ScreenReport />
             </ProtectedRoute>
           }
         />
