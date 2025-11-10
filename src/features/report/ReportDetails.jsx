@@ -20,12 +20,16 @@ const ReportDetails = () => {
         defectsFound: '',
         solutionsProvided: ''
     });
+    
+    // Stable report object for PDF generation (doesn't change during editing)
+    const [stableReport, setStableReport] = useState(location.state?.report || null);
 
     useEffect(() => {
         const fetchReport = async () => {
             try {
                 const data = await getReportById(id);
                 setReport(data);
+                setStableReport(data); // Update stable report when fetched
             } catch (err) {
                 setError(err.message || 'Failed to load report details');
             } finally {
@@ -96,12 +100,15 @@ const ReportDetails = () => {
             const updatedReport = await updateReportById(report.ticketId, updateData);
             
             // Update local state with the updated report
-            setReport({
+            const newReport = {
                 ...report,
                 ...updatedReport,
                 defectsFound: editData.defectsFound,
                 solutionsProvided: editData.solutionsProvided
-            });
+            };
+            
+            setReport(newReport);
+            setStableReport(newReport); // Update stable report after save
             
             setIsEditing(false);
             showToast('Report updated successfully', 'success');
@@ -201,7 +208,7 @@ const ReportDetails = () => {
                                 </Button>
                             </>
                         )}
-                        <ReportPDF report={report} />
+                        {stableReport && <ReportPDF report={stableReport} />}
                     </div>
 
                     {/* Mobile Menu Button */}
