@@ -116,7 +116,11 @@
       "dragAndDrop": "or drag and drop",
       "noFilesSelected": "No files selected",
       "fileSizeLimit": "File size limit: 10MB",
-      "allowedFileTypes": "Allowed file types: PNG, JPG, PDF"
+      "allowedFileTypes": "Allowed file types: PNG, JPG, PDF",
+      "ticketImage": "Ticket Image",
+      "uploadImage": "Upload Image",
+      "imageTypes": "PNG, JPG, JPEG up to 10MB",
+      "selectedImage": "Selected Image"
     },
     "serviceTypes": {
       "REGULAR_SERVICE": "Regular Service",
@@ -853,6 +857,27 @@
       "errorCreatingReport": "Error creating report",
       "errorUpdatingReport": "Error updating report",
       "errorDeletingReport": "Error deleting report"
+    },
+    "screenReport": {
+      "title": "Screen Reports",
+      "description": "View analytics and history for your company screens",
+      "analyticsSummary": "Ticket Analytics Summary",
+      "totalTickets": "Total Tickets",
+      "averageResolutionTime": "Avg Resolution Time",
+      "serviceTypeCounts": "Service Types",
+      "averageTimeByServiceType": "Avg Time by Type",
+      "clickRefreshToLoad": "Click Refresh to load analytics summary",
+      "screensHistory": "Screens History",
+      "selectScreens": "Select Screens",
+      "selectScreensPlaceholder": "Click to select screens...",
+      "screensSelected": "{{count}} screen(s) selected",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "fetchHistory": "Fetch History",
+      "serviceTypeBreakdown": "Service Type Breakdown",
+      "averageTimeBreakdown": "Average Time by Service Type",
+      "selectFiltersAndFetch": "Select screens and date range, then click Fetch History",
+      "searchScreens": "Search screens..."
     }
   },
   "accounts": {

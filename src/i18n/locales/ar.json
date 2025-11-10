@@ -116,7 +116,11 @@
       "dragAndDrop": "أو السحب والإفلات",
       "noFilesSelected": "لم يتم اختيار ملفات",
       "fileSizeLimit": "حد حجم الملف: 10 ميجابايت",
-      "allowedFileTypes": "أنواع الملفات المسموحة: PNG، JPG، PDF"
+      "allowedFileTypes": "أنواع الملفات المسموحة: PNG، JPG، PDF",
+      "ticketImage": "صورة التذكرة",
+      "uploadImage": "رفع صورة",
+      "imageTypes": "PNG، JPG، JPEG حتى 10 ميجابايت",
+      "selectedImage": "الصورة المختارة"
     },
     "serviceTypes": {
       "REGULAR_SERVICE": "خدمة عادية",
@@ -853,6 +857,27 @@
       "errorCreatingReport": "خطأ في إنشاء التقرير",
       "errorUpdatingReport": "خطأ في تحديث التقرير",
       "errorDeletingReport": "خطأ في حذف التقرير"
+    },
+    "screenReport": {
+      "title": "تقارير الشاشات",
+      "description": "عرض التحليلات والتاريخ لشاشات شركتك",
+      "analyticsSummary": "ملخص تحليلات التذاكر",
+      "totalTickets": "إجمالي التذاكر",
+      "averageResolutionTime": "متوسط وقت الحل",
+      "serviceTypeCounts": "أنواع الخدمات",
+      "averageTimeByServiceType": "متوسط الوقت حسب النوع",
+      "clickRefreshToLoad": "انقر على تحديث لتحميل ملخص التحليلات",
+      "screensHistory": "تاريخ الشاشات",
+      "selectScreens": "اختر الشاشات",
+      "selectScreensPlaceholder": "انقر لاختيار الشاشات...",
+      "screensSelected": "تم اختيار {{count}} شاشة",
+      "startDate": "تاريخ البداية",
+      "endDate": "تاريخ النهاية",
+      "fetchHistory": "جلب التاريخ",
+      "serviceTypeBreakdown": "تفصيل أنواع الخدمات",
+      "averageTimeBreakdown": "متوسط الوقت حسب نوع الخدمة",
+      "selectFiltersAndFetch": "اختر الشاشات ونطاق التاريخ، ثم انقر على جلب التاريخ",
+      "searchScreens": "ابحث عن الشاشات..."
     }
   },
   "accounts": {
