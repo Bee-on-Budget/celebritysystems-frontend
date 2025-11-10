@@ -1,12 +1,11 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Input from '../../components/Input';
-import Button from '../../components/Button';
-import { showToast, SelectionInputDialog, DropdownInput, MultiSelectionInputDialog } from '../../components';
+import { showToast, SelectionInputDialog, DropdownInput, MultiSelectionInputDialog, FormsContainer } from '../../components';
 import { createContract } from '../../api/services/ContractService';
 import { searchCompanies } from '../../api/services/CompanyService';
-import { getScreens } from '../../api/services/ScreenService';
+import { getScreenWithoutContracts } from '../../api/services/ScreenService';
 
 const CreateContract = () => {
   const { t } = useTranslation();
@@ -46,6 +45,7 @@ const CreateContract = () => {
 
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [selectedScreens, setSelectedScreens] = useState([]);
+  const [allScreensWithoutContracts, setAllScreensWithoutContracts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isCompanyDialogOpen, setIsCompanyDialogOpen] = useState(false);
   const [isScreensDialogOpen, setIsScreensDialogOpen] = useState(false);
@@ -64,34 +64,55 @@ const CreateContract = () => {
     }
   }, []);
 
-  // Fetch screens for MultiSelectionInputDialog
+  // Fetch all screens without contracts on component mount
+  useEffect(() => {
+    const loadScreensWithoutContracts = async () => {
+      try {
+        const screensRes = await getScreenWithoutContracts();
+        
+        let screensData = [];
+        if (Array.isArray(screensRes)) {
+          screensData = screensRes;
+        } else if (screensRes?.content) {
+          screensData = screensRes.content;
+        } else if (screensRes?.data) {
+          screensData = screensRes.data;
+        } else {
+          console.error('Unexpected screens response format:', screensRes);
+          screensData = [];
+        }
+        
+        setAllScreensWithoutContracts(screensData);
+      } catch (error) {
+        console.error('Error loading screens without contracts:', error);
+        showToast(t('screens.messages.errorLoadingScreens'), 'error');
+      }
+    };
+
+    loadScreensWithoutContracts();
+  }, [t]);
+
+  // Filter screens without contracts based on search query
   const fetchScreens = useCallback(async (searchQuery) => {
     try {
-      const screensRes = await getScreens({ 
-        page: 0, 
-        size: 50,
-        search: searchQuery 
-      });
-      
-      let screensData = [];
-      if (Array.isArray(screensRes)) {
-        screensData = screensRes;
-      } else if (screensRes?.content) {
-        screensData = screensRes.content;
-      } else if (screensRes?.data) {
-        screensData = screensRes.data;
-      } else {
-        console.error('Unexpected screens response format:', screensRes);
-        return [];
+      // If no search query, return all screens without contracts
+      if (!searchQuery || searchQuery.trim() === '') {
+        return allScreensWithoutContracts;
       }
-      
-      return screensData;
+
+      // Filter screens client-side based on search query
+      const query = searchQuery.toLowerCase().trim();
+      const filteredScreens = allScreensWithoutContracts.filter(screen => {
+        const screenName = screen.name?.toLowerCase() || '';
+        return screenName.includes(query);
+      });
+
+      return filteredScreens;
     } catch (error) {
-      console.error('Error loading screens:', error);
-      showToast(t('screens.messages.errorLoadingScreens'), 'error');
-      throw error;
+      console.error('Error filtering screens:', error);
+      return [];
     }
-  }, [t]);
+  }, [allScreensWithoutContracts]);
 
   const handleScreenChange = (e) => {
     const selectedIds = Array.isArray(e.target.value) ? e.target.value : [];
@@ -115,21 +136,20 @@ const CreateContract = () => {
   };
 
   const handleScreenConfirm = useCallback(async (selectedIds) => {
-    // Fetch screen details for selected IDs to display names
+    // Get screen details for selected IDs from the stored screens
     if (selectedIds.length > 0) {
       try {
-        const allScreens = await fetchScreens('');
-        const selected = allScreens.filter(screen => 
+        const selected = allScreensWithoutContracts.filter(screen => 
           selectedIds.includes(String(screen.id))
         );
         setSelectedScreens(selected);
       } catch (error) {
-        console.error('Error fetching selected screens:', error);
+        console.error('Error getting selected screens:', error);
       }
     } else {
       setSelectedScreens([]);
     }
-  }, [fetchScreens]);
+  }, [allScreensWithoutContracts]);
 
   const handleCompanyChange = (e) => {
     setForm(prev => ({ ...prev, companyId: e.target.value || '' }));
@@ -266,10 +286,13 @@ const CreateContract = () => {
           canEdit: perm.canEdit
         }))
       });
-      showToast(t('contracts.messages.contractCreated'));
+      showToast(t('contracts.messages.contractCreated'), 'success');
       navigate('/contracts');
     } catch (error) {
-      showToast(error.message || t('contracts.messages.errorCreatingContract'), 'error');
+      const errorMessage = typeof error === 'string' 
+        ? error 
+        : error?.message || error?.response?.data?.message || t('contracts.messages.errorCreatingContract');
+      showToast(errorMessage, 'error');
     } finally {
       setLoading(false);
     }
@@ -277,20 +300,25 @@ const CreateContract = () => {
   
 
   return (
-    <div className="max-w-4xl mx-auto mt-8 p-4">
-      <h1 className="text-2xl font-semibold mb-6">{t('contracts.createContract')}</h1>
+    <>
+      <FormsContainer
+        title={t('contracts.createContract')}
+        onSubmit={handleSubmit}
+        actionTitle={t('contracts.createContract')}
+        isLoading={loading}
+      >
+        <div className="col-span-2 w-full">
+          <Input
+            label={t('contracts.contractForm.info')}
+            name="info"
+            value={form.info}
+            onChange={handleChange}
+            error={errors.info}
+            required
+          />
+        </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <Input
-          label={t('contracts.contractForm.info')}
-          name="info"
-          value={form.info}
-          onChange={handleChange}
-          error={errors.info}
-          required
-        />
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="w-full">
           <Input
             label={t('contracts.contractForm.startDate')}
             name="startContractAt"
@@ -300,6 +328,8 @@ const CreateContract = () => {
             error={errors.startContractAt}
             required
           />
+        </div>
+        <div className="w-full">
           <Input
             label={t('contracts.contractForm.endDate')}
             name="expiredAt"
@@ -311,7 +341,7 @@ const CreateContract = () => {
           />
         </div>
 
-        <div className="grid grid-cols-1 gap-4">
+        <div className="col-span-2 w-full">
           <Input
             label={t('contracts.contractForm.accountName')}
             name="accountName"
@@ -319,43 +349,43 @@ const CreateContract = () => {
             onChange={handleChange}
             placeholder={t('contracts.contractForm.accountNamePlaceholder')}
           />
-
-          <div>
-            <label className="block mb-2 text-sm font-medium">{t('common.company')}</label>
-            <Input
-              name="companyId"
-              value={companyDisplayValue}
-              onChange={() => {}} // Prevent direct editing
-              onClick={() => setIsCompanyDialogOpen(true)}
-              placeholder={t('contracts.contractForm.companyPlaceholder')}
-              readOnly
-              error={errors.companyId}
-              required
-              className="cursor-pointer"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-2 text-sm font-medium">{t('contracts.contractForm.screens')}</label>
-            <Input
-              name="screenIds"
-              value={selectedScreens.map(s => s.name).join(', ') || ''}
-              onChange={() => {}} // Prevent direct editing
-              onClick={() => setIsScreensDialogOpen(true)}
-              placeholder={t('contracts.contractForm.screensPlaceholder')}
-              readOnly
-              error={errors.screenIds}
-              className="cursor-pointer"
-            />
-            {form.screenIds.length > 0 && (
-              <div className="mt-2 text-sm text-gray-500">
-                {t('contracts.contractForm.screensSelected', { count: form.screenIds.length })}
-              </div>
-            )}
-          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="w-full">
+          <label className="block mb-2 text-sm font-medium">{t('common.company')}</label>
+          <Input
+            name="companyId"
+            value={companyDisplayValue}
+            onChange={() => {}} // Prevent direct editing
+            onClick={() => setIsCompanyDialogOpen(true)}
+            placeholder={t('contracts.contractForm.companyPlaceholder')}
+            readOnly
+            error={errors.companyId}
+            required
+            className="cursor-pointer"
+          />
+        </div>
+
+        <div className="w-full">
+          <label className="block mb-2 text-sm font-medium">{t('contracts.contractForm.screens')}</label>
+          <Input
+            name="screenIds"
+            value={selectedScreens.map(s => s.name).join(', ') || ''}
+            onChange={() => {}} // Prevent direct editing
+            onClick={() => setIsScreensDialogOpen(true)}
+            placeholder={t('contracts.contractForm.screensPlaceholder')}
+            readOnly
+            error={errors.screenIds}
+            className="cursor-pointer"
+          />
+          {form.screenIds.length > 0 && (
+            <div className="mt-2 text-sm text-gray-500">
+              {t('contracts.contractForm.screensSelected', { count: form.screenIds.length })}
+            </div>
+          )}
+        </div>
+
+        <div className="w-full">
           <DropdownInput
             name="supplyType"
             value={form.supplyType}
@@ -365,6 +395,8 @@ const CreateContract = () => {
             error={errors.supplyType}
             required
           />
+        </div>
+        <div className="w-full">
           <DropdownInput
             name="operatorType"
             value={form.operatorType}
@@ -376,60 +408,68 @@ const CreateContract = () => {
           />
         </div>
 
-        <div>
-          <label className="block mb-2 text-sm font-semibold">{t('contracts.contractForm.accountPermissions')}</label>
-          {form.accountPermissions.map((perm, idx) => (
-            <div key={idx} className="mb-2 p-2 border rounded flex flex-col md:flex-row gap-2 items-center">
-              <Input
-                type="text"
-                placeholder={t('contracts.contractForm.accountIdentifierPlaceholder')}
-                value={perm.accountIdentifier}
-                onChange={(e) => handleAccountPermissionChange(idx, 'accountIdentifier', e.target.value)}
-                error={errors[`accountPermissions_${idx}_accountIdentifier`]}
-                className="w-full md:w-1/2"
-                required
-              />
-              
-              <div className="flex items-center gap-4">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={perm.canRead}
-                    onChange={(e) => handleAccountPermissionChange(idx, 'canRead', e.target.checked)}
-                  />
-                  {t('common.canRead')}
-                </label>
-                
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={perm.canEdit}
-                    onChange={(e) => handleAccountPermissionChange(idx, 'canEdit', e.target.checked)}
-                  />
-                  {t('common.canEdit')}
-                </label>
-                
-                <button
-                  type="button"
-                  className="text-red-500 ml-2"
-                  onClick={() => handleRemoveAccountPermission(idx)}
-                >
-                  {t('common.remove')}
-                </button>
+        <div className="col-span-2 w-full">
+          <label className="block mb-3 text-sm font-semibold">{t('contracts.contractForm.accountPermissions')}</label>
+          <div className="space-y-3">
+            {form.accountPermissions.map((perm, idx) => (
+              <div key={idx} className="p-3 sm:p-4 border rounded-lg bg-gray-50 w-full">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
+                  <div className="flex-1 min-w-0 w-full">
+                    <Input
+                      type="text"
+                      placeholder={t('contracts.contractForm.accountIdentifierPlaceholder')}
+                      value={perm.accountIdentifier}
+                      onChange={(e) => handleAccountPermissionChange(idx, 'accountIdentifier', e.target.value)}
+                      error={errors[`accountPermissions_${idx}_accountIdentifier`]}
+                      className="w-full"
+                      required
+                    />
+                  </div>
+                  
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 flex-shrink-0 w-full sm:w-auto">
+                    <label className="flex items-center gap-2 text-sm cursor-pointer whitespace-nowrap">
+                      <input
+                        type="checkbox"
+                        checked={perm.canRead}
+                        onChange={(e) => handleAccountPermissionChange(idx, 'canRead', e.target.checked)}
+                        className="cursor-pointer"
+                      />
+                      <span>{t('common.canRead')}</span>
+                    </label>
+                    
+                    <label className="flex items-center gap-2 text-sm cursor-pointer whitespace-nowrap">
+                      <input
+                        type="checkbox"
+                        checked={perm.canEdit}
+                        onChange={(e) => handleAccountPermissionChange(idx, 'canEdit', e.target.checked)}
+                        className="cursor-pointer"
+                      />
+                      <span>{t('common.canEdit')}</span>
+                    </label>
+                    
+                    <button
+                      type="button"
+                      className="text-red-500 hover:text-red-700 text-sm font-medium px-2 py-1 whitespace-nowrap"
+                      onClick={() => handleRemoveAccountPermission(idx)}
+                    >
+                      {t('common.remove')}
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
           
-          <Button
+          <button
             type="button"
+            className="mt-4 w-full sm:w-auto px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors text-sm font-medium"
             onClick={handleAddAccountPermission}
-            className="mt-2"
           >
             + {t('contracts.contractForm.addAccountPermission')}
-          </Button>
+          </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="w-full">
           <DropdownInput
             name="durationType"
             value={form.durationType}
@@ -439,7 +479,9 @@ const CreateContract = () => {
             error={errors.durationType}
             required
           />
-          
+        </div>
+        
+        <div className="w-full">
           <Input
             label={t('contracts.contractForm.contractValue')}
             name="contractValue"
@@ -452,11 +494,7 @@ const CreateContract = () => {
             required
           />
         </div>
-
-        <Button type="submit" isLoading={loading} loadingText={t('common.loading')}>
-          {t('contracts.createContract')}
-        </Button>
-      </form>
+      </FormsContainer>
 
       {/* Selection Dialogs */}
       <SelectionInputDialog
@@ -487,7 +525,7 @@ const CreateContract = () => {
         label={t('contracts.contractForm.screens')}
         searchPlaceholder={t('contracts.contractForm.screensPlaceholder')}
       />
-    </div>
+    </>
   );
 };
 
