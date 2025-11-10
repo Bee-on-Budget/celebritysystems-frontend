@@ -234,7 +234,7 @@ export const deleteScreen = async (id) => {
 
 export const getScreenWithoutContracts = async () => {
     try {
-        const response = await api.get('without-contracts');
+        const response = await api.get('/screens/without-contracts');
         return response.data;
     } catch (error) {
         throw error.response?.data?.message || "Error fetching screens";
