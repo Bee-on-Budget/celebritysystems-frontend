@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { createTicket, prepareTicketFormData, getUsersByRole } from "../../api/services/TicketService";
 import { searchCompanies } from "../../api/services/CompanyService";
 import { getScreens } from "../../api/services/ScreenService";
+import { getActiveScreensByCompany } from "../../api/services/ContractService";
 import { DropdownInput, Input, showToast, SelectionInputDialog, FormsContainer } from "../../components";
 import { useAuth } from "../../auth/useAuth";
 
@@ -27,6 +28,7 @@ const CreateTicket = () => {
     createdBy: userId,
   });
   const [file, setFile] = useState(null);
+  const [ticketImage, setTicketImage] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [companies, setCompanies] = useState([]);
   const [screens, setScreens] = useState([]);
@@ -102,16 +104,41 @@ const CreateTicket = () => {
   // Fetch screens for SelectionInputDialog
   const fetchScreens = useCallback(async (searchQuery) => {
     try {
-      const screensRes = await getScreens({ search: searchQuery });
-      const screensData = Array.isArray(screensRes) ? screensRes :
-        screensRes?.content || screensRes?.data || [];
+      let screensRes;
+      
+      // For company users, fetch active screens from their company
+      if (isCompanyUser && userCompanyId) {
+        screensRes = await getActiveScreensByCompany(userCompanyId);
+      } else {
+        // For other users, fetch all screens
+        screensRes = await getScreens({ search: searchQuery });
+      }
+      
+      let screensData = [];
+      if (Array.isArray(screensRes)) {
+        screensData = screensRes;
+      } else if (screensRes?.content) {
+        screensData = screensRes.content;
+      } else if (screensRes?.data) {
+        screensData = screensRes.data;
+      }
+      
+      // Filter by search query if provided (client-side filtering for company users)
+      if (searchQuery && searchQuery.trim() && isCompanyUser) {
+        const query = searchQuery.toLowerCase().trim();
+        screensData = screensData.filter(screen => 
+          screen.name?.toLowerCase().includes(query) ||
+          screen.location?.toLowerCase().includes(query)
+        );
+      }
+      
       setScreens(screensData);
       return screensData;
     } catch (error) {
       console.error("Error fetching screens:", error);
       throw error;
     }
-  }, []);
+  }, [isCompanyUser, userCompanyId]);
 
   // Fetch workers for SelectionInputDialog
   const fetchWorkers = useCallback(async (searchQuery) => {
@@ -220,6 +247,39 @@ const CreateTicket = () => {
     setFile(null);
   };
 
+  // Handle ticket image changes
+  const handleTicketImageChange = (e) => {
+    const selectedFile = e.target.files?.[0];
+    
+    if (!selectedFile) return;
+
+    // Validate file size
+    if (selectedFile.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+      showToast(`${selectedFile.name}: ${t('tickets.messages.fileSizeExceeded')}`, "error");
+      e.target.value = '';
+      return;
+    }
+
+    // Validate file type - only images for ticketImage
+    const allowedImageTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+    if (!allowedImageTypes.includes(selectedFile.type)) {
+      showToast(`${selectedFile.name}: ${t('tickets.messages.invalidFileType')}`, "error");
+      e.target.value = '';
+      return;
+    }
+
+    // Set the ticket image file
+    setTicketImage(selectedFile);
+    
+    // Reset input to allow selecting the same file again
+    e.target.value = '';
+  };
+
+  // Remove ticket image
+  const handleRemoveTicketImage = () => {
+    setTicketImage(null);
+  };
+
   // Form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -227,6 +287,12 @@ const CreateTicket = () => {
 
     try {
       const ticketData = prepareTicketFormData(formData, file ? [file] : []);
+      
+      // Add ticketImage separately if provided
+      if (ticketImage) {
+        ticketData.append('ticketImage', ticketImage);
+      }
+      
       await createTicket(ticketData);
       // Navigate after successful creation
       navigate('/tickets');
@@ -382,6 +448,51 @@ const CreateTicket = () => {
                       onClick={handleRemoveFile}
                       className="ml-2 text-red-500 hover:text-red-700 text-sm font-medium"
                       aria-label={`Remove ${file.name}`}
+                    >
+                      {t('common.remove')}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Ticket Image */}
+        <div className="col-span-2">
+          <label className="block text-sm font-medium text-dark mb-1">
+            {t('tickets.ticketForm.ticketImage')}
+          </label>
+          <div className="mt-2 flex justify-center px-4 pt-4 pb-5 border-2 border-gray-300 border-dashed rounded-md hover:border-gray-400 transition-colors">
+            <div className="space-y-2 text-center w-full">
+              <svg className="mx-auto h-10 w-10 text-gray-400 hidden sm:block" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <div className="flex flex-col sm:flex-row text-sm text-gray-600 justify-center items-center gap-2">
+                <label className="relative cursor-pointer bg-white rounded-md font-medium text-primary hover:text-primary-hover px-3 py-1.5 border border-primary transition-colors">
+                  <span>{t('tickets.ticketForm.uploadImage')}</span>
+                  <input
+                    type="file"
+                    className="sr-only"
+                    onChange={handleTicketImageChange}
+                    accept=".png,.jpg,.jpeg"
+                  />
+                </label>
+                <p className="text-sm text-gray-500">{t('tickets.ticketForm.dragAndDrop')}</p>
+              </div>
+              <p className="text-xs text-gray-500">
+                {t('tickets.ticketForm.imageTypes')}
+              </p>
+              {ticketImage && (
+                <div className="mt-4">
+                  <p className="text-sm font-medium text-dark mb-2">{t('tickets.ticketForm.selectedImage')}</p>
+                  <div className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded border border-gray-200">
+                    <span className="text-sm text-gray-700 truncate flex-1">{ticketImage.name}</span>
+                    <button
+                      type="button"
+                      onClick={handleRemoveTicketImage}
+                      className="ml-2 text-red-500 hover:text-red-700 text-sm font-medium"
+                      aria-label={`Remove ${ticketImage.name}`}
                     >
                       {t('common.remove')}
                     </button>
