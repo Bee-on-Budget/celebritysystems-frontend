@@ -8,7 +8,8 @@ import { getScreenById } from '../../api/services/ScreenService';
 import { formatCurrency as formatCurrencyUtil } from '../../utils/formatUtils';
 
 const ContractDetails = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const isRtl = i18n.dir() === "rtl";
     const { id } = useParams();
     const navigate = useNavigate();
     const [contract, setContract] = useState(null);
@@ -150,20 +151,20 @@ const ContractDetails = () => {
 
                         {/* Mobile Dropdown Menu */}
                         {showMobileMenu && (
-                            <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                            <div className={`absolute ${isRtl ? 'left' : 'right'}-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10`}>
                                 <button
                                     onClick={() => {
                                         navigate(`/contracts/${id}/edit`, { state: { contract } });
                                         setShowMobileMenu(false);
                                     }}
-                                    className="w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 border-b border-gray-100"
+                                    className={`w-full px-4 py-3 ${isRtl ? 'text-right' : 'text-left'} text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 border-b border-gray-100`}
                                 >
                                     <FiEdit2 />
                                     {t('contracts.actions.editContract')}
                                 </button>
                                 <button
                                     onClick={handleDeleteClick}
-                                    className="w-full px-4 py-3 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                                    className={`w-full px-4 py-3 ${isRtl ? 'text-right' : 'text-left'} text-sm text-red-600 hover:bg-red-50 flex items-center gap-2`}
                                 >
                                     <FiTrash2 />
                                     {t('contracts.actions.deleteContract')}
@@ -182,15 +183,15 @@ const ContractDetails = () => {
                             <h1 className="text-xl md:text-2xl font-bold text-primary break-words">{contract.info || t('contracts.details.untitledContract')}</h1>
                             <div className="flex flex-wrap gap-2 mt-2">
                                 <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full flex items-center">
-                                    <FiFileText className="mr-1" />
+                                    <FiFileText className={isRtl ? "ml-1" : "mr-1"} />
                                     {t('contracts.details.contractId')}: {contract.id}
                                 </span>
                                 <span className="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full flex items-center">
-                                    <FiDollarSign className="mr-1" />
+                                    <FiDollarSign className={isRtl ? "ml-1" : "mr-1"} />
                                     {t('contracts.details.value')}: {formatCurrency(contract.contractValue)}
                                 </span>
                                 <span className="px-3 py-1 bg-gray-100 text-gray-800 text-sm rounded-full flex items-center">
-                                    <FiCalendar className="mr-1" />
+                                    <FiCalendar className={isRtl ? "ml-1" : "mr-1"} />
                                     {t('contracts.details.created')}: {formatDate(contract.createdAt)}
                                 </span>
                             </div>
@@ -210,19 +211,19 @@ const ContractDetails = () => {
                             {/* Company & Basic Info Card */}
                             <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 md:p-5">
                                 <div className="flex items-center mb-3 md:mb-4">
-                                    <div className="p-2 bg-blue-100 rounded-lg mr-3">
+                                    <div className={`p-2 bg-blue-100 rounded-lg ${isRtl ? 'ml-3' : 'mr-3'}`}>
                                         <FiBriefcase className="text-blue-600 text-lg md:text-xl" />
                                     </div>
                                     <h3 className="text-base font-semibold text-dark">{t('contracts.details.companyAndAccount')}</h3>
                                 </div>
                                 <div className="space-y-2 md:space-y-3">
                                     <div className="flex justify-between">
-                                        <span className="text-sm text-dark-light">{t('contracts.details.companyName')}:</span>
-                                        <span className="text-sm font-medium text-dark break-words text-right max-w-[50%]">{companyName || t('common.notAvailable')}</span>
+                                        <span className={`text-sm text-dark-light ${isRtl ? 'text-right' : 'text-left'}`}>{t('contracts.details.companyName')}:</span>
+                                        <span className={`text-sm font-medium text-dark break-words ${isRtl ? 'text-left' : 'text-right'} max-w-[50%]`}>{companyName || t('common.notAvailable')}</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-sm text-dark-light">{t('contracts.details.accountName')}:</span>
-                                        <span className="text-sm font-medium text-dark break-words text-right max-w-[50%]">{contract.accountName || t('common.notAvailable')}</span>
+                                        <span className={`text-sm text-dark-light ${isRtl ? 'text-right' : 'text-left'}`}>{t('contracts.details.accountName')}:</span>
+                                        <span className={`text-sm font-medium text-dark break-words ${isRtl ? 'text-left' : 'text-right'} max-w-[50%]`}>{contract.accountName || t('common.notAvailable')}</span>
                                     </div>
                                 </div>
                             </div>
