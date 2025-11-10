@@ -80,9 +80,9 @@ const CompanyList = () => {
           <thead className="bg-gray-50">
             <tr>
               <th className={`${headerStyle} w-72`}>{t('companies.companyForm.name')}</th>
-              <th className={`${headerStyle} w-32`}>{t('companies.companyForm.email')}</th>
-              <th className={`${headerStyle} w-32`}>{t('companies.companyForm.phone')}</th>
-              <th className={headerStyle}>{t('companies.companyForm.address')}</th>
+              <th className={headerStyle}>{t('companies.companyForm.email')}</th>
+              <th className={`${headerStyle} w-40`}>{t('companies.companyForm.phone')}</th>
+              <th className={`${headerStyle} w-32`}>{t('companies.companyForm.address')}</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
