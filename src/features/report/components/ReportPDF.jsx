@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { 
   Document, 
   Page, 
@@ -97,6 +97,10 @@ const styles = StyleSheet.create({
 
 // PDF Document Component
 const ReportDocument = ({ report }) => {
+  if (!report) {
+    return null;
+  }
+
   const getChecklistColor = (value) => {
     if (value === 'OK') return '#16a34a'; // green
     if (value === 'N/A') return '#6b7280'; // gray
@@ -109,7 +113,9 @@ const ReportDocument = ({ report }) => {
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>Service Report</Text>
-          <Text style={styles.subtitle}>Generated on {new Date(report.reportDate).toLocaleString()}</Text>
+          <Text style={styles.subtitle}>
+            Generated on {report.reportDate ? new Date(report.reportDate).toLocaleString() : new Date().toLocaleString()}
+          </Text>
         </View>
 
         {/* Service Information */}
@@ -126,17 +132,19 @@ const ReportDocument = ({ report }) => {
         </View>
 
         {/* Checklist */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Checklist</Text>
-          {Object.entries(report.checklist).map(([key, value]) => (
-            <View key={key} style={styles.checklistItem}>
-              <Text>{key}:</Text>
-              <Text style={[styles.checklistValue, { color: getChecklistColor(value) }]}>
-                {value}
-              </Text>
-            </View>
-          ))}
-        </View>
+        {report.checklist && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Checklist</Text>
+            {Object.entries(report.checklist).map(([key, value]) => (
+              <View key={key} style={styles.checklistItem}>
+                <Text>{key}:</Text>
+                <Text style={[styles.checklistValue, { color: getChecklistColor(value) }]}>
+                  {value}
+                </Text>
+              </View>
+            ))}
+          </View>
+        )}
 
         {/* Defects & Solutions */}
         <View style={{ flexDirection: 'row', marginBottom: 20 }}>
@@ -179,21 +187,48 @@ const ReportDocument = ({ report }) => {
 };
 
 // Export Component
-const ReportPDF = ({ report }) => (
-  <PDFDownloadLink 
-    document={<ReportDocument report={report} />} 
-    fileName={`service_report_${report.id}.pdf`}
-  >
-    {({ loading }) => (
-      <Button
-        disabled={loading}
-        variant="primary"
-        icon={<FiDownload />}
+const ReportPDF = memo(({ report }) => {
+  if (!report || !report.id) {
+    return null;
+  }
+
+  try {
+    return (
+      <PDFDownloadLink 
+        document={<ReportDocument report={report} />} 
+        fileName={`service_report_${report.id}.pdf`}
       >
-        {loading ? 'Preparing document...' : 'Export as PDF'}
-      </Button>
-    )}
-  </PDFDownloadLink>
-);
+        {({ loading, error }) => {
+          if (error) {
+            console.error('PDF generation error:', error);
+            return (
+              <Button
+                disabled={true}
+                variant="secondary"
+                icon={<FiDownload />}
+              >
+                PDF Error
+              </Button>
+            );
+          }
+          return (
+            <Button
+              disabled={loading}
+              variant="primary"
+              icon={<FiDownload />}
+            >
+              {loading ? 'Preparing document...' : 'Export as PDF'}
+            </Button>
+          );
+        }}
+      </PDFDownloadLink>
+    );
+  } catch (error) {
+    console.error('Error rendering ReportPDF:', error);
+    return null;
+  }
+});
+
+ReportPDF.displayName = 'ReportPDF';
 
 export default ReportPDF;
