@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { getReportById, deleteReport, updateReportById } from '../../api/services/TicketService';
 import { FiArrowLeft, FiCalendar, FiFileText, FiTrash2, FiEdit2, FiCheckSquare, FiAlertTriangle, FiClipboard, FiImage, FiMoreVertical, FiSave, FiX } from 'react-icons/fi';
@@ -23,6 +23,15 @@ const ReportDetails = () => {
     
     // Stable report object for PDF generation (doesn't change during editing)
     const [stableReport, setStableReport] = useState(location.state?.report || null);
+    
+    // Memoize the PDF component to prevent re-renders during editing
+    // Only render PDF when not editing to avoid re-render issues
+    const pdfComponent = useMemo(() => {
+        if (isEditing || !stableReport || !stableReport.id) {
+            return null;
+        }
+        return <ReportPDF report={stableReport} />;
+    }, [isEditing, stableReport?.id, stableReport?.reportDate, stableReport?.serviceType, stableReport?.dateTime]);
 
     useEffect(() => {
         const fetchReport = async () => {
@@ -208,7 +217,7 @@ const ReportDetails = () => {
                                 </Button>
                             </>
                         )}
-                        {stableReport && <ReportPDF report={stableReport} />}
+                        {pdfComponent}
                     </div>
 
                     {/* Mobile Menu Button */}
