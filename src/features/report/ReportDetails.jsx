@@ -31,7 +31,7 @@ const ReportDetails = () => {
             return null;
         }
         return <ReportPDF report={stableReport} />;
-    }, [isEditing, stableReport?.id, stableReport?.reportDate, stableReport?.serviceType, stableReport?.dateTime]);
+    }, [isEditing, stableReport]);
 
     useEffect(() => {
         const fetchReport = async () => {
