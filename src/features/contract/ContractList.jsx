@@ -40,19 +40,20 @@ const ContractList = () => {
 
   const handleSearch = useCallback(
     async (query) => {
+      query = query.toLowerCase().trim();
+      console.log(query);
       return contracts
         .filter((contract) =>
-          contract.companyName.toLowerCase().includes(query.toLowerCase()) ||
-          contract.accountName.toLowerCase().includes(query.toLowerCase())
+          contract.info?.toLowerCase().includes(query)
         )
-        .map((c) => c.companyName);
+        .map((c) => c.info);
     },
     [contracts]
   );
 
   const handleResultClick = (query) => {
     const result = contracts.filter((contract) =>
-      contract.companyName.toLowerCase().includes(query.toLowerCase())
+      contract.info?.toLowerCase().includes(query.toLowerCase())
     );
     setFiltered(result);
   };
