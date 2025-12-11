@@ -23,7 +23,6 @@ const ScreensList = () => {
     setIsLoading(true);
     try {
       const data = await getScreens({ page, size: pageSize });
-      console.log(data.hasNext, data.hasPrevious, data.pageNumber, data.pageSize, data.totalPages, data.totalElements);
       setHasNext(data.hasNext);
       setHasPrevious(data.hasPrevious);
       setScreens(data.content || []);
