@@ -10,23 +10,7 @@ import { useEffect } from "react";
 import dashboardServices from "../../api/services/DashboardServices";
 import { formatCurrency } from '../../utils/formatUtils';
 
-const customFeeds = [
-  {
-    type: 'task',
-    message: 'Complete user profile implementation',
-    time: new Date().toISOString(),
-  },
-  {
-    type: 'order',
-    message: 'New subscription purchase',
-    time: '2025-05-29T11:20:00',
-  },
-  {
-    type: 'pending',
-    message: 'New subscription purchase',
-    time: '2025-05-29T11:20:00',
-  },
-];
+const customFeeds = [];
 
 const Dashboard = () => {
   const { t } = useTranslation();
@@ -52,10 +36,10 @@ const Dashboard = () => {
           lastMonth: []
         });
         setTicketStatus(ticketsStatus);
-        console.log(ticketsStatus);
+        // console.log(ticketsStatus);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching dashboard data:', error);
+        // console.error('Error fetching dashboard data:', error);
         setCustomersCount(0);
         setScreensCount(0);
         setSalesData({
