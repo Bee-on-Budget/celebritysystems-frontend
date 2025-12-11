@@ -4,7 +4,7 @@ import { useAuth } from '../../auth/useAuth';
 import { getTicketAnalaticSummary, getScreensHistory } from '../../api/services/ReportingService';
 import { getActiveScreensByCompany } from '../../api/services/ContractService';
 import { Loading, showToast, MultiSelectionInputDialog } from '../../components';
-import { FiBarChart2, FiCalendar, FiMonitor, FiRefreshCw, FiDownload } from 'react-icons/fi';
+import { FiBarChart2, FiCalendar, FiMonitor, FiRefreshCw } from 'react-icons/fi';
 import { Button } from '../../components';
 
 const ScreenReport = () => {
@@ -24,11 +24,21 @@ const ScreenReport = () => {
     const [loadingScreens, setLoadingScreens] = useState(true);
     const [isScreensDialogOpen, setIsScreensDialogOpen] = useState(false);
 
-    // Fetch ticket analytics summary
+    // Fetch ticket analytics summary (filtered)
     const fetchAnalyticsSummary = useCallback(async () => {
+        // Require filters before calling API
+        if (!startDate || !endDate || selectedScreenIds.length === 0) {
+            // Do not show a toast here to avoid noise on initial mount; just skip.
+            return;
+        }
+
         setLoadingAnalytics(true);
         try {
-            const data = await getTicketAnalaticSummary();
+            const data = await getTicketAnalaticSummary({
+                screenIds: selectedScreenIds,
+                startDate,
+                endDate
+            });
             setAnalyticsSummary(data);
         } catch (error) {
             console.error('Error fetching analytics summary:', error);
@@ -36,7 +46,7 @@ const ScreenReport = () => {
         } finally {
             setLoadingAnalytics(false);
         }
-    }, []);
+    }, [selectedScreenIds, startDate, endDate]);
 
     // Fetch available screens for company user
     useEffect(() => {
