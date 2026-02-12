@@ -120,11 +120,21 @@ const Sidebar = ({ open, setOpen }) => {
           />
 
           {user?.role === "COMPANY" && (
-            <NavButton to={"/company-reports"} icon={<FaFileContract />} label={t('sidebar.createTicket')} onClick={() => setOpen(false)} />
+            <NavButton
+              to={"/company-reports"}
+              icon={<FaFileContract />}
+              label={t('sidebar.companyReports') || 'Company Reports'}
+              onClick={() => setOpen(false)}
+            />
           )}
 
           {(user?.role === "COMPANY" || user?.role === "COMPANY_USER") && (
-            <NavButton to={"/screen-reports"} icon={<FaFileContract />} label={t('sidebar.screenReports') || 'Screen Reports'} onClick={() => setOpen(false)} />
+            <NavButton
+              to={"/screen-reports"}
+              icon={<FaFileContract />}
+              label={t('sidebar.screenReports') || 'Screen Reports'}
+              onClick={() => setOpen(false)}
+            />
           )}
 
           {user?.role !== "COMPANY" && (
