@@ -172,7 +172,10 @@
       "errorCreatingReport": "Error creating report",
       "errorUpdatingReport": "Error updating report",
       "ticketClosed": "Ticket closed successfully",
-      "errorTicketClose": "Failed to close the ticket"
+      "errorTicketClose": "Failed to close the ticket",
+      "companyNotFound": "Company ID not found",
+      "exportSuccess": "Reports exported successfully",
+      "exportFailed": "Failed to export reports"
     },
     "placeholders": {
       "searchCompanies": "Search companies...",
@@ -1063,7 +1066,9 @@
     "createContract": "Create Contract",
     "allSubcontracts": "All Sub-Contracts",
     "createSubcontract": "Create Sub-Contract",
-    "resolvedTickets": "Resolved Tickets"
+      "resolvedTickets": "Resolved Tickets",
+      "companyReports": "Company Reports",
+      "screenReports": "Screen Reports"
   },
   "navigation": {
     "dashboard": "Dashboard",

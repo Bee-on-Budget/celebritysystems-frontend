@@ -172,7 +172,10 @@
       "errorCreatingReport": "خطأ في إنشاء التقرير",
       "errorUpdatingReport": "خطأ في تحديث التقرير",
       "ticketClosed": "تم غلق التذكرة",
-      "errorTicketClose": "فشل غلق التذكرة"
+      "errorTicketClose": "فشل غلق التذكرة",
+      "companyNotFound": "معرّف الشركة غير متوفر",
+      "exportSuccess": "تم تصدير التقارير بنجاح",
+      "exportFailed": "فشل في تصدير التقارير"
     },
     "placeholders": {
       "searchCompanies": "البحث في الشركات...",
@@ -1063,7 +1066,9 @@
     "createContract": "إنشاء عقد",
     "allSubcontracts": "جميع العقود الفرعية",
     "createSubcontract": "إنشاء عقد فرعي",
-    "resolvedTickets": "التذاكر المحلولة"
+      "resolvedTickets": "التذاكر المحلولة",
+      "companyReports": "تقارير الشركة",
+      "screenReports": "تقارير الشاشات"
   },
   "navigation": {
     "dashboard": "لوحة التحكم",
