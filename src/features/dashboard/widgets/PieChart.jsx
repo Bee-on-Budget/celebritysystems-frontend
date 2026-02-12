@@ -3,8 +3,20 @@ import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recha
 
 const StatusPieChart = () => {
   // Your data
-  const rawData = {"IN_PROGRESS":0,"NULL":0,"CLOSED":0,"RESOLVED":1,"OPEN":21};
+  const rawData = { "IN_PROGRESS": 0, "NULL": 0, "CLOSED": 0, "RESOLVED": 0, "OPEN": 0 };
   
+  // Normalize data to handle cases where all other keys are zero and NULL is not zero
+  const normalizedData = (() => {
+    const otherKeys = Object.keys(rawData).filter((k) => k !== "NULL");
+    const allOthersZero = otherKeys.every((k) => rawData[k] === 0);
+  
+    if (allOthersZero && rawData.NULL === 0) {
+      return { ...rawData, NULL: 1 };
+    }
+  
+    return rawData;
+  })();  
+
   // State to track window size for responsive adjustments
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
@@ -23,14 +35,25 @@ const StatusPieChart = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Label for different statuses
+  const labels = {
+    'IN_PROGRESS': "In Progress",
+    'NULL': "No Data",
+    'CLOSED': "Closed",
+    'RESOLVED': "Resolved",
+    'OPEN': "Open"
+  };
+
   // Transform data for recharts and filter out zero values
-  const data = Object.entries(rawData)
+  const data = Object.entries(normalizedData)
     .filter(([_, value]) => value > 0)
-    .map(([key, value]) => ({
-      name: key.replace('_', ' '),
-      value: value,
-      originalKey: key
-    }));
+    .map(([key, value]) => {
+      return  ({
+        name: labels[key],
+        value: value,
+        originalKey: key
+      });
+    });
 
   // Color scheme for different statuses
   const colors = {
@@ -42,7 +65,7 @@ const StatusPieChart = () => {
   };
 
   // Calculate total for percentages
-  const total = Object.values(rawData).reduce((sum, val) => sum + val, 0);
+  const total = Object.values(normalizedData).reduce((sum, val) => sum + val, 0);
 
   // Custom tooltip to show more information
   const CustomTooltip = ({ active, payload }) => {
@@ -67,7 +90,7 @@ const StatusPieChart = () => {
   const renderLabel = (entry) => {
     // On small screens, don't show labels on the chart to avoid clutter
     if (windowSize.width < 640) return null;
-    
+
     const percentage = ((entry.value / total) * 100).toFixed(1);
     return `${entry.name}: ${percentage}%`;
   };
@@ -100,14 +123,14 @@ const StatusPieChart = () => {
             dataKey="value"
           >
             {data.map((entry, index) => (
-              <Cell 
-                key={`cell-${index}`} 
-                fill={colors[entry.originalKey]} 
+              <Cell
+                key={`cell-${index}`}
+                fill={colors[entry.originalKey]}
               />
             ))}
           </Pie>
           <Tooltip content={<CustomTooltip />} />
-          <Legend 
+          <Legend
             layout={windowSize.width < 640 ? "vertical" : "horizontal"}
             verticalAlign="bottom"
             align="center"
@@ -120,7 +143,7 @@ const StatusPieChart = () => {
           />
         </PieChart>
       </ResponsiveContainer>
-      
+
       {/* Summary stats */}
       <div className="mt-2 sm:mt-4 text-center text-xs sm:text-sm text-gray-600">
         Total Items: {total}
