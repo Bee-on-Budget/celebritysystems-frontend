@@ -113,7 +113,7 @@ const ScreensList = () => {
               <th className={`${headerStyle} w-80`}>{t('screens.screenForm.name')}</th>
               <th className={`${headerStyle} w-40`}>{t('screens.screenForm.screenType')}</th>
               <th className={`${headerStyle} w-40`}>{t('screens.screenForm.solution')}</th>
-              <th className={headerStyle}>{t('screens.screenForm.location')}</th>
+              <th className={headerStyle}>{t('screens.screenForm.company')}</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -129,24 +129,7 @@ const ScreensList = () => {
                 </td>
                 <td className={bodyStyle}>{getScreenTypeLabel(screen.screenType)}</td>
                 <td className={bodyStyle}>{getScreenSolutionLabel(screen.solutionType)}</td>
-                <td className={bodyStyle}>
-                  {screen.location?.startsWith("http") ? (
-                    <a
-                      href={screen.location}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary underline hover:text-primary-hover"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        window.open(screen.location, "_blank", "noopener,noreferrer");
-                      }}
-                    >
-                      View Location
-                    </a>
-                  ) : (
-                    screen.location || <span className="text-gray-400">No location</span>
-                  )}</td>
+                <td className={bodyStyle}>{screen.companyName || 'N/A'}</td>
               </tr>
             ))}
           </tbody>

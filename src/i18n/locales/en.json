@@ -865,6 +865,7 @@
     "reportList": "Report List",
     "allReports": "All Reports",
     "reportSummaryTab": "Report Summary",
+    "reportScreenTab": "Screen Reports",
     "reportSummary": {
       "title": "Component Summary Report",
       "monitoringPeriod": "Monitoring period",
@@ -940,6 +941,17 @@
       "averageTimeBreakdown": "Average Time by Service Type",
       "selectFiltersAndFetch": "Select screens and date range, then click Fetch History",
       "searchScreens": "Search screens..."
+    },
+    "componentScreenReport": {
+      "title": "Screen Reports",
+      "description": "Detailed changes for a specific component on a screen",
+      "component": "Component",
+      "screen": "Screen",
+      "dateRange": "Date Range",
+      "totalChanges": "Total Changes",
+      "changesPerScreen": "Changes per Screen",
+      "changeTypeDistribution": "Change Type Distribution",
+      "noData": "Please select the component, screen and date range."
     }
   },
   "accounts": {

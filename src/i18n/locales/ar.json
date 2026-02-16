@@ -865,6 +865,7 @@
     "reportList": "قائمة التقارير",
     "allReports": "جميع التقارير",
     "reportSummaryTab": "ملخص التقرير",
+    "reportScreenTab": "تقارير الشاشات",
     "reportSummary": {
       "title": "تقرير ملخص المكونات",
       "monitoringPeriod": "فترة المراقبة",
@@ -940,6 +941,17 @@
       "averageTimeBreakdown": "متوسط الوقت حسب نوع الخدمة",
       "selectFiltersAndFetch": "اختر الشاشات ونطاق التاريخ، ثم انقر على جلب التاريخ",
       "searchScreens": "ابحث عن الشاشات..."
+    },
+    "componentScreenReport": {
+      "title": "تقارير الشاشات",
+      "description": "تفاصيل التغييرات لمكون محدد على شاشة",
+      "component": "المكون",
+      "screen": "الشاشة",
+      "dateRange": "نطاق التاريخ",
+      "totalChanges": "إجمالي التغييرات",
+      "changesPerScreen": "التغييرات لكل شاشة",
+      "changeTypeDistribution": "توزيع أنواع التغييرات",
+      "noData": "يرجى تحديد المكون والشاشة ونطاق التاريخ."
     }
   },
   "accounts": {

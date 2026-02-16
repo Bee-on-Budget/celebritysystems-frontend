@@ -172,6 +172,7 @@ const Sidebar = ({ open, setOpen }) => {
               items={[
                 { label: t('reports.allReports'), href: "/reports", onClick: () => setOpen(false) },
                 { label: t('reports.reportSummaryTab'), href: "/reports-summary", onClick: () => setOpen(false) },
+                { label: t('reports.reportScreenTab'), href: "/reports/components", onClick: () => setOpen(false) },
               ]}
             />
           )}

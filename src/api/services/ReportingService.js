@@ -79,3 +79,20 @@ export const getScreensHistory = async ({ screenIds = [], startDate, endDate }) 
         throw error.response?.data?.message || "Error fetching screens history";
     }
 };
+
+export const getComponentChangesForScreen = async ({ componentName, screenId, startDate, endDate }) => {
+    try {
+        const response = await api.get(
+            `${REPORT_URL}/components/${encodeURIComponent(componentName)}/screens/${screenId}`,
+            {
+                params: {
+                    startDate,
+                    endDate,
+                },
+            }
+        );
+        return response.data;
+    } catch (error) {
+        throw error.response?.data?.message || "Error fetching component changes for screen";
+    }
+};
